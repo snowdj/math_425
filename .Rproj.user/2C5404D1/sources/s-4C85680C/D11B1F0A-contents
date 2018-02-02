@@ -1,0 +1,704 @@
+---
+title: "Hard Work 2"
+output: 
+  html_document:
+    theme: cerulean
+    code_folding: hide
+---
+```{r,include=FALSE}
+library(tidyverse)
+library(broom)
+library(pander)
+library(magrittr)
+```
+
+
+## Instructions
+
+1. Study Sections 2.1-2.10 of Chapter 2: "Inferences in Regression and Correlation Analysis."    
+<span id="note">(Pace yourself, you have two weeks to work on this assignment.)</span>
+
+2. Attempt and submit at least <span id=points style="padding-left:0px;">{83}</span> Hard Work Points by Saturday at 11:59 PM.    
+<span id=note>Over <span id=points style="padding-left:0px;">{92}</span> gets you {+1} Final Exam Point.</span>    
+<span id=note>Over <span id=points style="padding-left:0px;">{100}</span> gets you {+2} Final Exam Points.</span>    
+<span id=note>Over <span id=points style="padding-left:0px;">{107}</span> gets you {+3} Final Exam Points.</span>
+
+<br/>
+
+
+
+## Reading Points <span id=headpoints>{40} Possible</span>
+
+### Section 2.1 <span id=recpoints>{6}</span><span id=report>{ 6 / 6 }</span>
+
+### Section 2.2 <span id=recpoints>{3}</span><span id=report>{ 3 / 3 }</span>
+
+### Section 2.3 <span id=recpoints>{1}</span><span id=report>{ 1 / 1 }</span>
+
+### Section 2.4 <span id=recpoints>{4}</span><span id=report>{ 4 / 4 }</span>
+
+### Section 2.5 <span id=recpoints>{6}</span><span id=report>{ 6 / 6 }</span>
+
+### Section 2.6 <span id=recpoints>{3}</span><span id=report>{ 3 / 3 }</span>
+
+### Section 2.7 <span id=recpoints>{8}</span><span id=report>{ 8 / 8 }</span>
+
+### Section 2.8 <span id=recpoints>{4}</span><span id=report>{ 4 / 4 }</span>
+
+### Section 2.9 <span id=recpoints>{3}</span><span id=report>{ 3 / 3 }</span>
+
+### Section 2.10 <span id=recpoints>{2}</span><span id=report>{ 2 / 2 }</span>
+
+
+<br/>
+
+
+
+
+## Theory Points <span id=headpoints>{33} Possible</span>
+
+### Problem 2.1 <span id=points>{1}</span><span id=report>{ / }</span>
+ 
+### Problem 2.2 <span id=points>{1}</span><span id=report>{ / }</span>
+ 
+### Problem 2.3 <span id=points>{1}</span><span id=report>{ / }</span>
+
+### Problem 2.9 <span id=points>{1}</span><span id=report>{ / }</span>
+ 
+### Problem 2.11 <span id=points>{1}</span><span id=report>{ / }</span>
+ 
+### Problem 2.12 <span id=points>{1}</span><span id=report>{ / }</span>
+
+### Problem 2.18 <span id=points>{1}</span><span id=report>{ / }</span>
+<span id=headnote>Hint: Read page 71</span>
+ 
+### Problem 2.19 <span id=points>{1}</span><span id=report>{ / }</span>
+
+### Problem 2.20 or 2.21 or 2.22 <span id=points>{1}</span><span id=report>{ / }</span>
+
+### Problem 2.33 <span id=recpoints>{3}</span><span id=report>{ 3 / 3 }</span>
+
+In developing empirically a cost function from observed data on a complex chemical experiment, an analyst employed normal error regression model (2.1). $\beta_{0}$ was interpreted here as the cost of setting up the experiment. The analyst hypothesized that this cost should be $7.5 thousand and wished to test the hypothesis by means of a general linear test. 
+
+  __a)__ Indicate the full alternative conclusions for the test. 
+  
+  __Solution:__
+  
+  $$
+  H_o: \beta_0 = 7,500 \\
+  H_a: \beta_0 \ne 7,500
+  $$
+  
+  __b)__ Specify the full and reduced models.
+  
+  __Solution:__
+  
+  Full Model:
+
+$$
+  Y_i = \beta_0 + \beta_1X_i + \epsilon_i \text{ where } \epsilon \text{ ~ } N(0, \sigma^2)
+$$
+
+
+Reduced Model:
+
+$$
+  Y_i = \beta_0 + \epsilon_0
+$$
+  
+  __c)__ Without additional information, can you tell what the quantity $df_{R} - df_{F}$ in test statistic (2.70) will equal in the analyst's test? Explain.
+  
+  __Solution:__
+  
+  Since $df_R = n - 1$ and $df_F = n - 2$ then $df_R - df_F = 1$
+  
+
+### Problem 2.50 <span id=points>{2}</span><span id=report>{ / }</span>
+
+### Problem 2.51 <span id=points>{2}</span><span id=report>{ / }</span>
+
+### Problem 2.53 <span id=points>{4}</span><span id=report>{ / }</span>
+
+### Problem 2.66 <span id=recpoints>{5}</span><span id=report>{ 5 / 5 }</span> 
+
+<span id=note>R-Code Hint: rnorm(5, 0, sqrt(25))</span>
+
+Five observations on Y are to be taken when X = 4, 8, 12, 16, and 20, respectively. The true regression function is $E[Y] = 20 + 4X$, and the $\varepsilon_{i}$ are independent $N(0,25)$
+
+  __a)__  Generate five normal random numbers, with mean = 0 and variance = 25. Consider these random numbers as the error terms for the five Y observations at X = 4, 8 , 12, 16, and 20 and calculate $Y_{1}, Y_{2}, Y_{3}, Y_{4}$, and $Y_{5}$. Obtain the least squares estimates $b_{0}$ and $b_{1}$ when fitting a straight line to the five cases. Also calculate $\hat{Y_{k}}$ when $X_{k} = 10$ and obtain a 95 percent confidence interval for $E[Y_{k}]$ when $X_{k} = 10$. 
+  
+```{r}
+dat <- tibble(x = c(4,8,12,16,20), 
+              e = rnorm(5,0,sqrt(25)), 
+              y = (function(x,e){20+4*x+e})(x,e))
+
+dat.lm <- lm(y ~ x, dat)
+pred10 <- predict(dat.lm, tibble(x=10), interval = "confidence")
+model10 <- 20+4*10
+```
+  
+  __Solution:__
+  <div id="rcorners2">
+  $b_{0} = `r tidy(dat.lm)[1,2]`$
+  
+  $b_{1} = `r tidy(dat.lm)[2,2]`$
+  
+  $\hat{Y_{k}} \text{ when } X_{k} = 10$
+  `r pander::pander(pred10)` </div></br>
+  
+  __b)__ Repeat part (a) 200 times, generating new random numbers each time. 
+```{r}
+dat2 <- tibble(e = rnorm(1000,0,sqrt(25)), 
+               x = rep(c(4,8,12,16,20), 200),
+               y = (function(x,e){20+4*x+e})(x,e),
+               m = rep(1:200, each = 5)) %>% 
+  split(.$m) %>%
+  map_df(~ lm(y ~ x, data = .) %>% tidy())
+```
+  
+  __c)__ Make a frequency distribution of the 200 estimates $b_{1}$. Calculate the mean and standard deviation of the 200 estimates $b_{1}$. Are the results consistent with theoretical expectations?
+```{r, fig.width=10}
+dat2 %>% 
+  filter(term %in% "x") %>% 
+  {ggplot(., aes(x=estimate)) +
+      geom_histogram(binwidth = .2, fill = "coral", color = "black") +
+      labs(title = glue::glue("Histogram of Beta1 Estimates",
+                              "| Mean: {round(mean(.$estimate),4)}, ",
+                              "Std Dev: {round(sd(.$estimate),4)}")) +
+      geom_vline(xintercept = mean(.$estimate), color = "#80f0f0") + 
+      theme_bw()}
+```
+  
+  __Solution:__
+  <div id="rcorners2">
+  Yes, the results follow an approximatly normal distribution which is inline with theoretical expectations. </div> </br>
+  
+  __d)__ What proportion of the 200 confidence intervals for $E[Y_{k}]$ when $X_{k} = 10$ include $E[Y_{k}]$? Is this result consistent with theoretical expectations?
+```{r}
+dat3 <- tibble(e = rnorm(1000,0,sqrt(25)),
+       x = rep(c(4,8,12,16,20), 200),
+       y = (function(x,e){20+4*x+e})(x,e),
+       m = rep(1:200, each = 5)) %>%
+  split(.$m) %>%
+  map_df(~ lm(y ~ x, data = .) %>%
+           predict(.,tibble(x=10), interval = "confidence") %>% tidy()) %>% 
+  mutate(contains = model10 >= lwr & model10 <= upr)
+
+percent.contains <- length(which(dat3$contains))/length(dat3$contains)
+```
+  
+  __Solution:__ 
+  <div id="rcorners2">
+  Approximatley `r percent.contains` of the confidence intervals for $E[Y_{k}]$ when $X_{k} = 10$ contain the true mean of the model which is perfectly inline with theoretical expectations. </div></br>
+  
+### Exercise 2.55 <span id=recpoints>{2}</span><span id=report>{ 2 / 2 }</span>
+
+Derive the expression for SSR in (2.51)
+
+__Solution:__
+<div id="rcorners2">
+\begin{align*}
+SSR &= \sum\left(\hat{Y}_{i} - \bar{Y}\right)^{2} \\
+&= \sum_{i}^{n} \left(b_{0} + b_{1}X_{i} - b_{0}-b_{1}\bar{X}\right)^{2} \\
+&= b_{1}^{2}\sum_{i}^{n}\left(X_{i}-\bar{X}\right)^{2}
+\end{align*}</div>
+
+### Exercise 2.57 <span id=points>{3}</span><span id=report>{ / }</span>
+
+### Exercise 2.61 <span id=points>{3}</span><span id=report>{ / }</span>
+
+ 
+
+<br/>
+
+
+
+## Application Points <span id=headpoints>{53} Possible</span>
+
+<a id=datalink target="_blank" href=http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/index.html>Data Files</a>
+
+
+### Problem 2.1 <span id=points>{1}</span><span id=report>{ / }</span>
+
+### Problem 2.4 <span id=recpoints>{4}</span><span id=report>{ 4 / 4 }</span>
+
+```{r p4}
+# Load the Data:
+p1.19 <- read.table("https://netfiles.umn.edu/users/nacht001/www/nachtsheim/Kutner/Chapter%20%201%20Data%20Sets/CH01PR19.txt")
+
+# Rewrite the column names to be "Y" and "X" to match the textbook:
+colnames(p1.19) <- c("Y","X")
+
+p4.lm <- lm(Y ~ X, p1.19)
+
+b1.est <- confint(p4.lm, "X", level = 0.99)
+
+t.star <- tidy(p4.lm)[2,4] > qt(1-0.01/2, glance(p4.lm)$df.residual)
+
+p.value <- round(pt(tidy(p4.lm)[2,4], 118, lower.tail = FALSE)*2,4)
+```
+
+**Refer to Grade Point Average Problem 1.19**
+
+  **a)** Obtain a 99 percent confidence interval for $\beta_{1}$. Interpret your confidence interval. Does it include zero? Why might the director of admissions be interested in whether the confidence interval includes zero?
+  
+  __Solution:__
+  <div id="rcorners2"> Table: `r pander::pander(b1.est)` </div>
+  
+  
+  **b)** Test, using the test statistic $t*$, whether or not a linear association exists between student's ACT score (X) and GPA at the end of the freshman year (Y). Use a level of significance of 0.01. State the alternatives, decision rule, and conclusion. 
+
+  __Solution:__
+<p id="rcorners2">
+  \begin{align*}
+    \text{ Let } \alpha &= 0.01 \\
+    \text{For Model: } Y &= \beta_{0} + \beta_{1}X_{i} + \varepsilon_{i} \\
+    \text{Where } \varepsilon_{i} &\sim N(\mu, \sigma^{2}) \\
+    H_{0}:& \beta_{1} = 0 \\
+    H_{A}:& \beta_{1} \neq 0 \\
+    \text{If } |t^{*}| \leq t(99.5;& 118) : \text{ Conclude } H_{0}\\
+    \text{If } |t^{*}| > t(99.5;& 118) : \text{ Conclude } H_{A}\\
+  \end{align*}
+Given that $t^{*}$ is greater than $t(99.5,118)$ and the corresponding decision rule we can conclude $H_{A}$, meaning we reject the null in favor of the alternative hypothesis. </p>
+  
+  **c)** What is the P-value of your test in part (b)? How does it support the conclusion reached in part (b)?
+  
+  __Solution:__
+  <p id="rcorners2">
+  __P-Value:__ `r p.value`, This supports the conclusion above we can therefore believe that X is not zero within the model.</p>
+  
+
+### Problem 2.5 <span id=recpoints>{4}</span><span id=report>{ 3 / 4 }</span> 
+
+```{r p5}
+# Load the Data:
+p1.20 <- read.table("https://netfiles.umn.edu/users/nacht001/www/nachtsheim/Kutner/Chapter%20%201%20Data%20Sets/CH01PR20.txt")
+
+# Rewrite the column names to be "Y" and "X" to match the textbook:
+colnames(p1.20) <- c("Y","X")
+
+p5.lm <- lm(Y ~ X, data = p1.20)
+
+b1.est <- round(tidy(p5.lm)[2,2],3)
+
+p5.test <- tidy(t.test(p1.20))
+```
+
+**Refer to Copier Maintenance Problem 1.20**
+
+  __a)__ Estimate the change in the mean service time when the number of copiers serviced increases by one. Use a 90 percent confidence interval. Interpret your confidence interval. 
+  
+  __Solution:__
+  <div id="rcorners2">
+  The estimated change in service time when the number of copiers serviced increases by one is: `r b1.est` minutes, on average. </div></br>
+  
+  __b)__ Conduct a t test to determine whether or not there is a linear association between X and Y here; control the $\alpha$ risk at .10. State the alternatives, decision rule, and conclusion. What is the P-value of your test?
+  
+  __Solution:__
+<div id="rcorners2">
+  \begin{align*}
+    \text{ Let } \alpha &= 0.10 \\
+    \text{For Test: } t &= \dfrac{Z}{s} \\
+    H_{0}:& \ \mu = 0 \\
+    H_{A}:& \ \mu \neq 0 \\
+    \text{If } |Z| \leq 1.645 &: \text{ Conclude } H_{0}\\
+    \text{If } |Z| > 1.645 &: \text{ Conclude } H_{A}\\
+  \end{align*}
+With a $|Z|$ greater than 1.645 and considering a p-value of $`r p5.test['p.value']`$ we will reject the null in favor of the alternative hypothesis. </div> </br>
+
+  __c)__ Are your results in parts (a) and (b) consistent? Explain.
+  
+  __Solution:__
+  <div id="rcorners2">
+  Yes the are consistent since they both agree that there is some effect that X is having on Y. </div></br> 
+  
+  __d)__ The manufacturer has suggested that the mean required time should not increase by more than 14 minutes for each additional copier that is serviced on a service call. Conduct a test to decide whether this standard is being satisfied by Tri-City. Control the risk of a Type I error at 0.05. State the alternatives, decision rule, and conclusion. What is the P-value of the test?
+  
+  __Solution:__
+  
+  __e)__ Does $b_{0}$ give any relevant information here about the "start-up" time on calls -- i.e., about the time required before service work is begun on the copiers at a customer location?
+  
+  __Solution:__
+  
+### Problem 2.7 <span id=points>{3}</span><span id=report>{ / }</span> 
+
+```{r p7}
+# Load the Data:
+p1.22 <- read.table("https://netfiles.umn.edu/users/nacht001/www/nachtsheim/Kutner/Chapter%20%201%20Data%20Sets/CH01PR22.txt")
+
+# Rewrite the column names to be "Y" and "X" to match the textbook:
+colnames(p1.22) <- c("Y","X")
+```
+
+
+### Problem 2.10 <span id=recpoints>{2}</span><span id=report>{ / }</span> 
+
+For each of the following questions, explain whether a confidence interval for a mean response or a prediction interval for a new observation is appropriate.
+
+  __a)__ What will be the humidity level in this greenhouse tomorrow when we set the temperature level at 31 C?
+  
+  __Solution:__
+  
+  __b)__ How much do families whose disposable income is $23,500 spend, on the average, for meals away from home?
+  
+  __Solution:__
+  
+  __c)__ How many kilowatt-hours of electricity will be consumed next month by commercial and industrial users in the Twin Cities service area, given that the index of business activity for the area remains at its present level?
+  
+  __Solution:__
+
+
+### Problem 2.13 <span id=recpoints>{4}</span><span id=report>{ 4 / 4 }</span> 
+
+```{r p13}
+# Load the Data:
+p1.19 <- read.table("https://netfiles.umn.edu/users/nacht001/www/nachtsheim/Kutner/Chapter%20%201%20Data%20Sets/CH01PR19.txt")
+
+# Rewrite the column names to be "Y" and "X" to match the textbook:
+colnames(p1.19) <- c("Y","X")
+
+p13.lm <- lm(Y ~ X, p1.19)
+
+conf28 <- predict(p13.lm, tibble(X=28), interval = "confidence")
+
+pred28 <- predict(p13.lm, tibble(X=28), interval = "prediction")
+
+cbands <- c(2.767235,3.231851)
+names(cbands) <- c("Lower", "Upper")
+```
+
+**Refer to Grade Point Average Problem 1.19**
+
+  __a)__ Obtain a 95 percent interval estimate of the mean freshman GPA for students whose ACT test score is 28. Interpret your confidence interval.
+  
+  __Solution:__
+  <div id="rcorners2">
+  Table - Confidence Interval: `r pander::pander(conf28)`
+  
+  We believe that 95% of our confidence intervals will contain the true mean freshman GPA for a given ACT test score of 28
+  </div></br>
+  
+  __b)__ Mary Jones obtained a score of 28 on the entrance test. Predict her freshman GPA using a 95 percent prediction interval. Interpret your prediction interval. 
+  
+  __Solution:__
+  <div id="rcorners2">
+  Table - Prediction Interval: `r pander::pander(pred28)`
+  
+  We believe that 95% of our prediction intervals will contain the true value for Mary Jones at a given ACT test score of 28
+  </div></br>
+  
+  __c)__ Is the prediction interval in part (b) wider than the confidence interval in part (a)? Should it be?
+  
+  __Solution:__
+  <div id="rcorners2">
+  Yes, it should be wider because there is less certaintity of where the actual value will be when compared to where the mean value will be. 
+  </div></br>
+  
+  __d)__ Determine the boundary values of the 95 percent confidence band for the regression line when $X_{h} = 28$. Is your confidence band wider at this point than the confidence interval in part (a)? Should it be?
+  
+  __Solution:__
+  <div id="rcorners2">
+  Table - Confidence Bands: `r pander::pander(cbands)`
+  
+  Yes, it should be because we give up certaintity to have a band for across all the data. 
+  </div></br>
+  
+### Problem 2.14 <span id=points>{4}</span><span id=report>{ / }</span> 
+
+```{r p14}
+# Load the Data:
+p1.20 <- read.table("https://netfiles.umn.edu/users/nacht001/www/nachtsheim/Kutner/Chapter%20%201%20Data%20Sets/CH01PR20.txt")
+
+# Rewrite the column names to be "Y" and "X" to match the textbook:
+colnames(p1.20) <- c("Y","X")
+```
+
+
+### Problem 2.15 <span id=points>{4}</span><span id=report>{ / }</span>
+
+```{r p15}
+# Load the Data:
+p1.21 <- read.table("https://netfiles.umn.edu/users/nacht001/www/nachtsheim/Kutner/Chapter%20%201%20Data%20Sets/CH01PR21.txt")
+
+# Rewrite the column names to be "Y" and "X" to match the textbook:
+colnames(p1.21) <- c("Y","X")
+```
+
+
+### Problem 2.16 <span id=recpoints>{5}</span><span id=report>{ 5 / 5 }</span> 
+
+```{r p16}
+# Load the Data:
+p1.22 <- read.table("https://netfiles.umn.edu/users/nacht001/www/nachtsheim/Kutner/Chapter%20%201%20Data%20Sets/CH01PR22.txt")
+
+# Rewrite the column names to be "Y" and "X" to match the textbook:
+colnames(p1.22) <- c("Y","X")
+
+p16.lm <- lm(Y ~ X, p1.22)
+
+conf30 <- predict(p16.lm, tibble(X=30), interval = "confidence", level = 0.98)
+
+pred30 <- predict(p16.lm, tibble(X=30), interval = "prediction", level = 0.98)
+
+mse <- glance(p16.lm)$sigma^2
+exp.s <- mse*(1/16) + ((30 - mean(p1.22$X))^2)/(sum((p1.22$X - mean(p1.22$X))^2))
+
+upr_bound <- pred30[1,1] + (qt(.99,14) * sqrt(mse/10+exp.s))
+lwr_bound <- pred30[1,1] - (qt(.99,14) * sqrt(mse/10+exp.s))
+
+pred.new <- c(pred30[1,1], lwr_bound, upr_bound)
+names(pred.new) <- c("Predicted Value", "Lower Bound", "Upper Bound")
+
+confband30 <- c(223.4361,234.7638)
+names(confband30) <- c("Lower","Upper")
+```
+
+**Refer to Plastic Hardness Problem 1.22**
+
+  __a)__ Obtain a 98 percent confidence interval for the mean hardness of molded items with an elapsed time of 30 hours. Interpret your confidence interval.
+  
+  __Solution:__
+  <div id="rcorners2">
+  Table 98% Confidence Interval: `r pander::pander(conf30)`
+  </div></br>
+  
+  __b)__ Obtain a 98 percent prediction interval for the hardness of newly molded test item with an elapsed time of 30 hours. 
+  
+  __Solution:__
+  <div id="rcorners2">
+  Table 98% Prediction Interval: `r pander::pander(pred30)`
+  </div></br>
+  
+  __c)__ Obtain a 98 percent prediction interval for the mean hardness of 10 newly molded test items, each with an elapsed time of 30 hours. 
+  
+  __Solution:__
+  <div id="rcorners2">
+  10 New Observation Table: `r pander::pander(pred.new)`
+  </div></br>
+  
+  __d)__ Is the prediction interval in part (c) narrower than the one in part (b)? Should it be?
+  
+  __Solution:__
+  <div id="rcorners2">
+  Yes it is, yes because since we have several more data points we can be more certain of our confidence interval. 
+  </div></br>
+  
+  __e)__ Determine the boundary values of the 98 percent confidence band for the regression line when $X_{h}$ = 30. Is your confidence band wider at this point than the confidence interval in part (a)? Should it be?
+  
+  __Solution:__
+  <div id="rcorners2">
+  Confidence Bands: `r pander::pander(confband30)`
+  </div></br>
+  
+### Problem 2.25 <span id=recpoints>{5}</span><span id=report>{ / }</span>
+
+```{r p25}
+# Load the Data:
+p1.21 <- read.table("https://netfiles.umn.edu/users/nacht001/www/nachtsheim/Kutner/Chapter%20%201%20Data%20Sets/CH01PR21.txt")
+
+# Rewrite the column names to be "Y" and "X" to match the textbook:
+colnames(p1.21) <- c("Y","X")
+
+dat.lm <- lm(Y ~ X, p1.20)
+
+aov20 <- tidy(aov(Y ~ X, p1.20))
+
+ftest <- qf(.975,1,8)
+
+tstar <- (dat.lm$estimate[2])/dat.lm$std.error[2]
+```
+
+**Refer to Airfreight Breakage Problem 1.21**
+
+  __a)__ Set up the ANOVA table. Which elements are additive?
+  
+  __Solution:__
+  <div id="rcorners2">
+```{r, echo=FALSE}
+aov20
+```
+  SSE, SSR, and the Degrees of Freedom are additive elements
+  </div></br>
+  
+  __b)__ Conduct an F test to decide whether or not there is a linear association between the number of times a carton is transferred and the number of broken ampules; control the $\alpha$ risk at 0.05. State the alternatives, decision rule, and conclusion. 
+  
+  __Solution:__
+  <div id="rcorners2">
+  \begin{align*}
+  \alpha = 0.&05 \\
+  H_{o}: \beta_1 &= 0 \\
+  H_{a}: \beta_1 &\neq 0 \\
+  \text{If } |F^{*}| \leq F(0.975; 1, 8)&: \text{ conclude } H_{o} \\
+  \text{If } |F^{*}| > F(0.975; 1, 8)&: \text{ conclude } H_{a}
+  \end{align*}
+  Given that $\text{F Statistic} = `r ftest`$ we conclude $H_{a}$
+  </div></br>
+  
+  __c)__ Obtain the $t*$ statistic for the test in part (b) and demonstrate numerically its equivalence to the $F*$ statistic obtained in part (b).
+  
+  __Solution:__
+  <div id="rcorners2">
+  $t^{*}$ = `r tstar`
+  
+  $F^{*} = t^{*2}$ = `r tstar^2`
+  </div></br>
+  
+  __d)__ Calculate $R^{2}$ and $r$. What proportion of the variation in Y is accounted for by introducing X into the regression model?
+  
+  __Solution:__
+  
+### Problem 2.26 <span id=recpoints>{4}</span><span id=report>{ / }</span>
+
+```{r p26}
+# Load the Data:
+p1.22 <- read.table("https://netfiles.umn.edu/users/nacht001/www/nachtsheim/Kutner/Chapter%20%201%20Data%20Sets/CH01PR22.txt")
+
+# Rewrite the column names to be "Y" and "X" to match the textbook:
+colnames(p1.22) <- c("Y","X")
+```
+
+**Refer to Plastic Hardness Problem 1.22**
+
+  __a)__ Set up the ANOVA table.
+  
+  __Solution:__
+  
+  __b)__ test by means of an F test whether or not there is a linear association between the hardness of the plastic and the elapsed time. Use $\alpha = 0.01$. State the alternatives, decision rule, and conclusion. 
+  
+  __Solution:__
+  
+  __c)__ Plot the deviations $Y_{i} - \hat Y_{i}$ against $X_{i}$ on a graph. Plot the deviation of $\hat Y_{i} - \bar Y$ against $X_{i}$ on another graph, using the same scales as for the first graph. From your two graphs, does SSE or SSR appear to be the larger component of SSTO? What does this imply bout the magnitude of $R^{2}$?
+  
+  __Solution:__
+  
+  __d)__ Calculate $R^{2}$ and $r$. 
+  
+  __Solution:__
+  
+
+### Problem 2.29 <span id=recpoints>{5}</span><span id=report>{ 1 / 5 }</span> 
+
+```{r p29}
+# Load the Data:
+p1.27 <- read.table("https://netfiles.umn.edu/users/nacht001/www/nachtsheim/Kutner/Chapter%20%201%20Data%20Sets/CH01PR27.txt")
+
+# Rewrite the column names to be "Y" and "X" to match the textbook:
+colnames(p1.27) <- c("Y","X")
+
+p29.lm <- lm(Y ~ X, p1.27)
+
+yhat <- predict(p29.lm, tibble(X = p1.27$X))
+
+p1.27 %<>% 
+  mutate(sse = yhat - mean(Y),
+         ssr = Y - yhat)
+
+residual.plot <- ggplot(p1.27, aes(x = X, y = sse)) +
+  geom_point(color = "red") +
+  geom_point(aes(y = ssr), color = "blue")
+```
+
+**Refer to Muscle Mass Problem 1.27**
+
+  __a)__ Plot the deviations $Y_{i} - \hat Y_{i}$ against $X_{i}$ on a graph. Plot the deviation of $\hat Y_{i} - \bar Y$ against $X_{i}$ on another graph, using the same scales as for the first graph. From your two graphs, does SSE or SSR appear to be the larger component of SSTO? What does this imply bout the magnitude of $R^{2}$?
+  
+  __Solution:__
+  <div id="rcorners2">
+```{r, fig.align='center'}
+residual.plot
+```
+  
+  </div></br>
+  __b)__ Set up the ANOVA table.
+  
+  __Solution:__
+  
+  __c)__ Test whether or not $\beta_{1} = 0$ using an F test with $\alpha = 0.05$. State the alternatives, decision rule, and conclusion.
+  
+  __Solution:__
+  
+  __d)__ What proportion of the total variation in muscle mass remains "unexplained" when age is introduced into the analysis? Is this proportion relatively small or large?
+  
+  __Solution:__
+  
+  __e)__ Obtain $R^{2}$ and $r$.
+  
+  __Solution:__
+
+### Problem 2.30 <span id=points>{5}</span><span id=report>{ / }</span> 
+
+```{r p30}
+# Load the Data:
+p1.28 <- read.table("https://netfiles.umn.edu/users/nacht001/www/nachtsheim/Kutner/Chapter%20%201%20Data%20Sets/CH01PR28.txt")
+
+# Rewrite the column names to be "Y" and "X" to match the textbook:
+colnames(p1.28) <- c("Y","X")
+```
+
+### Problem 2.32 <span id=points>{3}</span><span id=report>{ / }</span> 
+
+```{r p32}
+# Load the Data:
+p1.28 <- read.table("https://netfiles.umn.edu/users/nacht001/www/nachtsheim/Kutner/Chapter%20%201%20Data%20Sets/CH01PR28.txt")
+
+# Rewrite the column names to be "Y" and "X" to match the textbook:
+colnames(p1.28) <- c("Y","X")
+```
+
+
+
+<br />
+ 
+ <style>
+#points {
+  font-size:.8em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#317eac;
+}
+
+#recpoints {
+  font-size:.8em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#7eac31;
+}
+
+#report {
+  font-size:.7em;
+  padding-left:15px;
+  font-weight:normal; 
+  color:#5a5a5a;
+}
+
+#datalink {
+  font-size:.5em;
+  color:#317eac;
+  padding-left:5px;
+}
+
+#headnote {
+  font-size:.6em;
+  color:#787878;
+}
+
+#note {
+  font-size:.8em;
+  color:#787878;
+}
+
+#headpoints {
+ font-size:12pt;
+ color: #585858; 
+ padding-left: 15px;
+}
+
+#rcorners2 {
+    border-radius: 25px;
+    border: 2px solid #73AD21;
+    padding: 20px; 
+    width: auto;
+    height: auto;    
+}
+</style>
+ 
