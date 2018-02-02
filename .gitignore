@@ -27,3 +27,6 @@ Temporary Items
 .apdisk
 
 resources/
+.Rproj.user
+.Rhistory
+.RData
