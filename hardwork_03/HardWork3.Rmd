@@ -12,6 +12,7 @@ library(tidyverse)
 library(broom)
 library(lawstat)
 library(lmtest)
+library(alr3)
 ```
 
 ## Instructions
@@ -74,13 +75,13 @@ $$
 $$
 </div></br>
 
-### 3.12 <span id=points>{2}</span><span id=report>{ / }</span>
+### 3.12 <span id=points>{2}</span><span id=report>{ 2 / 2 }</span>
 
 A student does not understand why the sum of squares defined in (3.16) is called pure error sum of squares "since the formula looks like one for an ordinary sum of squares." Explain.
 
 __Solution:__
 <div id="rcorners2">
-
+The sum of squares due to "pure" error is the sum of squares of the differences between each observed y-value and the average of all y-values corresponding to the same x-value. While with an ordinary sum of squares we are looking at the diffrence between each observed value and the fitted value $E[\hat{Y_{i}}]$. They look similar but are doing different things. 
 </div></br>
 
 ### 3.21 <span id=points>{3}</span><span id=report>{ / }</span>
@@ -211,7 +212,7 @@ qq.norm
 # Brown-Forsythe: Output - F-Statistic & P-value
 augment(act.lm) %>% 
   mutate(two.groups = as.factor(case_when(X < 26 ~ "<26", X >= 26 ~ ">=26"))) %>% 
-  {levene.test(.$.resid, .$two.groups,location = "median")}
+  {lawstat::levene.test(.$.resid, .$two.groups,location = "median")}
 
 # Hand Coded Brown-Forsythe but results in T-Statistic instead of F-Statistic
 # Take the sqrt of the output of the above function and it will give you this
@@ -618,7 +619,7 @@ qq.norm
 ```{r}
 augment(hard.lm) %>% 
   mutate(two.groups = as.factor(case_when(X <= 24 ~ "<=24", X > 24 ~ ">24"))) %>% 
-  {levene.test(.$.resid, .$two.groups,location = "median")}
+  {lawstat::levene.test(.$.resid, .$two.groups,location = "median")}
 ```
 
   </div></br>
@@ -811,7 +812,7 @@ qqnorm(crime.lm$residuals)
 ```{r}
 augment(crime.lm) %>% 
   mutate(two.groups = as.factor(case_when(X <= 69 ~ "<=69", X > 69 ~ ">69"))) %>% 
-  {levene.test(.$.resid, .$two.groups,location = "median")}
+  {lawstat::levene.test(.$.resid, .$two.groups,location = "median")}
 ```
  
   </div></br>
@@ -824,6 +825,10 @@ p1.20 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/
 
 # Rewrite the column names to be "Y" and "X" to match the textbook:
 colnames(p1.20) <- c("Y","X")
+
+copy.lm <- lm(Y ~ X, p1.20)
+
+lof <- pureErrorAnova(copy.lm)
 ```
 
 __Refer to Copier Maintenance Problem 1.20__
@@ -839,7 +844,10 @@ __Refer to Copier Maintenance Problem 1.20__
   
   __Solution:__
   <div id="rcorners2">
-  
+```{r}
+lof
+```
+
   </div></br>
   
   __c)__ Does the test in part (b) detect other departures from regression model (2.1), such as lack of constant variance or lack of normality in the error terms? Could the results of the test of lack of fit be affected by such departures? Discuss. 
