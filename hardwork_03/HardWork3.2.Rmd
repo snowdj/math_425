@@ -1,0 +1,322 @@
+---
+title: "Hard Work 3 Part 2"
+output: 
+  html_document:
+    theme: cerulean
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+```{r, include=FALSE}
+library(tidyverse)
+library(broom)
+```
+
+## Instructions
+
+1. Study Sections 3.9-3.11 of Chapter 3: "Diagnostics and Remedial Measures."    
+
+2. Attempt and submit at least <span id=points style="padding-left:0px;">{27}</span> Hard Work Points by Saturday at 11:59 PM.    
+<span id=note>Over <span id=points style="padding-left:0px;">{37}</span> gets you {+1} Final Exam Point.</span>    
+
+## Reading Points <span id=headpoints>{18} Possible</span>
+
+### Section 3.9 <span id=recpoints>{7}</span><span id=report>{ / }</span>
+
+### Section 3.10 <span id=recpoints>{4}</span><span id=report>{ / }</span>
+
+### Section 3.11 <span id=recpoints>{7}</span><span id=report>{ / }</span>
+
+
+
+## Theory Points <span id=headpoints>{7} Possible</span>
+
+
+
+### Exercise 3.20 <span id=recpoints>{3}</span><span id=report>{ / }</span> 
+
+If the error terms in a regression model are independent $N(0,\sigma^{2})$, what can be said about the error terms after transformation $X^{\prime} = 1/X$ is used? Is the situation the same after transformation $Y^{\prime} = 1/Y$ is used?
+
+__Solution:__
+<div id="rcorners2">
+
+</div></br>
+ 
+### Exercise 3.22 <span id=points>{4}</span><span id=report>{ / }</span> 
+
+Using (A.70), (A.41), and (A.42), show that $E[MSPE] = \sigma^{2}$ for normal error regression model (2.1).
+
+__Solution:__
+<div id="rcorners3">
+
+</div></br>
+
+
+## Application Points <span id=headpoints>{17} Possible</span>
+
+<a id=datalink style="font-size:.9em;" target="_blank" href=http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/index.html>Data Files</a>
+
+
+### Problem 3.16 <span id=recpoints>{6}</span><span id=report>{ / }</span>
+
+```{r p316}
+# Load the Data:
+p3.15 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%203%20Data%20Sets/CH03PR15.txt")
+
+# Rewrite the column names to be "Y" and "X" to match the textbook:
+colnames(p3.15) <- c("Y","X")
+
+sol.lm <- lm(Y ~ X, p3.15)
+
+scatp <- augment(sol.lm) %>% 
+  ggplot(aes(x = X, y = Y)) + 
+  geom_point(shape = 1) + 
+  labs(title = "Scatter Plot of Data Values") +
+  theme_bw()
+```
+
+__Refer to Solution Concentration Problem 3.15__
+
+  __a)__ Prepare a scatter plot of the data. What transformation of Y might you try, using the prototype patterns in Figure 3.15 to achieve constant variance and linearity?
+  
+  __Solution:__
+  <div id="rcorners2">
+```{r, fig.align='center'}
+scatp
+```
+  
+  </div></br>
+  
+  __b)__ Use the Box-Cox procedure and standardization (3.36) to find an appropriate power transformation. Evaluate SSE for $\lambda = -.2,-.1,0,.1,.2$. What transformation of Y is suggested?
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+  
+  __c)__ Use the transformation $Y^{\prime} = \log_{10}$ Y and obtain the estimated linear regression function for the transformed data.
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+  
+  __d)__ Plot the estimated regression line and the transformed data. Does the regression line appear to be a good fit to the transformed data?
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+  
+  __e)__ Obtain the residuals and plot them against the fitted values. Also prepare a normal probability plot. What do your plots show?
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+  
+  __f)__ Express the estimated regression function in the original units. 
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+
+### Problem 3.17 <span id=points>{6}</span><span id=report>{ / }</span>
+
+```{r p317}
+# Load the Data:
+p3.17 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%203%20Data%20Sets/CH03PR17.txt")
+
+# Rewrite the column names to be "Y" and "X" to match the textbook:
+colnames(p3.17) <- c("Y","X")
+
+sales.lm <- lm(Y ~ X, p3.17)
+
+scatp <- augment(sales.lm) %>% 
+  ggplot(aes(x = X, y = Y)) +
+  geom_point(shape = 1) +
+  labs(title = "Scatter Plot of Data") + 
+  theme_bw()
+```
+
+__Sales Growth. A marketing researcher studied annual sales of a product that had been introduced 10 years ago. The data are as follows, where X is the year (coded) and Y is sales in thousands.__
+
+  __a)__ Prepare a scatter plot of the data. Does a linear relation appear adequate here?
+  
+  __Solution:__
+  <div id="rcorners3">
+```{r, fig.align='center'}
+scatp
+```
+  
+  </div></br>
+  
+  __b)__ Use the Box-Cox procedure and standardization (3.36) to find an appropriate power transformation of Y. Evaluate SSE for $\lambda = .3,.4,.5,.6,.7$. What transformation of Y is suggested?
+  
+  __Solution:__
+  <div id="rcorners3">
+  
+  </div></br>
+  
+  __c)__ Use the transformation $Y^{\prime} = \sqrt{Y}$ and obtain the estimated linear regression function for the transformed data. 
+  
+  __Solution:__
+  <div id="rcorners3">
+  
+  </div></br>
+  
+  __d)__ Plot the estimated regression line and the transformed data. Does the regression line appear to be a good fit to the transformed data?
+  
+  __Solution:__
+  <div id="rcorners3">
+  
+  </div></br>
+  
+  __e)__ Obtain the the residuals plot and plot them against the fitted values. Also prepare a normal probability plot. What do your plots show?
+  
+  __Solution:__
+  <div id="rcorners3">
+  
+  </div></br>
+  
+  __f)__ Express the estimated regression function in the original units. 
+  
+  __Solution:__
+  <div id="rcorners3">
+  
+  </div></br>
+
+### Problem 3.18 <span id=points>{5}</span><span id=report>{ / }</span>
+
+```{r p318}
+# Load the Data:
+p3.18 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%203%20Data%20Sets/CH03PR18.txt")
+
+# Rewrite the column names to be "Y" and "X" to match the textbook:
+colnames(p3.18) <- c("Y","X")
+
+prod.lm <- lm(Y ~ X, p3.18)
+
+scatp <- augment(prod.lm) %>% 
+  ggplot(aes(x = X, y = Y)) + 
+  geom_point(shape = 1) +
+  labs(title = "Scatter Plot of Data") + 
+  theme_bw()
+```
+
+__Production time. In a manufacturing study, the production times for 111 recent production runs were obtained. The data contains the production time in hours (Y) and the production lot size (X).__
+
+  __a)__ Prepare a scatter plot of the data. Does a linear relation appear adequate here? Would a transformation on X or Y be more appropriate here? Why?
+  
+  __Solution:__
+  <div id="rcorners3">
+```{r, fig.align='center'}
+scatp
+```
+
+  </div></br>
+  
+  __b)__ Use the transformation $X^{\prime} = \sqrt{X}$ and obtain the estimated linear regression function for the transformed data. 
+  
+  __Solution:__
+  <div id="rcorners3">
+  
+  </div></br>
+  
+  __c)__ Plot the estimated regression line and the transformed data. Does the regression line appear to be a good fit to the transformed data?
+  
+  __Solution:__
+  <div id="rcorners3">
+  
+  </div></br>
+  
+  __d)__ Obtain the residuals and plot them against the fitted values. Also prepare a normal probability plot. What do your plots show?
+  
+  __Solution:__
+  <div id="rcorners3">
+  
+  </div></br>
+  
+  __e)__ Express the estimated regression function in the original units. 
+  
+  __Solution:__
+  <div id="rcorners3">
+  
+  </div></br>
+
+
+ <style>
+#points {
+  font-size:.8em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#317eac;
+}
+
+#recpoints {
+  font-size:.8em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#7eac31;
+}
+
+#report {
+  font-size:.7em;
+  padding-left:15px;
+  font-weight:normal; 
+  color:#5a5a5a;
+}
+
+#datalink {
+  font-size:.5em;
+  color:#317eac;
+  padding-left:5px;
+}
+
+#headnote {
+  font-size:.6em;
+  color:#787878;
+}
+
+#note {
+  font-size:.8em;
+  color:#787878;
+}
+
+#headpoints {
+ font-size:12pt;
+ color: #585858; 
+ padding-left: 15px;
+}
+
+#rcorners2 {
+    border-radius: 25px;
+    border: 2px solid #73AD21;
+    padding: 20px; 
+    width: auto;
+    height: auto;    
+}
+
+#rcorners3 {
+    border-radius: 25px;
+    border: 2px solid #317eac;
+    padding: 20px; 
+    width: auto;
+    height: auto;    
+}
+</style>
+
+
+<footer>
+</footer>
+
+
+
+ 
+
+ 
+
+ 
+
+ 
