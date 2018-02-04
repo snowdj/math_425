@@ -8,14 +8,7 @@ output:
     toc: yes
     toc_float: yes
 ---
-```{r, include=FALSE}
-library(tidyverse)
-library(broom)
-library(lawstat)
-library(lmtest)
-library(alr3)
-library(patchwork)
-```
+
 
 
 ## Instructions
@@ -125,7 +118,8 @@ $df_{F} = 20-10 = 10$, $df_{R} = 20 - 1 = 19$
 
 ### 3.3 <span id=recpoints>{6}</span><span id=report>{ 6 / 6 }</span>
 
-```{r p33}
+
+```r
 # Load the Data:
 p1.19 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%201%20Data%20Sets/CH01PR19.txt")
 
@@ -179,9 +173,7 @@ __Refer to Grade Point Average Problem 1.19__
   
   __Solution:__
   <div id="rcorners2">
-```{r, echo = FALSE, fig.align='center',fig.width=7,fig.height=3}
-boxp
-```
+<img src="HardWork3_files/figure-html/unnamed-chunk-2-1.png" style="display: block; margin: auto;" />
 
   I don't see any particularly noteworthy features. From what I know about the ACT, this follows a pattern that I would expect. 
   </div></br>
@@ -190,9 +182,7 @@ boxp
   
   __Solution:__
   <div id="rcorners2">
-```{r, echo = FALSE, fig.align='center', message=FALSE}
-dotp
-```
+<img src="HardWork3_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" />
   This dot plot provides information about the distribution of the residuals. We can think of it like a one dimensional scatterplot. These are good for when the sample size is too small for box-plot. 
   </div></br>
   
@@ -200,9 +190,7 @@ dotp
   
   __Solution:__
   <div id="rcorners2">
-```{r, echo=F,message=F,fig.align='center'}
-dot.fitted
-```
+<img src="HardWork3_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" />
   We can study the residual plot and see that there is a slight curve to the loess regression line through the residuals, it's not an extreme curve so it's not to worrying. We can also see there are some outliers within these data and it's hard to see if the variance is constant just by the plot. 
   </div></br>
   
@@ -210,9 +198,10 @@ dot.fitted
   
   __Solution:__
   <div id="rcorners2">
-```{r, echo=F,message=F,fig.align='center'}
-qq.norm
-cor(qqnorm(p1.19.lm$residuals,plot.it = FALSE)$x, qqnorm(p1.19.lm$residuals,plot.it = FALSE)$y)
+<img src="HardWork3_files/figure-html/unnamed-chunk-5-1.png" style="display: block; margin: auto;" />
+
+```
+## [1] 0.9744497
 ```
 
 We would wouldnt not accept that these data is normaly distributed in this case. 
@@ -222,12 +211,24 @@ We would wouldnt not accept that these data is normaly distributed in this case.
   
   __Solution:__
   <div id="rcorners2">
-```{r}
+
+```r
 # Brown-Forsythe: Output - F-Statistic & P-value
 augment(act.lm) %>% 
   mutate(two.groups = as.factor(case_when(X < 26 ~ "<26", X >= 26 ~ ">=26"))) %>% 
   {lawstat::levene.test(.$.resid, .$two.groups,location = "median")}
+```
 
+```
+## 
+## 	modified robust Brown-Forsythe Levene-type test based on the
+## 	absolute deviations from the median
+## 
+## data:  .$.resid
+## Test Statistic = 0.80415, p-value = 0.3717
+```
+
+```r
 # Hand Coded Brown-Forsythe but results in T-Statistic instead of F-Statistic
 # Take the sqrt of the output of the above function and it will give you this
 # hand computed stat. 
@@ -258,7 +259,8 @@ tBF <- (mean(d1) - mean(d2))/(s*sqrt(1/length(d1)+1/length(d2)))
   
   __Solution:__
   <div id="rcorners2">
-```{r, fig.align='center'}
+
+```r
 p1.19extra <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%203%20Data%20Sets/CH03PR03.txt")
 colnames(p1.19extra) <- c("Y","X","X2","X3")
 
@@ -280,12 +282,15 @@ s <- augment(act.lm) %>%
 t + s
 ```
 
+<img src="HardWork3_files/figure-html/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
+
 IQ seems to be a strong variable that we could include in the model but Class Rank has no relationship and we should probably leave it out. 
   </div></br>
 
 ### 3.4 <span id=recpoints>{6}</span><span id=report>{ 6 / 6 }</span>
 
-```{r p34, warning=F, message=F}
+
+```r
 # Load the Data:
 p1.20 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%201%20Data%20Sets/CH01PR20.txt")
 
@@ -346,9 +351,7 @@ __Refer to Copier Maintenance Problem 1.20__
   
   __Solution:__
   <div id="rcorners2">
-```{r, echo=F,message=F,fig.align='center'}
-dotp2
-```
+<img src="HardWork3_files/figure-html/unnamed-chunk-8-1.png" style="display: block; margin: auto;" />
   It does not seem like there are any outlying cases for these data it's seems to be evenly distributed. 
   </div></br>
   
@@ -356,9 +359,7 @@ dotp2
   
   __Solution:__
   <div id="rcorners2">
-```{r, echo=F,message=F,fig.align='center'}
-timep
-```
+<img src="HardWork3_files/figure-html/unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
   It shows that there is a pretty random ammount of copiers serviced in time. Time doesn't seem to have an influence on number of copiers serviced. 
   </div></br>
   
@@ -366,8 +367,20 @@ timep
   
   __Solution:__
   <div id="rcorners2">
-```{r, echo=F,message=F,fig.align='center'}
-stem(copy.lm$residuals)
+
+```
+## 
+##   The decimal point is 1 digit(s) to the right of the |
+## 
+##   -2 | 30
+##   -1 | 
+##   -1 | 3110
+##   -0 | 99997
+##   -0 | 44333222111
+##    0 | 001123334
+##    0 | 5666779
+##    1 | 112234
+##    1 | 5
 ```
 
 These data seem relatively normal but a few outliers at the bottom end of 2.3.
@@ -377,9 +390,7 @@ These data seem relatively normal but a few outliers at the bottom end of 2.3.
   
   __Solution:__
   <div id="rcorners2">
-```{r, echo=F,message=F,fig.align='center'}
-dotp.fitted
-```
+<img src="HardWork3_files/figure-html/unnamed-chunk-11-1.png" style="display: block; margin: auto;" />
 
 There is a major relationship here that is causing a massive curve in the loess regression line. Some assumptions are obviously being violated here. 
   
@@ -389,9 +400,10 @@ There is a major relationship here that is causing a massive curve in the loess 
   
   __Solution:__
   <div id="rcorners2">
-```{r, echo=F,message=F,fig.align='center'}
-qq.norm2
-cor(qqnorm(copy.lm$residuals, plot.it = FALSE)$x, qqnorm(copy.lm$residuals, plot.it = FALSE)$y)
+<img src="HardWork3_files/figure-html/unnamed-chunk-12-1.png" style="display: block; margin: auto;" />
+
+```
+## [1] 0.9889098
 ```
   
 The data is normally distributed. 
@@ -401,9 +413,7 @@ The data is normally distributed.
   
   __Solution:__
   <div id="rcorners2">
-```{r, echo=F,message=F,fig.align='center'}
-timep.resid
-```
+<img src="HardWork3_files/figure-html/unnamed-chunk-13-1.png" style="display: block; margin: auto;" />
 There is randomness in the residuals. 
   </div></br>
   
@@ -411,8 +421,17 @@ There is randomness in the residuals.
   
   __Solution:__
   <div id="rcorners2">
-```{r}
+
+```r
 bptest(copy.lm, studentize = FALSE)
+```
+
+```
+## 
+## 	Breusch-Pagan test
+## 
+## data:  copy.lm
+## BP = 1.3147, df = 1, p-value = 0.2515
 ```
 Given the high p-value we would fail to reject the null hypothesis and continue to believe these data have constant variance. 
   </div></br>
@@ -421,7 +440,8 @@ Given the high p-value we would fail to reject the null hypothesis and continue 
 
   __Solution:__
   <div id="rcorners2">
-```{r}
+
+```r
 p1.20extra <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%203%20Data%20Sets/CH03PR04.txt")
 
 colnames(p1.20extra) <- c("Y","X","X2","X3")
@@ -443,12 +463,15 @@ s <- augment(copy.lm) %>%
 
 t + s
 ```
+
+![](HardWork3_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
 Operations Age looks like it could be a good variable but also Years of Experience could be good as well. 
   </div></br>
 
 ### 3.5 <span id=recpoints>{5}</span><span id=report>{ 5 / 5 }</span>
 
-```{r p35}
+
+```r
 # Load the Data:
 p1.21 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%201%20Data%20Sets/CH01PR21.txt")
 
@@ -509,9 +532,7 @@ __Refer to Airfreight Breakage Problem 1.21__
   
   __Solution:__
   <div id="rcorners2">
-```{r, echo=F,message=F,fig.align='center'}
-dotp.x
-```
+<img src="HardWork3_files/figure-html/unnamed-chunk-16-1.png" style="display: block; margin: auto;" />
 Yes, these data appear to be asymmetrical with most of the transfers being around zero. 
   </div></br>
   
@@ -519,9 +540,7 @@ Yes, these data appear to be asymmetrical with most of the transfers being aroun
   
   __Solution:__
   <div id="rcorners2">
-```{r, echo=F,message=F,fig.align='center'}
-timep.x
-```  
+<img src="HardWork3_files/figure-html/unnamed-chunk-17-1.png" style="display: block; margin: auto;" />
 It seems there could be some systematic patterns within these data as they go up high and back to zero almost each time. 
   </div></br>
   
@@ -529,9 +548,17 @@ It seems there could be some systematic patterns within these data as they go up
   
   __Solution:__
   <div id="rcorners2">
-```{r, echo=F,message=F,fig.align='center'}
-stem(air.lm$residuals)
-```  
+
+```
+## 
+##   The decimal point is at the |
+## 
+##   -2 | 2
+##   -1 | 222
+##   -0 | 2
+##    0 | 888
+##    1 | 88
+```
 It shows the distribtution of the residuals. 
   </div></br>
   
@@ -539,9 +566,7 @@ It shows the distribtution of the residuals.
   
   __Solution:__
   <div id="rcorners2">
-```{r, echo=F,message=F,fig.align='center', warning=F}
-dotp.fitted
-```  
+<img src="HardWork3_files/figure-html/unnamed-chunk-19-1.png" style="display: block; margin: auto;" />
 
 There is extreme curvature in the residuals and the variance does not seem constant. 
   </div></br>
@@ -550,10 +575,11 @@ There is extreme curvature in the residuals and the variance does not seem const
   
   __Solution:__
   <div id="rcorners2">
-```{r, echo=F,message=F,fig.align='center'}
-qq.norm3
-cor(qqnorm(air.lm$residuals,plot.it = FALSE)$x, qqnorm(air.lm$residuals,plot.it = FALSE)$y)
-```  
+<img src="HardWork3_files/figure-html/unnamed-chunk-20-1.png" style="display: block; margin: auto;" />
+
+```
+## [1] 0.9609751
+```
 Using the table B.6 we can see that we are above the level at which we would reject if our data is normal. We will continue to assume these data to be normally distributed. 
   </div></br>
   
@@ -561,9 +587,7 @@ Using the table B.6 we can see that we are above the level at which we would rej
   
   __Solution:__
   <div id="rcorners2">
-```{r, echo=F,message=F,fig.align='center'}
-timep.resid
-``` 
+<img src="HardWork3_files/figure-html/unnamed-chunk-21-1.png" style="display: block; margin: auto;" />
 There is a pattern in the residuals so they do not seem to be independent of each other. 
   </div></br>
   
@@ -571,8 +595,13 @@ There is a pattern in the residuals so they do not seem to be independent of eac
   
   __Solution:__
   <div id="rcorners2">
-```{r, echo=F}
-bptest(air.lm)
+
+```
+## 
+## 	studentized Breusch-Pagan test
+## 
+## data:  air.lm
+## BP = 3.0628, df = 1, p-value = 0.0801
 ```
 \begin{align*}
 \alpha = 0.10 \\
@@ -588,7 +617,8 @@ Given our p-value and alpha level of 0.10 we fail to reject the null and will co
   
 ### 3.6 <span id=points>{5}</span><span id=report>{ 5 / 5 }</span>
 
-```{r p36}
+
+```r
 # Load the Data:
 p1.22 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%201%20Data%20Sets/CH01PR22.txt")
 
@@ -628,9 +658,7 @@ __Refer to Plastic Harndess Problem 1.22__
   
   __Solution:__
   <div id="rcorners3">
-```{r, echo = FALSE, fig.align='center',fig.width=7,fig.height=3}
-boxp
-```
+<img src="HardWork3_files/figure-html/unnamed-chunk-23-1.png" style="display: block; margin: auto;" />
 The residuals appear to be relatively symmetric. 
   
   </div></br>
@@ -639,9 +667,7 @@ The residuals appear to be relatively symmetric.
   
   __Solution:__
   <div id="rcorners3">
-```{r, echo=F, message=F, fig.align='center', warning = FALSE}
-fitted.plot
-```
+<img src="HardWork3_files/figure-html/unnamed-chunk-24-1.png" style="display: block; margin: auto;" />
   It appears to be that theses data don't have constant variance or a linear relationship. 
   </div></br>
   
@@ -649,9 +675,10 @@ fitted.plot
   
   __Solution:__
   <div id="rcorners3">
-```{r, echo=F,message=F,fig.align='center'}
-qq.norm
-cor(qqnorm(hard.lm$residuals, plot.it = FALSE)$x, qqnorm(hard.lm$residuals, plot.it = FALSE)$y)
+<img src="HardWork3_files/figure-html/unnamed-chunk-25-1.png" style="display: block; margin: auto;" />
+
+```
+## [1] 0.9905063
 ```
   The data appears to be normal. 
   </div></br>
@@ -661,14 +688,67 @@ cor(qqnorm(hard.lm$residuals, plot.it = FALSE)$x, qqnorm(hard.lm$residuals, plot
   __Solution:__
   <div id="rcorners3">
   <center>
-```{r}
+
+```r
 pander::pander(
   tibble(
     order.resid = sort(hard.lm$residuals), 
     exp.value = glance(hard.lm)$sigma*qnorm((1:16-.375)/(16+.25))
     )
   )
+```
+
+
+-------------------------
+ order.resid   exp.value 
+------------- -----------
+    -5.15        -5.72   
+
+   -3.975       -4.145   
+
+    -3.7        -3.196   
+
+   -2.425       -2.464   
+
+    -2.15       -1.841   
+
+   -1.975        -1.28   
+
+    -1.15       -0.7551  
+
+    0.025       -0.2497  
+
+     0.3        0.2497   
+
+    0.575       0.7551   
+
+     1.3         1.28    
+
+    2.575        1.841   
+
+    3.025        2.464   
+
+     3.3         3.196   
+
+    3.85         4.145   
+
+    5.575        5.72    
+-------------------------
+
+```r
 qt(.25,14); qt(.5,14); qt(.75,14)
+```
+
+```
+## [1] -0.6924171
+```
+
+```
+## [1] 0
+```
+
+```
+## [1] 0.6924171
 ```
   </center>
   It seems likely that the data is normal because it follows relatively close to the expected value of normal data. 
@@ -678,17 +758,28 @@ qt(.25,14); qt(.5,14); qt(.75,14)
   
   __Solution:__
   <div id="rcorners3">
-```{r}
+
+```r
 augment(hard.lm) %>% 
   mutate(two.groups = as.factor(case_when(X <= 24 ~ "<=24", X > 24 ~ ">24"))) %>% 
   {lawstat::levene.test(.$.resid, .$two.groups,location = "median")}
+```
+
+```
+## 
+## 	modified robust Brown-Forsythe Levene-type test based on the
+## 	absolute deviations from the median
+## 
+## data:  .$.resid
+## Test Statistic = 0.73237, p-value = 0.4065
 ```
 Given the p-value we can continue under the belief that the residuals have constant variance. 
   </div></br>
 
 ### 3.7 <span id=points>{4}</span><span id=report>{ 4 / 4 }</span>
 
-```{r p37}
+
+```r
 # Load the Data:
 p1.27 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%201%20Data%20Sets/CH01PR27.txt")
 
@@ -741,8 +832,24 @@ __Refer to Muscle Mass Problem 1.27__
   
   __Solution:__
   <div id="rcorners3">
-```{r}
+
+```r
 stem(mass.lm$residuals)
+```
+
+```
+## 
+##   The decimal point is 1 digit(s) to the right of the |
+## 
+##   -1 | 6
+##   -1 | 431000
+##   -0 | 9988887766555
+##   -0 | 4433222111100
+##    0 | 112333344
+##    0 | 55777888899
+##    1 | 011134
+##    1 | 
+##    2 | 3
 ```
   Similar to the below
   </div></br>
@@ -751,9 +858,7 @@ stem(mass.lm$residuals)
   
   __Solution:__
   <div id="rcorners3">
-```{r, echo=F, message=F, fig.align='center'}
-dotp
-```
+<img src="HardWork3_files/figure-html/unnamed-chunk-29-1.png" style="display: block; margin: auto;" />
   It shows that the residuals are pretty well distributed but there is one outlier that looks a little extreme. 
   </div></br>
   
@@ -761,9 +866,7 @@ dotp
   
   __Solution:__
   <div id="rcorners3">
-```{r, echo=F, message=F, fig.align='center'}
-fitted.plot + xi.plot
-```
+<img src="HardWork3_files/figure-html/unnamed-chunk-30-1.png" style="display: block; margin: auto;" />
   The plots provide similar information it looks like there is some serious curvature in the relationship of the X values and the fitted values. Our assumptions are seriously called into question here. 
   </div></br>
   
@@ -771,9 +874,10 @@ fitted.plot + xi.plot
   
   __Solution:__
   <div id="rcorners3">
-```{r, echo=F, message=F, fig.align='center'}
-qq.norm
-cor(qqnorm(mass.lm$residuals, plot.it = FALSE)$x, qqnorm(mass.lm$residuals, plot.it = FALSE)$y)
+<img src="HardWork3_files/figure-html/unnamed-chunk-31-1.png" style="display: block; margin: auto;" />
+
+```
+## [1] 0.9896158
 ```
 Looking at the table and our correlation coefficient we can move forward knowing our data is approximatley normally distributed. 
   </div></br>
@@ -782,15 +886,25 @@ Looking at the table and our correlation coefficient we can move forward knowing
   
   __Solution:__
   <div id="rcorners3">
-```{r}
+
+```r
 bptest(mass.lm)
+```
+
+```
+## 
+## 	studentized Breusch-Pagan test
+## 
+## data:  mass.lm
+## BP = 4.4221, df = 1, p-value = 0.03548
 ```
 Given our p-value we fail to reject the null and will continue to believe that the residuals have constant variance.
   </div></br>
   
 ### 3.8 <span id=points>{3}</span><span id=report>{ 3 / 3 }</span>
 
-```{r p38}
+
+```r
 # Load the Data:
 p1.28 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%201%20Data%20Sets/CH01PR28.txt")
 
@@ -830,8 +944,22 @@ __Refer to Crime Rate Problem 1.28__
   
   __Solution:__
   <div id="rcorners3">
-```{r}
+
+```r
 stem(p1.28$X)
+```
+
+```
+## 
+##   The decimal point is 1 digit(s) to the right of the |
+## 
+##   6 | 1444
+##   6 | 5678
+##   7 | 00334444
+##   7 | 5555666677777778888888999999
+##   8 | 000011111112222222233333344444
+##   8 | 55578889
+##   9 | 11
 ```
   We can see the distribution of the $X_{i}$ within the data set. 
   </div></br>
@@ -840,9 +968,7 @@ stem(p1.28$X)
   
   __Solution:__
   <div id="rcorners3">
-```{r, echo = FALSE, fig.align='center',fig.width=7,fig.height=3}
-boxp
-```
+<img src="HardWork3_files/figure-html/unnamed-chunk-34-1.png" style="display: block; margin: auto;" />
   Given the outliers showing in the boxplot it does not seem the residuals are symmetrical. 
   </div></br>
   
@@ -850,9 +976,7 @@ boxp
   
   __Solution:__
   <div id="rcorners3">
-```{r, echo = FALSE, fig.align='center'}
-fitted.plot
-```
+<img src="HardWork3_files/figure-html/unnamed-chunk-35-1.png" style="display: block; margin: auto;" />
   There is some slight curvature in our loess regression line that can be a little worrying but it's not too extreme. It remains relatively flat throughout the dataset. 
   </div></br>
   
@@ -860,9 +984,10 @@ fitted.plot
   
   __Solution:__
   <div id="rcorners3">
-```{r, echo = FALSE, fig.align='center'}
-qq.norm
-cor(qqnorm(crime.lm$residuals, plot.it = FALSE)$x, qqnorm(crime.lm$residuals, plot.it = FALSE)$y)
+<img src="HardWork3_files/figure-html/unnamed-chunk-36-1.png" style="display: block; margin: auto;" />
+
+```
+## [1] 0.988603
 ```
   We can believe that our data is approx. normally distributed. 
   </div></br>
@@ -871,17 +996,28 @@ cor(qqnorm(crime.lm$residuals, plot.it = FALSE)$x, qqnorm(crime.lm$residuals, pl
   
   __Solution:__
   <div id="rcorners3">
-```{r}
+
+```r
 augment(crime.lm) %>% 
   mutate(two.groups = as.factor(case_when(X <= 69 ~ "<=69", X > 69 ~ ">69"))) %>% 
   {lawstat::levene.test(.$.resid, .$two.groups,location = "median")}
+```
+
+```
+## 
+## 	modified robust Brown-Forsythe Levene-type test based on the
+## 	absolute deviations from the median
+## 
+## data:  .$.resid
+## Test Statistic = 0.12604, p-value = 0.7235
 ```
  Our residuals have constant variance. 
   </div></br>
 
 ### 3.13 <span id=recpoints>{3}</span><span id=report>{ 3 / 3 }</span>
 
-```{r p313}
+
+```r
 # Load the Data:
 p1.20 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%201%20Data%20Sets/CH01PR20.txt")
 
@@ -909,8 +1045,22 @@ __Refer to Copier Maintenance Problem 1.20__
   
   __Solution:__
   <div id="rcorners2">
-```{r}
+
+```r
 lof
+```
+
+```
+## Analysis of Variance Table
+## 
+## Response: Y
+##              Df Sum Sq Mean Sq  F value Pr(>F)    
+## X             1  76960   76960 962.8105 <2e-16 ***
+## Residuals    43   3416      79                    
+##  Lack of fit  8    619      77   0.9676 0.4766    
+##  Pure Error  35   2798      80                    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ```
 
 The decision rule is:
