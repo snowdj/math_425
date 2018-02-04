@@ -16,6 +16,7 @@ library(alr3)
 library(patchwork)
 ```
 
+
 ## Instructions
 
 1. Study Sections 3.1-3.8 of Chapter 3: "Diagnostics and Remedial Measures."    
@@ -36,15 +37,15 @@ library(patchwork)
 
 ### Section 3.3 <span id=recpoints>{8}</span><span id=report>{ 8 / 8 }</span>
 
-### Section 3.4 <span id=recpoints>{2}</span><span id=report>{ / }</span>
+### Section 3.4 <span id=recpoints>{2}</span><span id=report>{ 2 / 2 }</span>
 
-### Section 3.5 <span id=recpoints>{2}</span><span id=report>{ / }</span>
+### Section 3.5 <span id=recpoints>{2}</span><span id=report>{ 2 / 2 }</span>
 
-### Section 3.6 <span id=recpoints>{6}</span><span id=report>{ / }</span>
+### Section 3.6 <span id=recpoints>{6}</span><span id=report>{ 6 / 6 }</span>
 
-### Section 3.7 <span id=recpoints>{7}</span><span id=report>{ / }</span>
+### Section 3.7 <span id=recpoints>{7}</span><span id=report>{ 7 / 7 }</span>
 
-### Section 3.8 <span id=recpoints>{1}</span><span id=report>{ / }</span>
+### Section 3.8 <span id=recpoints>{1}</span><span id=report>{ 1 / 1 }</span>
 
 </div>
 
@@ -84,22 +85,32 @@ __Solution:__
 The sum of squares due to "pure" error is the sum of squares of the differences between each observed y-value and the average of all y-values corresponding to the same x-value. While with an ordinary sum of squares we are looking at the diffrence between each observed value and the mean of the entire data and not the mean within each group. 
 </div></br>
 
-### 3.21 <span id=points>{3}</span><span id=report>{ / }</span>
+### 3.21 <span id=points>{3}</span><span id=report>{ 3 / 3 }</span>
 
 Derive the result in (3.29)
 
 __Solution:__
 <div id="rcorners3">
-
+\begin{align*}
+\Sigma\Sigma\left(Y_{ij} - \hat{Y_{ij}}\right)^{2} &= \Sigma\Sigma\left[\left(Y_{ij} - \bar{Y_{ij}}\right) + \left(\bar{Y_{j}} - \hat{Y_{ij}}\right)\right]^{2} \\
+&= \Sigma\Sigma\left(Y_{ij} - \bar{Y_{j}}\right)^{2} + \Sigma\Sigma\left(\bar{Y_{j}} - \hat{Y_{ij}}\right)^{2} + 2 \Sigma\Sigma\left(Y_{ij} - \bar{Y_{j}}\right)\left(\bar{Y_{j}} - \hat{Y_{ij}}\right) \\
+&\text{Now } \Sigma\Sigma\left(Y_{ij} - \bar{Y_{j}}\right)\left(\bar{Y_{j}} - \hat{Y_{ij}}\right) = 0 \\
+&\text{So...} \\
+&=\Sigma\Sigma\left(Y_{ij} - \bar{Y_{j}}\right)^{2} + \Sigma\Sigma\left(\bar{Y_{j}} - \hat{Y_{ij}}\right)^{2}
+\end{align*}
 </div></br>
 
-### 3.23 <span id=points>{2}</span><span id=report>{ / }</span>
+### 3.23 <span id=points>{2}</span><span id=report>{ 2 / 2 }</span>
 
 A linear regression model with intercept $\beta_{0} = 0$ is under consideration. Data have been obtained that contain replications. State the full and reduced models for testing the appropriateness of the regression function under consideration. What are the degrees of freedom associated with the full and reduced model if $n = 20$ and $c= 10$?
 
 __Solution:__
 <div id="rcorners3">
+**FULL:** $Y_{ij} = \mu_{j} + \varepsilon_{ij}$
 
+**REDUCED:** $Y_{ij} = \beta_{1}X_{j} + \varepsilon_{ij}$
+
+$df_{F} = 20-10 = 10$, $df_{R} = 20 - 1 = 19$
 </div></br>
 
 </div>
@@ -111,7 +122,7 @@ __Solution:__
 
 <a id=datalink style="font-size:.9em;" target="_blank" href=http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/index.html>Data Files</a>
 
-### 3.3 <span id=recpoints>{6}</span><span id=report>{ 4 / 4 }</span>
+### 3.3 <span id=recpoints>{6}</span><span id=report>{ 6 / 6 }</span>
 
 ```{r p33}
 # Load the Data:
@@ -181,7 +192,7 @@ boxp
 ```{r, echo = FALSE, fig.align='center', message=FALSE}
 dotp
 ```
-  
+  This dot plot provides information about the distribution of the residuals. We can think of it like a one dimensional scatterplot. These are good for when the sample size is too small for box-plot. 
   </div></br>
   
   __c)__ Plot the residual $e_{i}$ against the fitted values $\hat{Y_{i}}$. What departures from regression model (2.1) can be studied from this plot? What are your findings?
@@ -191,7 +202,7 @@ dotp
 ```{r, echo=F,message=F,fig.align='center'}
 dot.fitted
 ```
-
+  We can study the residual plot and see that there is a slight curve to the loess regression line through the residuals, it's not an extreme curve so it's not to worrying. We can also see there are some outliers within these data and it's hard to see if the variance is constant just by the plot. 
   </div></br>
   
   __d)__ Prepare a normal probability plot of the residuals. Also obtain the coefficient of correlation between the ordered residuals and their expected values under normality. Test the reasonableness of the normality assumption here using Table B.6 and $\alpha = 0.05$. What do you conclude?
@@ -200,8 +211,10 @@ dot.fitted
   <div id="rcorners2">
 ```{r, echo=F,message=F,fig.align='center'}
 qq.norm
+cor(qqnorm(p1.19.lm$residuals,plot.it = FALSE)$x, qqnorm(p1.19.lm$residuals,plot.it = FALSE)$y)
 ```
 
+We would wouldnt not accept that these data is normaly distributed in this case. 
   </div></br>
   
   __e)__ Conduct the Brown-Forsythe test to determine whether or not the error variance varies with the level of X. Divide the data into two groups, $X < 26$, $X \geq 26$, and use $\alpha = 0.01$. State the decision rule and conclusion. Does your conclusion support your preliminary findings in part (c)?
@@ -236,6 +249,8 @@ tBF <- (mean(d1) - mean(d2))/(s*sqrt(1/length(d1)+1/length(d2)))
   \text{If } |t^{*}_{BF}| \leq t(.995; 118), \text{ conclude } H_{o} \\
   \text{If } |t^{*}_{BF}| > t(.995; 118), \text{ conclude } H_{1}
   \end{align*}
+  
+  Given the high p-value we fail to reject the null hypothesis and continue to believe that our variance is contant within the model. 
   </div></br>
   
   __f)__ Information is given below for each student on two variables not included in the model, namely, intelligence test score ($X_{2}$) and high school class rank percentile ($X_{3}$). (Note that larger class rank percentiles indicate higher standing in the class, e.g., 1% is near the boom of the class and 99% is near the top of the class.) Plot the residuals against $X_{2}$ and $X_{3}$ on separate graphs to ascertain whether the model can be improved by including either of these variables. What do you conclude?
@@ -264,9 +279,10 @@ s <- augment(act.lm) %>%
 t + s
 ```
 
+IQ seems to be a strong variable that we could include in the model but Class Rank has no relationship and we should probably leave it out. 
   </div></br>
 
-### 3.4 <span id=recpoints>{6}</span><span id=report>{ 4 / 4 }</span>
+### 3.4 <span id=recpoints>{6}</span><span id=report>{ 6 / 6 }</span>
 
 ```{r p34, warning=F, message=F}
 # Load the Data:
@@ -332,7 +348,7 @@ __Refer to Copier Maintenance Problem 1.20__
 ```{r, echo=F,message=F,fig.align='center'}
 dotp2
 ```
-  
+  It does not seem like there are any outlying cases for these data it's seems to be evenly distributed. 
   </div></br>
   
   __b)__ The cases are given in time order. Prepare a time plot for the number of copiers serviced. What does your plot show?
@@ -342,7 +358,7 @@ dotp2
 ```{r, echo=F,message=F,fig.align='center'}
 timep
 ```
-  
+  It shows that there is a pretty random ammount of copiers serviced in time. Time doesn't seem to have an influence on number of copiers serviced. 
   </div></br>
   
   __c)__ Prepare a stem-and-leaf plot of the residuals. Are there any noteworthy features in this plot?
@@ -352,6 +368,8 @@ timep
 ```{r, echo=F,message=F,fig.align='center'}
 stem(copy.lm$residuals)
 ```
+
+These data seem relatively normal but a few outliers at the bottom end of 2.3.
   </div></br>
   
   __d)__ Prepare residual plots of $e_{i}$ versus $\hat{Y_{i}}$ and $e_{i}$ versus $X_{i}$ on separate graphs. Do these plots prove the same information? What departures from regression model (2.1) can be studied from these plots? State your findings.
@@ -361,6 +379,8 @@ stem(copy.lm$residuals)
 ```{r, echo=F,message=F,fig.align='center'}
 dotp.fitted
 ```
+
+There is a major relationship here that is causing a massive curve in the loess regression line. Some assumptions are obviously being violated here. 
   
   </div></br>
   
@@ -370,8 +390,10 @@ dotp.fitted
   <div id="rcorners2">
 ```{r, echo=F,message=F,fig.align='center'}
 qq.norm2
+cor(qqnorm(copy.lm$residuals, plot.it = FALSE)$x, qqnorm(copy.lm$residuals, plot.it = FALSE)$y)
 ```
   
+The data is normally distributed. 
   </div></br>
   
   __f)__ Prepare a time plot of the residuals of ascertain whether the error terms are correlated over time. What is your conclusion?
@@ -381,7 +403,7 @@ qq.norm2
 ```{r, echo=F,message=F,fig.align='center'}
 timep.resid
 ```
-
+There is randomness in the residuals. 
   </div></br>
   
   __g)__ Assume that (3.10) is applicable and conduct the Breusch-Pagan test to determine whether or not the error variance varies with the level of X. Use $\alpha = 0.05$. State the alternatives, decision rule, and conclusion. 
@@ -391,25 +413,39 @@ timep.resid
 ```{r}
 bptest(copy.lm, studentize = FALSE)
 ```
-
+Given the high p-value we would fail to reject the null hypothesis and continue to believe these data have constant variance. 
   </div></br>
   
   __h)__ Information is given below on two variables not included in the regression model, namely, mean operational age of copiers serviced on the call ($X_{2}$, in months) and years of experience of the service person making the call ($X_{3}$). Plot the residuals against $X_{2}$ and $X_{3}$ on separate graphs to ascertain whether the model can be improved by including either or both of these variables. What do you conclude?
-  
-$$  
-\begin{tablular}{ccccccc}
-i: & 1 & 2 & 3 & \ldots & 118 & 119 & 120 \\ \hline
-X_{2}: & 122 & 132 & 119 & \ldots & 140 & 111 & 110 \\
-X_{3}: & 99 & 71 & 75 & \ldots & 97 & 65 & 85 
-\end{tabular}
-$$
-  
+
   __Solution:__
   <div id="rcorners2">
-  
+```{r}
+p1.20extra <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%203%20Data%20Sets/CH03PR04.txt")
+
+colnames(p1.20extra) <- c("Y","X","X2","X3")
+
+t <- augment(copy.lm) %>% 
+  mutate(X2 = p1.20extra$X2, X3 = p1.20extra$X3) %>% 
+  ggplot(aes(x = X2, y = .resid)) +
+  geom_point(shape = 1) + 
+  labs(title = "Omitted Variables Plot ~ OP Age", x = "Age", y = "Residuals") +
+  theme_bw()
+
+s <- augment(copy.lm) %>% 
+  mutate(X2 = p1.20extra$X2, X3 = p1.20extra$X3) %>% 
+  ggplot(aes(x = X3, y = .resid)) +
+  geom_point(shape = 1) + 
+  labs(title = "Omitted Variables Plot ~ YoE",
+       x = "YoE", y = "Residuals") +
+  theme_bw()
+
+t + s
+```
+Operations Age looks like it could be a good variable but also Years of Experience could be good as well. 
   </div></br>
 
-### 3.5 <span id=recpoints>{5}</span><span id=report>{ 4 / 4 }</span>
+### 3.5 <span id=recpoints>{5}</span><span id=report>{ 5 / 5 }</span>
 
 ```{r p35}
 # Load the Data:
@@ -475,15 +511,17 @@ __Refer to Airfreight Breakage Problem 1.21__
 ```{r, echo=F,message=F,fig.align='center'}
 dotp.x
 ```
+Yes, these data appear to be asymmetrical with most of the transfers being around zero. 
   </div></br>
   
-  __b)__ The cases are given in time order. Prepare a time plot for the number of transfers. Is any systematic patter evident in your plot? Discuss. 
+  __b)__ The cases are given in time order. Prepare a time plot for the number of transfers. Is any systematic pattern evident in your plot? Discuss. 
   
   __Solution:__
   <div id="rcorners2">
 ```{r, echo=F,message=F,fig.align='center'}
 timep.x
 ```  
+It seems there could be some systematic patterns within these data as they go up high and back to zero almost each time. 
   </div></br>
   
   __c)__ Obtain the residuals $e_{i}$ and prepare a steam-and-leaf plot of the residuals. What information is provided by your plot?
@@ -493,6 +531,7 @@ timep.x
 ```{r, echo=F,message=F,fig.align='center'}
 stem(air.lm$residuals)
 ```  
+It shows the distribtution of the residuals. 
   </div></br>
   
   __d)__ Plot the residuals $e_i$ against $X_i$ to ascertain whether any departures from regression model (2.1) are evident. What is your conclusion?
@@ -502,6 +541,8 @@ stem(air.lm$residuals)
 ```{r, echo=F,message=F,fig.align='center', warning=F}
 dotp.fitted
 ```  
+
+There is extreme curvature in the residuals and the variance does not seem constant. 
   </div></br>
   
   __e)__ Prepare a normal probability plot of the residuals. Also obtain the coefficient of correlation between the ordered residuals and their expected values under normality. Does the normality assumption appear to be tenable here? Use Table B.6 and $\alpha = 0.10.$ What do you conclude?
@@ -510,7 +551,9 @@ dotp.fitted
   <div id="rcorners2">
 ```{r, echo=F,message=F,fig.align='center'}
 qq.norm3
+cor(qqnorm(air.lm$residuals,plot.it = FALSE)$x, qqnorm(air.lm$residuals,plot.it = FALSE)$y)
 ```  
+Using the table B.6 we can see that we are above the level at which we would reject if our data is normal. We will continue to assume these data to be normally distributed. 
   </div></br>
   
   __f)__ Prepare a time plot of the residuals. What information is provided by your plot?
@@ -519,7 +562,8 @@ qq.norm3
   <div id="rcorners2">
 ```{r, echo=F,message=F,fig.align='center'}
 timep.resid
-```  
+``` 
+There is a pattern in the residuals so they do not seem to be independent of each other. 
   </div></br>
   
   __g)__ Assume that (3.10) is applicable and conduct the Breusch-Pagan test to determine whether or not the error variance varies with the level of X. Use $\alpha = 0.10$. State the alternatives, decision rule, and conclusion. Does your conclusion support your preliminary findings in part (d)?
@@ -537,9 +581,11 @@ H_{1}: \gamma_{1} \neq  0 \\
 \text{If } X^{2}_{BP} \leq \chi^{2}(.95;1) \text{ then conclude } H_{o} \\
 \text{If } X^{2}_{BP} > \chi^{2}(.95;1) \text{ then conclude } H_{a}
 \end{align*}
+
+Given our p-value and alpha level of 0.10 we fail to reject the null and will continue to believe the residuals have constant variance. 
   </div></br>
   
-### 3.6 <span id=points>{5}</span><span id=report>{ 4 / 4 }</span>
+### 3.6 <span id=points>{5}</span><span id=report>{ 5 / 5 }</span>
 
 ```{r p36}
 # Load the Data:
@@ -580,53 +626,66 @@ __Refer to Plastic Harndess Problem 1.22__
   __a)__ Obtain the reisiduals $e_{i}$ and prepare a box plot of the residuals. What information is provided by your plot?
   
   __Solution:__
-  <div id="rcorners2">
+  <div id="rcorners3">
 ```{r, echo = FALSE, fig.align='center',fig.width=7,fig.height=3}
 boxp
 ```
+The residuals appear to be relatively symmetric. 
   
   </div></br>
   
   __b)__ Plot the residuals $e_{i}$ against the fitted values $\hat{Y_{i}}$ to ascertain whether any departures from ression model (2.1) are evident. State your findings.
   
   __Solution:__
-  <div id="rcorners2">
+  <div id="rcorners3">
 ```{r, echo=F, message=F, fig.align='center', warning = FALSE}
 fitted.plot
 ```
-  
+  It appears to be that theses data don't have constant variance or a linear relationship. 
   </div></br>
   
   __c)__ Prepare a normal probability plot of the residuals. Also obtain the coefficient of correlation between the ordered residuals and their expected values under normality. Does the normality assumption appear to be resonable here? Use Table B.6 and $\alpha = 0.05.$ What do you conclude?
   
   __Solution:__
-  <div id="rcorners2">
+  <div id="rcorners3">
 ```{r, echo=F,message=F,fig.align='center'}
 qq.norm
+cor(qqnorm(hard.lm$residuals, plot.it = FALSE)$x, qqnorm(hard.lm$residuals, plot.it = FALSE)$y)
 ```
-  
+  The data appears to be normal. 
   </div></br>
   
   __d)__ Compare the frequencies of the residuals against the expected frequences under normality using the 25th, 50th, and 75th percentiles of the relevant t distribtuion. Is the information provided by these comparisons consistent with the findings from the normal probability plot in part (c)?
   
   __Solution:__
-  <div id="rcorners2">
-  
+  <div id="rcorners3">
+  <center>
+```{r}
+pander::pander(
+  tibble(
+    order.resid = sort(hard.lm$residuals), 
+    exp.value = glance(hard.lm)$sigma*qnorm((1:16-.375)/(16+.25))
+    )
+  )
+qt(.25,14); qt(.5,14); qt(.75,14)
+```
+  </center>
+  It seems likely that the data is normal because it follows relatively close to the expected value of normal data. 
   </div></br>
   
   __e)__ Use the Brown-Forsythe test to determine whether or not the error variance varies with the level of X. Divide the data into two groups, $X \leq 24$, $X > 24$, and use $\alpha = 0.05$. State the decision rule and conclusion. Does your conclusion support your preliminary findings in part (b)?
   
   __Solution:__
-  <div id="rcorners2">
+  <div id="rcorners3">
 ```{r}
 augment(hard.lm) %>% 
   mutate(two.groups = as.factor(case_when(X <= 24 ~ "<=24", X > 24 ~ ">24"))) %>% 
   {lawstat::levene.test(.$.resid, .$two.groups,location = "median")}
 ```
-
+Given the p-value we can continue under the belief that the residuals have constant variance. 
   </div></br>
 
-### 3.7 <span id=points>{4}</span><span id=report>{ 3 / 3 }</span>
+### 3.7 <span id=points>{4}</span><span id=report>{ 4 / 4 }</span>
 
 ```{r p37}
 # Load the Data:
@@ -680,7 +739,7 @@ __Refer to Muscle Mass Problem 1.27__
   __a)__ Prepare a stem-and-leaf plot for the ages $X_{i}$. Is this plot consistent with the random selection of women from each 10-year age group? Explain.
   
   __Solution:__
-  <div id="rcorners2">
+  <div id="rcorners3">
 ```{r}
 stem(mass.lm$residuals)
 ```
@@ -690,7 +749,7 @@ stem(mass.lm$residuals)
   __b)__ Obtain the residuals $e_{i}$ and prepare a dot plot of the residuals. What does your plot show?
   
   __Solution:__
-  <div id="rcorners2">
+  <div id="rcorners3">
 ```{r, echo=F, message=F, fig.align='center'}
 dotp
 ```
@@ -700,7 +759,7 @@ dotp
   __c)__ Plot the residuals $e_{i}$ against $\hat{Y_{i}}$ and also against $X_{i}$ on separate graphs to ascertain whether any departures from regression model (2.1) are evident. Do the two plots provide the same provide the same information? State your conclusions. 
   
   __Solution:__
-  <div id="rcorners2">
+  <div id="rcorners3">
 ```{r, echo=F, message=F, fig.align='center'}
 fitted.plot + xi.plot
 ```
@@ -710,24 +769,25 @@ fitted.plot + xi.plot
   __d)__ Prepare a normal probability plot of the residuals. Also obtain the coefficient of correlation between the ordered resiuals and their expected values under normality to ascertain whether the normality assumption is tenablehere. Use Table B.6 and $\alpha = .10$. What do you conclude?
   
   __Solution:__
-  <div id="rcorners2">
+  <div id="rcorners3">
 ```{r, echo=F, message=F, fig.align='center'}
 qq.norm
+cor(qqnorm(mass.lm$residuals, plot.it = FALSE)$x, qqnorm(mass.lm$residuals, plot.it = FALSE)$y)
 ```
-
+Looking at the table and our correlation coefficient we can move forward knowing our data is approximatley normally distributed. 
   </div></br>
   
   __e)__ Assume that (3.10) is applicable and conduct the Breusch-Pagan test to determine whether or not the error variance varies with the level of X. Use $\alpha = 0.01$. Stat the alternatives, decision rule, and conlusion. Is your conclusion consistent with your preliminary findings in part (c)?
   
   __Solution:__
-  <div id="rcorners2">
+  <div id="rcorners3">
 ```{r}
 bptest(mass.lm)
 ```
-
+Given our p-value we fail to reject the null and will continue to believe that the residuals have constant variance.
   </div></br>
   
-### 3.8 <span id=points>{3}</span><span id=report>{ 2 / 2 }</span>
+### 3.8 <span id=points>{3}</span><span id=report>{ 3 / 3 }</span>
 
 ```{r p38}
 # Load the Data:
@@ -772,7 +832,7 @@ __Refer to Crime Rate Problem 1.28__
 ```{r}
 stem(p1.28$X)
 ```
-  We can see the distribution of the X_{i} within the data set. 
+  We can see the distribution of the $X_{i}$ within the data set. 
   </div></br>
   
   __b)__ Obtain the residuals $e_{i}$ and prepare a box plot of the residuals. Does the distribution of the residuals appear to be symmetrical?
@@ -801,8 +861,9 @@ fitted.plot
   <div id="rcorners3">
 ```{r, echo = FALSE, fig.align='center'}
 qq.norm
+cor(qqnorm(crime.lm$residuals, plot.it = FALSE)$x, qqnorm(crime.lm$residuals, plot.it = FALSE)$y)
 ```
-  
+  We can believe that our data is approx. normally distributed. 
   </div></br>
   
   __e)__ Conduct the Brown-Forsythe test to determine whether or not the error variance varies with the level of $X$. Divide the data into the two groups, $X \leq 69$, $X > 69$, and use $\alpha = 0.05$. State the decision rule and conclusion. Does your conclusion support your preliminary findings in part (c)?
@@ -814,10 +875,10 @@ augment(crime.lm) %>%
   mutate(two.groups = as.factor(case_when(X <= 69 ~ "<=69", X > 69 ~ ">69"))) %>% 
   {lawstat::levene.test(.$.resid, .$two.groups,location = "median")}
 ```
- 
+ Our residuals have constant variance. 
   </div></br>
 
-### 3.13 <span id=recpoints>{3}</span><span id=report>{ / }</span>
+### 3.13 <span id=recpoints>{3}</span><span id=report>{ 3 / 3 }</span>
 
 ```{r p313}
 # Load the Data:
@@ -837,7 +898,10 @@ __Refer to Copier Maintenance Problem 1.20__
   
   __Solution:__
   <div id="rcorners2">
-  
+  $$
+  H_o: E \big\{ Y \big\} = \beta_0 + \beta_1X \\
+  H_a: E \big\{ Y \big\} \ne \beta_0 + \beta_1X
+  $$
   </div></br>
   
   __b)__ Perform the test indicated in part (a). Control the risk of Type I error at 0.05. State the decision rule and conclusion.
@@ -848,13 +912,19 @@ __Refer to Copier Maintenance Problem 1.20__
 lof
 ```
 
+The decision rule is:
+
+  If $|F^*_{BF}| \le$ F(95), conclude the error variance is constant
+  
+  If $|F^*_{BF}| \gt$ F(95), conclude the error variance is not constant
+  
   </div></br>
   
   __c)__ Does the test in part (b) detect other departures from regression model (2.1), such as lack of constant variance or lack of normality in the error terms? Could the results of the test of lack of fit be affected by such departures? Discuss. 
   
   __Solution:__
   <div id="rcorners2">
-  
+  Nope due to the high pvalue there are no departures so the model is valid. 
   </div></br>
 
 </div>
