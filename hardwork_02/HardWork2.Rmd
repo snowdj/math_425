@@ -58,41 +58,128 @@ library(magrittr)
 ## Theory Points <span id=headpoints>{33} Possible</span>
 
 ### Problem 2.1 <span id=points>{1}</span><span id=report>{ / }</span>
+
+__A student working on a summer internship in the economic research department of a large corporation studies the relation between sales of a product(Y, in millon dollars) and population (X, in million persons) in the firm's 50 marketing districs. The normal error regression model (2.1) was employed. The student first wished to test whether or not a linear association between Y and X existed. The student accessed a simple linear regression program and obtained the following information on the regression coeffcients__
+
+<center>
+```{r, echo=FALSE}
+tibble(Parameter = c("Intercept", "Slope"), Est_Value = c(7.43119, .755048), Lwr_95 = c(-1.18518, .452886), Upr_95 = c(16.0476, 1.05721)) %>% 
+  pander::pander()
+```
+</center>
+
+  __a)__ The student concluded from these results that there is a linear association between Y and X. Is the conlusion warranted? What is the implied level of significance?
+  
+  __Solution:__
+  <div id="rcorners3">
+  
+  </div></br>
+  
+  __b)__ Someone questions the negative lower confidence limit for the intercept, pointing out that dollar sales cannot be negative even if the population in a district is zero. Discuss
+  
+  __Solution:__
+  <div id="rcorners3">
+  
+  </div></br>
  
 ### Problem 2.2 <span id=points>{1}</span><span id=report>{ / }</span>
+
+__In a test of the alternatives $H_{o}: \beta_{1} \leq 0$ versus $H_{a}: \beta_{1} > 0$, an analyst concluded $H_{o}$. Does this conclusion imply that there is no linear association between X and Y? Explain.__
+
+__Solution:__
+<div id="rcorners3">
+
+</div></br>
  
 ### Problem 2.3 <span id=points>{1}</span><span id=report>{ / }</span>
 
+__A member of a student teamp playing an interactive marketing game recieved the following computer output when studying the relation between advertising expenditures (X) and sales (Y) for one of the team's products:__
+
+`Estimated regression equation: $\hat{Y} = 350.7 - .18X$`
+
+`Two Sided P-value for estimated slope: $.91$`
+
+__The student state: "The message I get here is that the more we spend on advertising this product, the fewer units we sell!" Comment.__
+
+__Solution:__
+<div id="rcorners3">
+
+</div></br>
+
 ### Problem 2.9 <span id=points>{1}</span><span id=report>{ / }</span>
+
+__Refer to Figure 2.2. A student, noting that $s\{b_{1}\}$ is furnished in the printout, asksy why $s\{\hat{Y_{h}}\}$ is not also given. Discuss__
+
+__Solution:__
+<div id="rcorners3">
+
+</div></br>
  
 ### Problem 2.11 <span id=points>{1}</span><span id=report>{ / }</span>
+
+__A person asks if there is a difference between the "mean response at $X = X_{h}$" and the "mean of m new oversvations at $X = X_{h}$" Reply.__
+
+__Solution:__
+<div id="rcorners3">
+
+</div></br>
  
 ### Problem 2.12 <span id=points>{1}</span><span id=report>{ / }</span>
 
+__Can $\sigma^{2}\{pred\}$ in (2.37) be brought increasingly close to 0 as n becomes large? Is this also the case for $\sigma^{2}\{\hat{Y_{h}}\}$ in (2.29b)? What is the implication of this difference?__
+
+__Solution:__
+<div id="rcorners3">
+
+</div></br>
+
 ### Problem 2.18 <span id=points>{1}</span><span id=report>{ / }</span>
 <span id=headnote>Hint: Read page 71</span>
+
+__For conducting statistical tests concerning the parameter $\beta_{1}$, why is the t test more versatile than the F test?__
+
+__Solution:__
+<div id="rcorners3">
+
+</div></br>
  
 ### Problem 2.19 <span id=points>{1}</span><span id=report>{ / }</span>
 
+__When testing whether or not $\beta_{1} = 0$, why is the F test a one-sided test even though $H_{a}$ includes both $\beta_{1} < 0$ and $\beta_{1} > 0$?__
+
+__Solution:__
+<div id="rcorners3">
+
+</div></br>
+
 ### Problem 2.20 or 2.21 or 2.22 <span id=points>{1}</span><span id=report>{ / }</span>
+
+__A student asks whether R^{2} is a point estimator of any parameter in the normal error regression model (2.1). Respond.__
+
+__Solution:__
+<div id="rcorners3">
+
+</div></br>
 
 ### Problem 2.33 <span id=recpoints>{3}</span><span id=report>{ 3 / 3 }</span>
 
-In developing empirically a cost function from observed data on a complex chemical experiment, an analyst employed normal error regression model (2.1). $\beta_{0}$ was interpreted here as the cost of setting up the experiment. The analyst hypothesized that this cost should be $7.5 thousand and wished to test the hypothesis by means of a general linear test. 
+__In developing empirically a cost function from observed data on a complex chemical experiment, an analyst employed normal error regression model (2.1). $\beta_{0}$ was interpreted here as the cost of setting up the experiment. The analyst hypothesized that this cost should be $7.5 thousand and wished to test the hypothesis by means of a general linear test.__
 
   __a)__ Indicate the full alternative conclusions for the test. 
   
   __Solution:__
-  
+  <div id="rcorners2">
   $$
   H_o: \beta_0 = 7,500 \\
   H_a: \beta_0 \ne 7,500
   $$
+  </div></br>
   
   __b)__ Specify the full and reduced models.
   
   __Solution:__
-  
+  <div id="rcorners2">
+    
   Full Model:
 
 $$
@@ -100,24 +187,56 @@ $$
 $$
 
 
-Reduced Model:
+  Reduced Model:
 
 $$
   Y_i = \beta_0 + \epsilon_0
 $$
   
+  </div></br>
+
   __c)__ Without additional information, can you tell what the quantity $df_{R} - df_{F}$ in test statistic (2.70) will equal in the analyst's test? Explain.
   
   __Solution:__
-  
+  <div id="rcorners2">
   Since $df_R = n - 1$ and $df_F = n - 2$ then $df_R - df_F = 1$
+  </div></br>
   
-
 ### Problem 2.50 <span id=points>{2}</span><span id=report>{ / }</span>
+
+__Derive the property in (2.6) for the $k_{i}$.__
+
+__Solution:__
+<div id="rcorners3">
+
+</div></br>
 
 ### Problem 2.51 <span id=points>{2}</span><span id=report>{ / }</span>
 
+__Show that $b_{0}$ as defined in (2.21) is an unbiased estimator of $\beta_{0}$.__
+
+__Solution:__
+<div id="rcorners3">
+
+</div></br>
+
 ### Problem 2.53 <span id=points>{4}</span><span id=report>{ / }</span>
+
+__(Calculus Needed.)__
+
+  __a)__ Obtain the liklihood function for the sample observations $Y_{1},\ldots,Y_{n}$ given $X_{1},\ldots,X_{n}$, if the conditions on page 83 apply. 
+  
+  __Solution:__
+  <div id="rcorners3">
+  
+  </div></br>
+  
+  __b)__ Obtain the maximum likelihood estimators of $\beta_{0}$, $\beta_{1}$, and $\sigma^{2}$. Are the estimators of $\beta_{0}$ and $\beta_{1}$ the same as those in 1.27 when the $X_{i}$ are fixed?
+  
+  __Solution:__
+  <div id="rcorners3">
+  
+  </div></br>
 
 ### Problem 2.66 <span id=recpoints>{5}</span><span id=report>{ 5 / 5 }</span> 
 
@@ -205,9 +324,26 @@ SSR &= \sum\left(\hat{Y}_{i} - \bar{Y}\right)^{2} \\
 
 ### Exercise 2.57 <span id=points>{3}</span><span id=report>{ / }</span>
 
+__The normal error regression model (2.1) is assumed to be applicable.__
+
+  __a)__ 
+  
+  
+  __b)__ When testing H_{0}: \beta_{0} = 2, \beta_{1} = 5 versus H_{a}: not both \beta_{0} = 2 and \beta_{1} = 5 by means of a general linear test, what is the reduced model? What are the degrees of freedom df_{r}?
+  
+  __Solution:__
+  <div id="rcorners3">
+  
+  </div></br>
+
 ### Exercise 2.61 <span id=points>{3}</span><span id=report>{ / }</span>
 
- 
+__Show that the ratio SSR/SSTO is the same whether $Y_{i}$ is regressed on $Y_{2}$ or $Y_{2}$ is regressed on $Y_{1}$.__ 
+
+__Solution:__
+<div id="rcorners3">
+
+</div></br>
 
 <br/>
 
@@ -243,7 +379,9 @@ p.value <- round(pt(tidy(p4.lm)[2,4], 118, lower.tail = FALSE)*2,4)
   **a)** Obtain a 99 percent confidence interval for $\beta_{1}$. Interpret your confidence interval. Does it include zero? Why might the director of admissions be interested in whether the confidence interval includes zero?
   
   __Solution:__
-  <div id="rcorners2"> Table: `r pander::pander(b1.est)` </div>
+  <div id="rcorners2"> 
+  Table: `r pander::pander(b1.est)` 
+  </div></br>
   
   
   **b)** Test, using the test statistic $t*$, whether or not a linear association exists between student's ACT score (X) and GPA at the end of the freshman year (Y). Use a level of significance of 0.01. State the alternatives, decision rule, and conclusion. 
@@ -259,13 +397,14 @@ p.value <- round(pt(tidy(p4.lm)[2,4], 118, lower.tail = FALSE)*2,4)
     \text{If } |t^{*}| \leq t(99.5;& 118) : \text{ Conclude } H_{0}\\
     \text{If } |t^{*}| > t(99.5;& 118) : \text{ Conclude } H_{A}\\
   \end{align*}
-Given that $t^{*}$ is greater than $t(99.5,118)$ and the corresponding decision rule we can conclude $H_{A}$, meaning we reject the null in favor of the alternative hypothesis. </p>
+Given that $t^{*}$ is greater than $t(99.5,118)$ and the corresponding decision rule we can conclude $H_{A}$, meaning we reject the null in favor of the alternative hypothesis. 
+</p></br>
   
   **c)** What is the P-value of your test in part (b)? How does it support the conclusion reached in part (b)?
   
   __Solution:__
   <p id="rcorners2">
-  __P-Value:__ `r p.value`, This supports the conclusion above we can therefore believe that X is not zero within the model.</p>
+  __P-Value:__ `r p.value`, This supports the conclusion above we can therefore believe that X is not zero within the model.</p></br>
   
 
 ### Problem 2.5 <span id=recpoints>{4}</span><span id=report>{ 3 / 4 }</span> 
@@ -696,6 +835,14 @@ colnames(p1.28) <- c("Y","X")
 #rcorners2 {
     border-radius: 25px;
     border: 2px solid #73AD21;
+    padding: 20px; 
+    width: auto;
+    height: auto;    
+}
+
+#rcorners3 {
+    border-radius: 25px;
+    border: 2px solid #317eac;
     padding: 20px; 
     width: auto;
     height: auto;    

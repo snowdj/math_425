@@ -10,6 +10,9 @@ output:
 ```{r, include=FALSE}
 library(tidyverse)
 library(broom)
+library(car)
+library(alr3)
+library(qqplotr)
 ```
 
 ## Instructions
@@ -21,11 +24,11 @@ library(broom)
 
 ## Reading Points <span id=headpoints>{18} Possible</span>
 
-### Section 3.9 <span id=recpoints>{7}</span><span id=report>{ / }</span>
+### Section 3.9 <span id=recpoints>{7}</span><span id=report>{ 7 / 7 }</span>
 
-### Section 3.10 <span id=recpoints>{4}</span><span id=report>{ / }</span>
+### Section 3.10 <span id=recpoints>{4}</span><span id=report>{ 4 / 4 }</span>
 
-### Section 3.11 <span id=recpoints>{7}</span><span id=report>{ / }</span>
+### Section 3.11 <span id=recpoints>{7}</span><span id=report>{ 7 / 7 }</span>
 
 
 
@@ -57,7 +60,7 @@ __Solution:__
 <a id=datalink style="font-size:.9em;" target="_blank" href=http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/index.html>Data Files</a>
 
 
-### Problem 3.16 <span id=recpoints>{6}</span><span id=report>{ / }</span>
+### Problem 3.16 <span id=recpoints>{6}</span><span id=report>{ 4 / 4 }</span>
 
 ```{r p316}
 # Load the Data:
@@ -91,20 +94,36 @@ scatp
   
   __Solution:__
   <div id="rcorners2">
-  
+```{r,fig.align='center'}
+boxCox(sol.lm, lambda = seq(-.2,.2,.1))
+```
+
   </div></br>
   
-  __c)__ Use the transformation $Y^{\prime} = \log_{10}$ Y and obtain the estimated linear regression function for the transformed data.
+  __c)__ Use the transformation $Y^{\prime} = \log_{10} Y$ and obtain the estimated linear regression function for the transformed data.
   
   __Solution:__
   <div id="rcorners2">
-  
+```{r}
+sol.log.lm <- lm(log10(Y) ~ X, p3.15) 
+summary(sol.log.lm)
+```
+\[
+\hat{Y_{i}}^{\prime} =  
+\]
   </div></br>
   
   __d)__ Plot the estimated regression line and the transformed data. Does the regression line appear to be a good fit to the transformed data?
   
   __Solution:__
   <div id="rcorners2">
+```{r, fig.align='center'}
+augment(sol.log.lm) %>% 
+  ggplot(aes(x = X, y = log10.Y.)) + 
+  geom_point() + 
+  geom_smooth(method="lm", se = FALSE, color = "darkred") + 
+  theme_bw()
+```
   
   </div></br>
   
@@ -112,6 +131,25 @@ scatp
   
   __Solution:__
   <div id="rcorners2">
+```{r, fig.align='center'}
+augment(sol.log.lm) %>% 
+  ggplot(aes(x = .fitted, y = .resid)) + 
+  geom_point(shape = 1) + 
+  geom_smooth(method="loess", se=FALSE, color="red", size = .5) +
+  labs(title = "Residuals Against Fitted Vaues",
+       x = "Fitted Values \n LM(Log10(Y) ~ X)", y = "Residuals") +
+  theme_bw() 
+
+augment(sol.log.lm) %>% 
+  ggplot(aes(sample = .resid)) + 
+  stat_qq_band(color = "black", fill = NA, linetype = 2) +
+  stat_qq_line(color = "red", size = .5) +
+  stat_qq_point(shape = 1) +
+  labs(title = "Normal Q-Q",
+       x = "Theoretical Quantiles \n lm(Y ~ X)", 
+       y = "Standardized residuals") +
+  theme_bw()
+```
   
   </div></br>
   
@@ -122,7 +160,7 @@ scatp
   
   </div></br>
 
-### Problem 3.17 <span id=points>{6}</span><span id=report>{ / }</span>
+### Problem 3.17 <span id=points>{6}</span><span id=report>{ 4 / 4 }</span>
 
 ```{r p317}
 # Load the Data:
@@ -156,6 +194,9 @@ scatp
   
   __Solution:__
   <div id="rcorners3">
+```{r, fig.align='center'}
+boxCox(sales.lm, lambda = seq(.3,.7,.1))
+```
   
   </div></br>
   
@@ -163,21 +204,51 @@ scatp
   
   __Solution:__
   <div id="rcorners3">
-  
+```{r}
+sales.sqrt.lm <- lm(sqrt(Y) ~ X, p3.17)
+summary(sales.sqrt.lm)
+```
+
   </div></br>
   
   __d)__ Plot the estimated regression line and the transformed data. Does the regression line appear to be a good fit to the transformed data?
   
   __Solution:__
   <div id="rcorners3">
-  
+```{r, fig.align='center'}
+augment(sales.sqrt.lm) %>% 
+  ggplot(aes(x = X, y = sqrt.Y.)) + 
+  geom_point() + 
+  geom_smooth(method="lm", se = FALSE, color = "darkred") + 
+  theme_bw()
+```
+
   </div></br>
   
   __e)__ Obtain the the residuals plot and plot them against the fitted values. Also prepare a normal probability plot. What do your plots show?
   
   __Solution:__
   <div id="rcorners3">
-  
+```{r, fig.align='center'}
+augment(sales.sqrt.lm) %>% 
+  ggplot(aes(x = .fitted, y = .resid)) + 
+  geom_point(shape = 1) + 
+  geom_smooth(method="loess", se=FALSE, color="red", size = .5) +
+  labs(title = "Residuals Against Fitted Vaues",
+       x = "Fitted Values \n LM(Log10(Y) ~ X)", y = "Residuals") +
+  theme_bw() 
+
+augment(sales.sqrt.lm) %>% 
+  ggplot(aes(sample = .resid)) + 
+  stat_qq_band(color = "black", fill = NA, linetype = 2) +
+  stat_qq_line(color = "red", size = .5) +
+  stat_qq_point(shape = 1) +
+  labs(title = "Normal Q-Q",
+       x = "Theoretical Quantiles \n lm(Y ~ X)", 
+       y = "Standardized residuals") +
+  theme_bw()
+```
+
   </div></br>
   
   __f)__ Express the estimated regression function in the original units. 
@@ -187,7 +258,7 @@ scatp
   
   </div></br>
 
-### Problem 3.18 <span id=points>{5}</span><span id=report>{ / }</span>
+### Problem 3.18 <span id=points>{5}</span><span id=report>{ 3 / 3 }</span>
 
 ```{r p318}
 # Load the Data:
@@ -221,21 +292,51 @@ scatp
   
   __Solution:__
   <div id="rcorners3">
-  
+```{r}
+prod.sqrt.lm <- lm(Y ~ sqrt(X), p3.18)
+summary(prod.sqrt.lm)
+```
+
   </div></br>
   
   __c)__ Plot the estimated regression line and the transformed data. Does the regression line appear to be a good fit to the transformed data?
   
   __Solution:__
   <div id="rcorners3">
-  
+```{r}
+augment(prod.sqrt.lm) %>% 
+  ggplot(aes(x = sqrt.X., y = Y)) +
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE, color = "darkred") +
+  theme_bw()
+```
+
   </div></br>
   
   __d)__ Obtain the residuals and plot them against the fitted values. Also prepare a normal probability plot. What do your plots show?
   
   __Solution:__
   <div id="rcorners3">
-  
+```{r}
+augment(prod.sqrt.lm) %>% 
+  ggplot(aes(x = .fitted, y = .resid)) + 
+  geom_point(shape = 1) + 
+  geom_smooth(method="loess", se=FALSE, color="red", size = .5) +
+  labs(title = "Residuals Against Fitted Vaues",
+       x = "Fitted Values \n LM(Log10(Y) ~ X)", y = "Residuals") +
+  theme_bw() 
+
+augment(prod.sqrt.lm) %>% 
+  ggplot(aes(sample = .resid)) + 
+  stat_qq_band(color = "black", fill = NA, linetype = 2) +
+  stat_qq_line(color = "red", size = .5) +
+  stat_qq_point(shape = 1) +
+  labs(title = "Normal Q-Q",
+       x = "Theoretical Quantiles \n lm(Y ~ X)", 
+       y = "Standardized residuals") +
+  theme_bw()
+```
+
   </div></br>
   
   __e)__ Express the estimated regression function in the original units. 
