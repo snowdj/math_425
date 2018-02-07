@@ -185,23 +185,32 @@ ggplot(p1.19, aes(X, Y)) +
   __a)__ Obtain the least squares estimates $\beta_{0}$ and $\beta_{1}$, and state the estimated regression function.
   
   __Solution:__
+  <div id="rcorners2">
   $\hat Y_{i} = `r round(tidy(p19.lm)[1,2], 4)` + `r round(tidy(p19.lm)[2,2], 4)`x_{i}$
   
   $\text{Where } e \sim N(0,\hat\sigma^{2}) \text{ Where } \hat\sigma^{2} = `r round(glance(p19.lm)[,"sigma"], 4)`^{2}$
+  </div></br>
   
   __b)__ Plot the estimated regression function and the data. Does the estimated regression function appear to fit the data well?
   
   __Solution:__
+  <div id="rcorners2">
   ![](p19_plot.png)
+  </div></br>
   
   __c)__ Obtain a point estimate of the mean freshman GPA for students with ACT test score $X = 30$.
   
-  __Solution:__ $\hat Y_{i} = `r round(tidy(p19.lm)[1,2], 4)` + `r round(tidy(p19.lm)[2,2], 4)`(30) = `r pred30`$
+  __Solution:__
+  <div id="rcorners2">
+  $\hat Y_{i} = `r round(tidy(p19.lm)[1,2], 4)` + `r round(tidy(p19.lm)[2,2], 4)`(30) = `r pred30`$
+  </div></br>
   
   __d)__ What is the point estimate of the change in the mean response when the entrance test score increases by one point?
   
-  __Solution:__ Given in one unit increase in entrance test score a student's GPA will increase 0.0388, on average. 
-
+  __Solution:__
+  <div id="rcorners2">
+  Given in one unit increase in entrance test score a student's GPA will increase 0.0388, on average. 
+  </div></br>
 
 ### Problem 1.20 <span id=recpoints>{4}</span><span id=report>{ 4 / 4 }</span> 
 
