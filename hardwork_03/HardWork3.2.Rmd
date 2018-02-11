@@ -13,6 +13,7 @@ library(broom)
 library(car)
 library(alr3)
 library(qqplotr)
+library(patchwork)
 ```
 
 ## Instructions
@@ -42,16 +43,21 @@ If the error terms in a regression model are independent $N(0,\sigma^{2})$, what
 
 __Solution:__
 <div id="rcorners2">
-
-</div></br>
+The error terms would not change after a transformation on the X variable because transformations on the X variable are meant to fix linearity problems while keeping variance constant. While the transformation on the Y variable is meant to fix constant variance problems. </div></br>
  
-### Exercise 3.22 <span id=points>{4}</span><span id=report>{ / }</span> 
+### Exercise 3.22 <span id=points>{4}</span><span id=report>{ 4 / 4 }</span> 
 
 Using (A.70), (A.41), and (A.42), show that $E[MSPE] = \sigma^{2}$ for normal error regression model (2.1).
 
 __Solution:__
 <div id="rcorners3">
-
+\begin{align*}
+E[MSPE] &= E\left[\dfrac{\Sigma\Sigma\left(Y_{ij}-\bar{Y_{j}}\right)^{2}}{n-c}\right] \\
+&= \dfrac{1}{n-c}\Sigma E[(n_{j} - 1)s^{2}_{j}] \\
+&= \dfrac{1}{n-c}\Sigma E[\sigma^{2}\chi^{2}(n_{j}-1)] \\
+&= \dfrac{\sigma^{2}}{n-c}\Sigma(n_{j}-1) \\
+&= \sigma^{2}
+\end{align*}
 </div></br>
 
 
@@ -60,7 +66,7 @@ __Solution:__
 <a id=datalink style="font-size:.9em;" target="_blank" href=http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/index.html>Data Files</a>
 
 
-### Problem 3.16 <span id=recpoints>{6}</span><span id=report>{ 4 / 4 }</span>
+### Problem 3.16 <span id=recpoints>{6}</span><span id=report>{ 6 / 6 }</span>
 
 ```{r p316}
 # Load the Data:
@@ -87,7 +93,7 @@ __Refer to Solution Concentration Problem 3.15__
 ```{r, fig.align='center'}
 scatp
 ```
-  
+  It looks like there is a linearity issue and variance issue. So I would probably do a transformation on both the Y and X variables. For $Y$, I would use $Y^{\prime} = \log_{10} Y$. And for $X$ I would use $X^{\prime} = 1/x.$
   </div></br>
   
   __b)__ Use the Box-Cox procedure and standardization (3.36) to find an appropriate power transformation. Evaluate SSE for $\lambda = -.2,-.1,0,.1,.2$. What transformation of Y is suggested?
@@ -97,7 +103,7 @@ scatp
 ```{r,fig.align='center'}
 boxCox(sol.lm, lambda = seq(-.2,.2,.1))
 ```
-
+  It looks like the suggested $\lambda$ value is anywhere from -0.5 to 1.2
   </div></br>
   
   __c)__ Use the transformation $Y^{\prime} = \log_{10} Y$ and obtain the estimated linear regression function for the transformed data.
@@ -109,7 +115,8 @@ sol.log.lm <- lm(log10(Y) ~ X, p3.15)
 summary(sol.log.lm)
 ```
 \[
-\hat{Y_{i}}^{\prime} =  
+\log_{10}{Y_{i}} = \hat{Y_{i}}^{\prime} = b_{0} + b_{1}X_{i} \\
+\log_{10}{Y_{i}} = \hat{Y_{i}}^{\prime} = `r tidy(sol.log.lm)[1,2]` + `r tidy(sol.log.lm)[2,2]`X_{i}
 \]
   </div></br>
   
@@ -124,7 +131,7 @@ augment(sol.log.lm) %>%
   geom_smooth(method="lm", se = FALSE, color = "darkred") + 
   theme_bw()
 ```
-  
+  It looks better but there are still some variance issues.
   </div></br>
   
   __e)__ Obtain the residuals and plot them against the fitted values. Also prepare a normal probability plot. What do your plots show?
@@ -132,7 +139,7 @@ augment(sol.log.lm) %>%
   __Solution:__
   <div id="rcorners2">
 ```{r, fig.align='center'}
-augment(sol.log.lm) %>% 
+fitted.resid <- augment(sol.log.lm) %>% 
   ggplot(aes(x = .fitted, y = .resid)) + 
   geom_point(shape = 1) + 
   geom_smooth(method="loess", se=FALSE, color="red", size = .5) +
@@ -140,7 +147,7 @@ augment(sol.log.lm) %>%
        x = "Fitted Values \n LM(Log10(Y) ~ X)", y = "Residuals") +
   theme_bw() 
 
-augment(sol.log.lm) %>% 
+qq.norm <- augment(sol.log.lm) %>% 
   ggplot(aes(sample = .resid)) + 
   stat_qq_band(color = "black", fill = NA, linetype = 2) +
   stat_qq_line(color = "red", size = .5) +
@@ -149,18 +156,23 @@ augment(sol.log.lm) %>%
        x = "Theoretical Quantiles \n lm(Y ~ X)", 
        y = "Standardized residuals") +
   theme_bw()
+
+fitted.resid + qq.norm
 ```
-  
+  The errors appear to be normally distributed but the residuals against the fitted values are showing massive linearity issues and variance problems. 
   </div></br>
   
   __f)__ Express the estimated regression function in the original units. 
   
   __Solution:__
   <div id="rcorners2">
-  
+\[
+\hat{Y_{i}} = 10^{(b_{0}+b_{1}X_{i})} \\
+\hat{Y_{i}} = 10^{(`r tidy(sol.log.lm)[1,2]` + `r tidy(sol.log.lm)[2,2]`X_{i})}
+\]
   </div></br>
 
-### Problem 3.17 <span id=points>{6}</span><span id=report>{ 4 / 4 }</span>
+### Problem 3.17 <span id=points>{6}</span><span id=report>{ 6 / 6 }</span>
 
 ```{r p317}
 # Load the Data:
@@ -187,7 +199,7 @@ __Sales Growth. A marketing researcher studied annual sales of a product that ha
 ```{r, fig.align='center'}
 scatp
 ```
-  
+  Yes, these data appear to have a linear relationship. 
   </div></br>
   
   __b)__ Use the Box-Cox procedure and standardization (3.36) to find an appropriate power transformation of Y. Evaluate SSE for $\lambda = .3,.4,.5,.6,.7$. What transformation of Y is suggested?
@@ -197,7 +209,7 @@ scatp
 ```{r, fig.align='center'}
 boxCox(sales.lm, lambda = seq(.3,.7,.1))
 ```
-  
+  It would probably be best to assign $\lambda = 0.5$
   </div></br>
   
   __c)__ Use the transformation $Y^{\prime} = \sqrt{Y}$ and obtain the estimated linear regression function for the transformed data. 
@@ -208,7 +220,10 @@ boxCox(sales.lm, lambda = seq(.3,.7,.1))
 sales.sqrt.lm <- lm(sqrt(Y) ~ X, p3.17)
 summary(sales.sqrt.lm)
 ```
-
+\[
+\sqrt{Y_{i}} = \hat{Y_{i}}^{\prime} = b_0 + b_1X_i \\
+\sqrt{Y_{i}} = \hat{Y_{i}}^{\prime} = `r tidy(sales.sqrt.lm)[1,2]` + `r tidy(sales.sqrt.lm)[2,2]`X_i
+\]
   </div></br>
   
   __d)__ Plot the estimated regression line and the transformed data. Does the regression line appear to be a good fit to the transformed data?
@@ -222,7 +237,7 @@ augment(sales.sqrt.lm) %>%
   geom_smooth(method="lm", se = FALSE, color = "darkred") + 
   theme_bw()
 ```
-
+Yes, it appears to fit well to these data. 
   </div></br>
   
   __e)__ Obtain the the residuals plot and plot them against the fitted values. Also prepare a normal probability plot. What do your plots show?
@@ -230,7 +245,7 @@ augment(sales.sqrt.lm) %>%
   __Solution:__
   <div id="rcorners3">
 ```{r, fig.align='center'}
-augment(sales.sqrt.lm) %>% 
+fitted.resid <- augment(sales.sqrt.lm) %>% 
   ggplot(aes(x = .fitted, y = .resid)) + 
   geom_point(shape = 1) + 
   geom_smooth(method="loess", se=FALSE, color="red", size = .5) +
@@ -238,7 +253,7 @@ augment(sales.sqrt.lm) %>%
        x = "Fitted Values \n LM(Log10(Y) ~ X)", y = "Residuals") +
   theme_bw() 
 
-augment(sales.sqrt.lm) %>% 
+qq.norm <- augment(sales.sqrt.lm) %>% 
   ggplot(aes(sample = .resid)) + 
   stat_qq_band(color = "black", fill = NA, linetype = 2) +
   stat_qq_line(color = "red", size = .5) +
@@ -247,18 +262,22 @@ augment(sales.sqrt.lm) %>%
        x = "Theoretical Quantiles \n lm(Y ~ X)", 
        y = "Standardized residuals") +
   theme_bw()
-```
 
+fitted.resid + qq.norm
+```
+It shows that the residuals exhibit non-linearity and non-constant variance but the residuals are normally distributed. 
   </div></br>
   
   __f)__ Express the estimated regression function in the original units. 
   
   __Solution:__
   <div id="rcorners3">
-  
+\[
+\hat{Y_{i}} = (`r tidy(sales.sqrt.lm)[1,2]` + `r tidy(sales.sqrt.lm)[2,2]`X_i)^{2}
+\]
   </div></br>
 
-### Problem 3.18 <span id=points>{5}</span><span id=report>{ 3 / 3 }</span>
+### Problem 3.18 <span id=points>{5}</span><span id=report>{ 5 / 5 }</span>
 
 ```{r p318}
 # Load the Data:
@@ -285,7 +304,7 @@ __Production time. In a manufacturing study, the production times for 111 recent
 ```{r, fig.align='center'}
 scatp
 ```
-
+I would use the transformation $X^{\prime} = \sqrt{X}$
   </div></br>
   
   __b)__ Use the transformation $X^{\prime} = \sqrt{X}$ and obtain the estimated linear regression function for the transformed data. 
@@ -293,10 +312,12 @@ scatp
   __Solution:__
   <div id="rcorners3">
 ```{r}
-prod.sqrt.lm <- lm(Y ~ sqrt(X), p3.18)
+prod.sqrt.lm <- lm(Y ~ I(sqrt(X)), p3.18)
 summary(prod.sqrt.lm)
 ```
-
+\[
+\hat{Y_{i}} = `r tidy(prod.sqrt.lm)[1,2]` + `r tidy(prod.sqrt.lm)[2,2]`\sqrt{X_{i}}
+\]
   </div></br>
   
   __c)__ Plot the estimated regression line and the transformed data. Does the regression line appear to be a good fit to the transformed data?
@@ -305,12 +326,12 @@ summary(prod.sqrt.lm)
   <div id="rcorners3">
 ```{r}
 augment(prod.sqrt.lm) %>% 
-  ggplot(aes(x = sqrt.X., y = Y)) +
+  ggplot(aes(x = I.sqrt.X.., y = Y)) +
   geom_point() + 
   geom_smooth(method = "lm", se = FALSE, color = "darkred") +
   theme_bw()
 ```
-
+  Yes it looks like a good fit. 
   </div></br>
   
   __d)__ Obtain the residuals and plot them against the fitted values. Also prepare a normal probability plot. What do your plots show?
@@ -318,7 +339,7 @@ augment(prod.sqrt.lm) %>%
   __Solution:__
   <div id="rcorners3">
 ```{r}
-augment(prod.sqrt.lm) %>% 
+fitted.resid <- augment(prod.sqrt.lm) %>% 
   ggplot(aes(x = .fitted, y = .resid)) + 
   geom_point(shape = 1) + 
   geom_smooth(method="loess", se=FALSE, color="red", size = .5) +
@@ -326,7 +347,7 @@ augment(prod.sqrt.lm) %>%
        x = "Fitted Values \n LM(Log10(Y) ~ X)", y = "Residuals") +
   theme_bw() 
 
-augment(prod.sqrt.lm) %>% 
+qq.norm <- augment(prod.sqrt.lm) %>% 
   ggplot(aes(sample = .resid)) + 
   stat_qq_band(color = "black", fill = NA, linetype = 2) +
   stat_qq_line(color = "red", size = .5) +
@@ -335,6 +356,8 @@ augment(prod.sqrt.lm) %>%
        x = "Theoretical Quantiles \n lm(Y ~ X)", 
        y = "Standardized residuals") +
   theme_bw()
+
+fitted.resid + qq.norm
 ```
 
   </div></br>
@@ -343,7 +366,9 @@ augment(prod.sqrt.lm) %>%
   
   __Solution:__
   <div id="rcorners3">
-  
+  \[
+  \hat{Y_{i}}^{2} = `r tidy(prod.sqrt.lm)[1,2]` + `r tidy(prod.sqrt.lm)[2,2]`X_{i}
+  \]
   </div></br>
 
 
