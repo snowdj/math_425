@@ -37,7 +37,7 @@ library(patchwork)
 
 
 
-### Exercise 3.20 <span id=recpoints>{3}</span><span id=report>{ / }</span> 
+### Exercise 3.20 <span id=recpoints>{3}</span><span id=report>{ 3 / 3 }</span> 
 
 If the error terms in a regression model are independent $N(0,\sigma^{2})$, what can be said about the error terms after transformation $X^{\prime} = 1/X$ is used? Is the situation the same after transformation $Y^{\prime} = 1/Y$ is used?
 
