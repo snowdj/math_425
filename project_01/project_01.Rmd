@@ -1,0 +1,327 @@
+---
+title: "Project 1"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+author: "Dylan McDowell"
+output: 
+  html_document:
+    theme: cerulean
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+```{r, include=FALSE}
+library(tidyverse)
+library(broom)
+library(patchwork)
+library(alr3)
+library(qqplotr)
+library(lmtest)
+```
+
+# Background
+
+Some environmental cleanup work requires that nuclear materials, such as plutonium 238, be located and completely removed from a restoration site. When plutonium has become mixed with other materials in very small amounts, detecting its presence can be a difficult task. Even very small amounts can be traced, however, because plutonium emits subatomic particles - alpha particles -- that can be detected. Devices that are used to detect plutonium record the intensity of alpha particle strikes in counts per seconds **(#/sec)**. The regression relationship between alpha counts per second (the response variable) and plutonium activity (the explanatory variable) is then used to estimate the activity of plutonium in the material under study. This use of a regression relationship involves inverse prediction [i.e., predicting plutonium activity ($X$) from the observed alpha count ($Y$)], a procedure discussed in Chapter 4. 
+
+The task here is to estimate the regression relationship between alpha counts per second and plutonium activity. This relationship varies for each measurement device and must be established precisely each time a different measurement device is used. It is reasonable to assume here that the level of alpha counts increases with plutonium activity, but the exact nature of the relationship is generally unknown. 
+
+In a study to establish the regression relationship for a particular measurement device, four plutonium standards were used. These standards are aluminum/plutonium rods containing a fixed, known level of plutonium activity. The levels of plutonium activity in the four standards were 0.0, 5.0, 10.0, and 20.0 picocuries per grams **(pCi/g)**. Each standard was exposed to the detection device from 4 to 10 times, and the rate of alpha strikes, measured as counts per second, was observed for each replication. A portion of the data is shown in **Table 3.10**, and the data are plotted as a scatter plot in **Figure 3.20a**. Notice that, as expected, the strike rates tends to increase with the activity level of plutonium. This results from background radiation and indicates that a regression model with an intercept terms is required here. 
+
+<center>
+```{r, echo=FALSE}
+pluton <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%203%20Data%20Sets/CH03TA10.txt", header=FALSE)
+colnames(pluton) <- c("AlphaCount","PlutoniumActivity")
+pander::pander(head(pluton), caption = "Table 3.10")
+```
+</center>
+
+# Analysis
+
+```{r, fig.align='center', message=FALSE, warning=FALSE, fig.width=9.5, fig.height=4.2}
+scatter.plt <-  pluton %>% 
+  ggplot(aes(x = PlutoniumActivity, y = AlphaCount)) + 
+  geom_point() + 
+  scale_x_continuous(limits = c(-8,30)) +
+  scale_y_continuous(breaks = seq(0.00,0.15, by = 0.03)) + 
+  labs(title = "Scatter Plot", x = "pCi/g", y = "#/sec", 
+       caption = "Figure 3.20a") + 
+  theme_bw() +
+  theme(plot.caption = element_text(color = "#999999"),
+        plot.title = element_text(hjust = 0.5),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        axis.line = element_line(colour = "black"),
+        axis.ticks.length = unit(-0.25, "cm"),
+        axis.text.x = element_text(margin=unit(c(0.5,0.5,0.5,0.5), "cm")), 
+        axis.text.y = element_text(margin=unit(c(0.5,0.5,0.5,0.5), "cm")))
+
+lowess.plt <-  pluton %>% 
+  ggplot(aes(x = PlutoniumActivity, y = AlphaCount)) + 
+  geom_point() + 
+  geom_smooth(method = "loess", se = FALSE, span = 1, size = .5, color = "#317eac") + 
+  scale_x_continuous(limits = c(-8,30)) + 
+  scale_y_continuous(breaks = seq(0.00, 0.15, by = 0.03)) +
+  labs(title = "Lowess Smoothed Curve", x = "pCi/g", y = "#/sec", 
+       caption = "Figure 3.20b") + 
+  theme_bw() + 
+    theme(plot.caption = element_text(color = "#999999"),
+        plot.title = element_text(hjust = 0.5),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        axis.line = element_line(colour = "black"),
+        axis.ticks.length = unit(-0.25, "cm"),
+        axis.text.x = element_text(margin=unit(c(0.5,0.5,0.5,0.5), "cm")), 
+        axis.text.y = element_text(margin=unit(c(0.5,0.5,0.5,0.5), "cm")))
+
+scatter.plt + lowess.plt
+```
+
+The first step of the analysis was to examime the relationship between the two variables. Above a scatter plot and lowess regression have been plotted and it can be seen, through the lowess regression, that there is a linear relationship, although slightly more curvilinear, in our scope. It can also be pointed out that one of the measurements does not fit at all with these other data. Upon further examination, it is revealed that this observation wasn't collected with proper experimental controls and therefore is thrown out. 
+
+A linear regression function was fitted next. The output regression can be seen below in **Figure 3.21a**. Also, a plot of the residuals against the fitted values is shown in **Figure 3.21b**, and a normal probability plot is shown in **Figure 3.21c**. 
+
+## First Regression Output
+```{r, results="hold"}
+pluton <- pluton %>% slice(1:(n()-1))
+pluton.lm <- lm(AlphaCount ~ PlutoniumActivity, data = pluton)
+pluton.aov <- aov(AlphaCount ~ PlutoniumActivity, data = pluton)
+pluton.fit <- pureErrorAnova(pluton.lm)
+
+pluton.lm %>% pander::pander()
+
+pluton.aov %>% summary() %>% pander::pander()
+
+pluton.fit %>% 
+  slice(2:n()) %>% 
+  arrange(Df) %>% 
+  mutate(Stats = c("Lack of Fit", "Pure Error", "Total Error")) %>% 
+  select(Stats, everything()) %>% 
+  pander::pander(caption = "Lack of Fit Analysis")
+```
+
+```{r, fig.align='center',fig.height=4.2,fig.width=9.5}
+fitted.resid <- augment(pluton.lm) %>% 
+  ggplot(aes(x = .fitted, y = .resid)) +
+  geom_point() + 
+  geom_hline(yintercept = 0) +
+  scale_x_continuous(expand = c(0,0), limits = c(0.00, 0.12), breaks = seq(0.00,0.12,0.02)) +
+  scale_y_continuous(expand = c(0,0), limits = c(-0.04, 0.04), breaks = seq(-0.04,0.04,0.01)) +
+  labs(title = "(b) \n Residual Plot", x = "Fitted", y = "Residual") + 
+  theme_bw() +
+  theme(plot.caption = element_text(color = "#999999"),
+        plot.title = element_text(hjust = 0.5),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        axis.line = element_line(colour = "black"),
+        axis.ticks.length = unit(-0.25, "cm"),
+        axis.text.x = element_text(margin=unit(c(0.5,0.5,0.5,0.5), "cm")), 
+        axis.text.y = element_text(margin=unit(c(0.5,0.5,0.5,0.5), "cm")))
+
+qq.norm <- augment(pluton.lm) %>% 
+  ggplot(aes(sample = .resid)) + 
+  stat_qq_band(color = "black", fill = NA, linetype = 2) +
+  stat_qq_line(color = "red", size = .5) +
+  stat_qq_point() +
+  labs(title = "(c) \n Normal Probability Plot",
+       x = "Theoretical Quantiles \n lm(Y ~ X)", 
+       y = "Standardized residuals") +
+  theme_bw() +
+  theme(plot.caption = element_text(color = "#999999"),
+        plot.title = element_text(hjust = 0.5),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        axis.line = element_line(colour = "black"),
+        axis.ticks.length = unit(-0.25, "cm"),
+        axis.text.x = element_text(margin=unit(c(0.5,0.5,0.5,0.5), "cm")), 
+        axis.text.y = element_text(margin=unit(c(0.5,0.5,0.5,0.5), "cm")))
+
+fitted.resid + qq.norm
+```
+
+We can see from the output that we have sufficient evidence to assume that the slope of the regression line is not zero **($F^{*}$ = 228.9984, P-Value = 0.0000)** so a relationship definitely exists between the two variables. But it is also apparent that the error variance flares out creating a megaphone shape with increasing plutonium activity. We can also see from **Figure 3.21c** that these data exhibit nonnormality. To confirm nonconstant error variance we can run the Breusch-Pagan test:
+
+<center>
+```{r, echo=FALSE}
+bptest(pluton.lm, studentize = FALSE) %>% 
+  pander::pander()
+```
+</center>
+
+## Box-Cox Transformation
+
+Nonconstant error variance requires that a transformation be made. Often times with count data the error variance can be stabilized through the use of a square root transformation of the response variable. Since that is only one option of many, we shall use the Box-Cox prodecure to suggest an appropriate power transformation:
+
+```{r, fig.align='center', echo=FALSE}
+boxCox(pluton.lm)
+```
+
+As we can see above we would be best off choosing a $\lambda \approx 0.5$ which is what was initially assumed but proven by the Box-Cox procedure. Thefore the next regression was fitted using $Y^{\prime} = \sqrt{Y}$. The results can be seen below:
+
+## Second Regression Output
+
+```{r, results="hold"}
+alpha.sqrt <- sqrt(pluton$AlphaCount)
+pluton.sqrt.lm <- lm(alpha.sqrt ~ PlutoniumActivity, data = pluton)
+pluton.sqrt.aov <- aov(alpha.sqrt ~ PlutoniumActivity, data = pluton)
+pluton.sqrt.fit <- pureErrorAnova(pluton.sqrt.lm)
+
+pluton.sqrt.lm %>% pander::pander()
+
+pluton.sqrt.aov %>% summary() %>% pander::pander()
+
+pluton.sqrt.fit %>% 
+  slice(2:n()) %>% 
+  arrange(Df) %>% 
+  mutate(Stats = c("Lack of Fit", "Pure Error", "Total Error")) %>% 
+  select(Stats, everything()) %>% 
+  pander::pander(caption = "Lack of Fit Analysis")
+```
+
+```{r, fig.align='center',fig.height=4.2,fig.width=9.5, warning=FALSE}
+fitted.resid <- augment(pluton.sqrt.lm) %>% 
+  ggplot(aes(x = .fitted, y = .resid)) +
+  geom_point() + 
+  geom_hline(yintercept = 0) +
+  scale_x_continuous(expand = c(0,0), limits = c(0.00, 0.4), breaks = seq(0.00,0.4,0.1)) +
+  scale_y_continuous(expand = c(0,0), limits = c(-0.07, 0.07), breaks = seq(-0.07,0.07,0.02)) +
+  labs(title = "(b) \n Residual Plot", x = "Fitted", y = "Residual") + 
+  theme_bw() +
+  theme(plot.caption = element_text(color = "#999999"),
+        plot.title = element_text(hjust = 0.5),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        axis.line = element_line(colour = "black"),
+        axis.ticks.length = unit(-0.25, "cm"),
+        axis.text.x = element_text(margin=unit(c(0.5,0.5,0.5,0.5), "cm")), 
+        axis.text.y = element_text(margin=unit(c(0.5,0.5,0.5,0.5), "cm")))
+
+qq.norm <- augment(pluton.sqrt.lm) %>% 
+  ggplot(aes(sample = .resid)) + 
+  stat_qq_band(color = "black", fill = NA, linetype = 2) +
+  stat_qq_line(color = "red", size = .5) +
+  stat_qq_point() +
+  labs(title = "(c) \n Normal Probability Plot",
+       x = "Theoretical Quantiles \n lm(Y ~ X)", 
+       y = "Standardized residuals") +
+  theme_bw() +
+  theme(plot.caption = element_text(color = "#999999"),
+        plot.title = element_text(hjust = 0.5),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        axis.line = element_line(colour = "black"),
+        axis.ticks.length = unit(-0.25, "cm"),
+        axis.text.x = element_text(margin=unit(c(0.5,0.5,0.5,0.5), "cm")), 
+        axis.text.y = element_text(margin=unit(c(0.5,0.5,0.5,0.5), "cm")))
+
+fitted.resid + qq.norm
+```
+
+While it looks like the error variance problem has been fixed by our transformation. It now looks like, by our error plot, that $Y^{\prime}$ is nonlinearly related to X. This concern is confirmed by the lack of fit test statistic **($F^{*}$ = 10.1364, P-value = 0.0010)**. This is not unexpected since Y was previously linearly related to X. In order to fix this non-linearity problem we shall see if a sqaure root of the X variables will lead to a better linear fit. These results will be posted below with the regression having $Y^{\prime} = \sqrt{Y}$ and $X^{\prime} = \sqrt{X}$ as transformations. The results are show below:
+
+## Third Regression Output
+
+```{r, results="hold"}
+alpha.sqrt <- sqrt(pluton$AlphaCount)
+plut.sqrt <- sqrt(pluton$PlutoniumActivity)
+pluton.sqrt2.lm <- lm(alpha.sqrt ~ plut.sqrt, data = pluton)
+pluton.sqrt2.aov <- aov(alpha.sqrt ~ plut.sqrt, data = pluton)
+pluton.sqrt2.fit <- pureErrorAnova(pluton.sqrt2.lm)
+
+pluton.sqrt2.lm %>% pander::pander()
+
+pluton.sqrt2.aov %>% summary() %>% pander::pander()
+
+pluton.sqrt2.fit %>% 
+  slice(2:n()) %>% 
+  arrange(Df) %>% 
+  mutate(Stats = c("Lack of Fit", "Pure Error", "Total Error")) %>% 
+  select(Stats, everything()) %>% 
+  pander::pander(caption = "Lack of Fit Analysis")
+```
+
+```{r, fig.align='center',fig.height=4.2,fig.width=9.5, warning=FALSE}
+fitted.resid <- augment(pluton.sqrt2.lm) %>% 
+  ggplot(aes(x = .fitted, y = .resid)) +
+  geom_point() + 
+  geom_hline(yintercept = 0) +
+  scale_x_continuous(expand = c(0,0), limits = c(0.00, 0.4), breaks = seq(0.00,0.4,0.1)) +
+  scale_y_continuous(expand = c(0,0), limits = c(-0.07, 0.07), breaks = seq(-0.07,0.07,0.02)) +
+  labs(title = "(b) \n Residual Plot", x = "Fitted", y = "Residual") + 
+  theme_bw() +
+  theme(plot.caption = element_text(color = "#999999"),
+        plot.title = element_text(hjust = 0.5),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        axis.line = element_line(colour = "black"),
+        axis.ticks.length = unit(-0.25, "cm"),
+        axis.text.x = element_text(margin=unit(c(0.5,0.5,0.5,0.5), "cm")), 
+        axis.text.y = element_text(margin=unit(c(0.5,0.5,0.5,0.5), "cm")))
+
+qq.norm <- augment(pluton.sqrt2.lm) %>% 
+  ggplot(aes(sample = .resid)) + 
+  stat_qq_band(color = "black", fill = NA, linetype = 2) +
+  stat_qq_line(color = "red", size = .5) +
+  stat_qq_point() +
+  labs(title = "(c) \n Normal Probability Plot",
+       x = "Theoretical Quantiles \n lm(Y ~ X)", 
+       y = "Standardized residuals") +
+  theme_bw() +
+  theme(plot.caption = element_text(color = "#999999"),
+        plot.title = element_text(hjust = 0.5),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        axis.line = element_line(colour = "black"),
+        axis.ticks.length = unit(-0.25, "cm"),
+        axis.text.x = element_text(margin=unit(c(0.5,0.5,0.5,0.5), "cm")), 
+        axis.text.y = element_text(margin=unit(c(0.5,0.5,0.5,0.5), "cm")))
+
+model.fit <- pluton %>% 
+  ggplot(aes(x = sqrt(PlutoniumActivity), y = sqrt(AlphaCount))) + 
+  geom_point() +
+  geom_smooth(method = "loess", color = "#317eac", size = .5) + 
+  scale_x_continuous(limits = c(0,5)) +
+  labs(title = "(d) \n Confidence Band for Regression \n Line and Lowess Curve",
+       x = "X'", y = "Y'") + 
+  theme_bw() +
+  theme(plot.caption = element_text(color = "#999999"),
+        plot.title = element_text(hjust = 0.5),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        axis.line = element_line(colour = "black"),
+        axis.ticks.length = unit(-0.25, "cm"),
+        axis.text.x = element_text(margin=unit(c(0.5,0.5,0.5,0.5), "cm")), 
+        axis.text.y = element_text(margin=unit(c(0.5,0.5,0.5,0.5), "cm")))
+
+fitted.resid + qq.norm
+```
+
+```{r, echo=FALSE, fig.align='center', fig.width=4.5, fig.height=4, warning = FALSE}
+model.fit
+```
+
+It can now be seen that most of the model deviations have been corrected. We now have a better lack-of-fit statistic and these data remain normal by checking the Normal Probability Plot. There still remains some nonconstancy of the error variance by looking at the Residual Plot, but it does not look severe. To be sure we can, once again, utilize the Breusch-Pagan test:
+
+<center>
+```{r, echo=FALSE}
+bptest(pluton.sqrt2.aov, studentize = FALSE) %>% 
+  pander::pander()
+```
+</center>
+
+As we can see a statistic of $X^{2}_{BP} = 3.85$ and a P-value of $0.04966$ which is close enough to 0.05 to assume constant variance. **Figure 3.23d** contains a SYSTAT plot of the confidence band for the fitted regression line: 
+
+$$
+\hat{Y_{i}^{\prime}} = 0.0730 + 0.0573X^{\prime}
+$$
+
+# Conclusion
+
+After a few transformations we have been able to fit the regression line fairly precisely. Since the Lowess regression line falls completely within the confidence bands of the plot we can be sure the regression has been fit reasonably between $Y^{\prime}$ and $X^{\prime}$. The lack of fit test statistic **($F^{*}$ = 1.2868, P-value = .2992)** supports the regression relating $Y^{\prime} = \sqrt{Y}$ to $X^{\prime} = \sqrt{X}$.
