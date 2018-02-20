@@ -1,0 +1,520 @@
+---
+title: "Hard Work Chapter 8"
+output: 
+  html_document:
+    theme: cerulean
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+```{r, include=FALSE}
+library(tidyverse)
+library(broom)
+library(latex2exp)
+```
+
+<style>
+
+</style>
+
+## Instructions
+
+1. Study Sections 8.2-8.6 -- "Regression Models for Quantitative and Qualitative Predictors."    
+
+2. Attempt and submit at least <span id=points style="padding-left:0px;">{44}</span> Hard Work Points by Saturday at 11:59 PM.    
+<span id=note>Over <span id=points style="padding-left:0px;">{52}</span> gets you {+1} Final Exam Point.</span>    
+
+
+## Reading Points <span id=headpoints>{25} Possible</span>
+
+### Section 8.2 <span id=recpoints>{7}</span><span id=report>{ / }</span>
+
+### Section 8.3 <span id=recpoints>{7}</span><span id=report>{ / }</span>
+
+### Section 8.4 <span id=recpoints>{3}</span><span id=report>{ / }</span>
+
+### Section 8.5 <span id=recpoints>{5}</span><span id=report>{ / }</span>
+
+### Section 8.6 <span id=recpoints>{3}</span><span id=report>{ / }</span>
+
+
+
+## Theory Points <span id=headpoints>{7} Possible</span>
+
+
+### Problem 8.14 <span id=points>{2}</span><span id=report>{ / }</span>
+
+In a regression study of factors affecting learning time for a certain task (measured in minutes), gender of learner was included as a predictor variable ($X_{2}$) that was coded $X_{2} = 1$ if male and 0 if female. It was found that $b_{2} = 22.3$ and $s\{b_{2}\} = 3.8$. An observer questioned whether the coding scheme for gender is fair because it results in a positive coefficient, leading to longer learning times for males than females. Comment. 
+
+__Solution:__
+<div id="rcorners3">
+
+</div></br>
+
+### Problem 8.17 <span id=recpoints>{2}</span><span id=report>{ / }</span> 
+
+Refer to regression models (8.33) and (8.49). Would the conclusion that $\beta_{2} = 0$ have the same implication for each of these modles? Explain.
+
+__Solution:__
+<div id="rcorners2">
+
+</div></br>
+
+
+### Problem 8.21 <span id=recpoints>{2}</span><span id=report>{ / }</span> 
+
+In a regression analysis of on-the-job head injuries of warehouse laborers caused by falling objects, Y is a measure of severity of the injury, $X_{1}$ is an index reflecting both the weight of the object and the distance it fell, and $X_{2}$ and $X_{3}$ are indicator variables for nature of head protection worn at the time of the accident, coded as follows:
+
+<center>
+```{r, echo=FALSE}
+tibble(Type_of_Protection = c("Hard hat", "Bump Cap", "None"), X2 = c(1,0,0), X3 = c(0,1,0)) %>% 
+  pander::pander()
+```
+</center>
+
+The response function to be used in the study is $E[Y] = \beta_{0} + \beta_{1}X_{1} + \beta_{2}X_{2} + \beta_{3}X_{3}$.
+
+  **a)** Develop the response function for each type of protection category.
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+  
+  **b)** For each of the following questions, specify the alternatives $H_{o}$ and $H_{a}$ for the appropriate test: __(1)__ With $X_{1}$ fixed, does wearing a bump cap reduce the expected severity of injury as compared with wearing no protection? __(2)__ With $X_{1}$ fixed, is the expected severity of injury the same when wearing a hard hat as when wearing a bump cap?
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+  
+
+### Problem 8.22 <span id=points>{1}</span><span id=report>{ / }</span> 
+
+Refer to tool wear regression model (8.36). Suppose the indicator variables had been defined as follows: $X_{2} = 1$ if tool model M2 and 0 otherwise, $X_{3} = 1$ if tool model M3 and 0 otherwise, $X_{4} = 1$
+if tool model M4 and 0 otherwise. Indicate the meaning of each of the following: __(1)__ $\beta_{3}$ __(2)__ $\beta_{4} - \beta{3}$. __(3)__ $\beta_{1}$.
+
+__Solution:__
+<div id="rcorners3">
+
+</div></br>
+
+## Application Points <span id=headpoints>{29} Possible</span>
+
+<a id=datalink style="font-size:.9em;" target="_blank" href=http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/index.html>Data Files</a>
+
+### Problem 8.15 <span id=recpoints>{5}</span><span id=report>{ / }</span> 
+
+```{r}
+# Code to read in the data
+# It has to be merged from the 1.20 and 8.15 data files.
+p1.20 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%201%20Data%20Sets/CH01PR20.txt", header=FALSE)
+p8.15 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%208%20Data%20Sets/CH08PR15.txt", header=FALSE)
+p15 <- cbind(p1.20,p8.15)
+
+# Give it nice column names for conevience:
+colnames(p15) <- c("Y","X1","X2")
+```
+
+Refer to Copier Maintenance Problem 1.20. The users of the copiers are either training institutions that use a small model, or business firms that use a large, commercial model. An analyst at Tri-City wishes to fit a regression model including both number copiers serviced ($X_{1}$) and type of copier ($X_{2}$) as predictor variables and estimate the effect of copier model (S--small, L--large) on number of minutes spend on the service call. Assume that regression model (8.33) is appropriate, and let $X_{2} = 1$ if small model and 0 if large, commercial model. 
+
+  **a)** Explain the meaning of all regression coefficients in the model.
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+  
+  
+  **b)** Fit the regression model and state the estimated regression function.
+  
+  __Solution:__
+  <div id="rcorners2">
+```{r}
+copier.lm <- lm(Y ~ X1 + X2, p15)
+```
+
+\[
+\widehat{Y} = b_{0} + b_{1}X_{i} + b_{2}X_{i} \\
+\widehat{Y} = `r tidy(copier.lm)[1,2]` + `r tidy(copier.lm)[2,2]`X_{i1} + `r tidy(copier.lm)[3,2]`X_{i2}
+\]
+  </div></br>
+  
+  
+  **c)** Estimate the effect of copier model on mean service time with a 95 percent confidence interval. Interpret your interval estimate. 
+  
+  __Solution:__
+  <div id="rcorners2">
+  <center>
+```{r}
+confint(copier.lm)[3,1:2] 
+```
+  </center>
+  </div></br>
+  
+  
+  **d)** Why would the analyst wish to include $X_{1}$, number of copiers, in the regression model when interest is in estimating the effect of type of copier model on service time?
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+  
+  
+  **e)** Obtain the residuals and plot them against $X_{1}X_{2}$. Is there any indication that an interaction term in the regression model would be helpful?
+  
+  __Solution:__
+  <div id="rcorners2">
+```{r, fig.align='center'}
+augment(copier.lm) %>% 
+  ggplot(aes(x = (X1*X2), y = .resid)) +
+  geom_point(shape = 1) + 
+  labs(title = TeX("Residuals Against X_{1}X_{2}"), 
+       x = TeX("X_{1}X_{2}"), y = "Residuals") +
+  theme_bw()
+```
+  </div></br>
+  
+
+### Problem 8.16 <span id=points>{5}</span><span id=report>{ / }</span> 
+
+```{r}
+# Code to read in the data
+# It has to be merged from the 1.19 and 8.16 data files.
+p1.19 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%201%20Data%20Sets/CH01PR19.txt", header=FALSE)
+p8.16 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%208%20Data%20Sets/CH08PR16.txt", header=FALSE)
+p16 <- cbind(p1.19,p8.16)
+
+# Give it nice column names for conevience:
+colnames(p16) <- c("Y","X1","X2")
+```
+
+Refer to Grade Point Average Problem 1.19. An assistant to the director of admission conjectured that the predictive power of the model could be improved by adding information on whether the student had chosen a major field of concentration at the time the application was submitted. Assume that regression model (8.33) is appropriate, where $X_{1}$ is entrance test score and $X_{2} = 1$ if student had indicated a major field of concentration at the time of application and 0 if the major field was undecided.
+
+  **a)** Explain how each regression coefficient in model (8.33) is interpreted here.
+  
+  __Solution:__
+  <div id="rcorners3">
+  
+  </div></br>
+  
+  **b)** Fit the regression model and state the estimated regression function. 
+  
+  __Solution:__
+  <div id="rcorners3">
+```{r}
+gpa.lm <- lm(Y ~ X1 + X2, p16)
+```
+
+\[
+\widehat{Y} = b_{0} + b_{1}X_{i} + b_{2}X_{i} \\
+\widehat{Y} = `r tidy(gpa.lm)[1,2]` + `r tidy(gpa.lm)[2,2]`X_{i1} + `r tidy(gpa.lm)[3,2]`X_{i2}
+\]
+  </div></br>
+  
+  **c)** Test whether the $X_{2}$ variable can be dropped from the regression model; use $\alpha = 0.01$. State the alternatives, decision rule, and conclusion. 
+  
+  __Solution:__
+  <div id="rcorners3">
+```{r}
+summary(gpa.lm)
+```
+  $$
+  H_{0}: \beta_{2} = 0 \\
+  H_{a}: \beta_{2} \neq 0 \
+  s\{b_{2}\} = 0.11997 \\
+  t^{*} = -0.094030/.11997 = -.786 \\
+  t(.995,117) = 2.6185 \\
+  \text{If } |t^{*}| \leq 2.6185 \text{ conclude } H_{0}, \text{ otherwise conclude } H_{a}
+  $$
+Given our test statistic we fail to reject the null hypothesis anc conclude that $\beta_{2}$ is equal to zero. We can therefore drop that variable from the model as it provides no signicant effects. 
+  </div></br>
+  
+  **d)** Obtain the residuals for regression model (8.33) and plot them against $X_{1}X_{2}$. Is there any evidence in your plot that it would be helpful to include an interaction term in the model?
+  
+  __Solution:__
+  <div id="rcorners3">
+```{r, fig.align='center'}
+augment(gpa.lm) %>% 
+  ggplot(aes(x = (X1*X2), y = .resid)) +
+  geom_point(shape = 1) + 
+  labs(title = TeX("Residuals Against X_{1}X_{2}"), 
+       x = TeX("X_{1}X_{2}"), y = "Residuals") +
+  theme_bw()
+```
+
+  </div></br>
+  
+### Problem 8.19 <span id=recpoints>{3}</span><span id=report>{ / }</span> 
+
+```{r}
+# Use dataset p15 for this problem.
+```
+
+Refer to Copier Maintenance Problems 1.20 and 8.15
+
+  **a)** Fit regression model (8.49) and state the estimated regression function.
+  
+  __Solution:__
+  <div id="rcorners2">
+```{r}
+copier.interaction.lm <- lm(Y ~ X1*X2, p15)
+b0 <- round(coef(copier.interaction.lm)[1], 3)
+b1 <- round(coef(copier.interaction.lm)[2], 3)
+b2 <- round(coef(copier.interaction.lm)[3], 3)
+b3 <- round(coef(copier.interaction.lm)[4], 3)
+```
+\[
+\widehat{Y} = b_{0} + b_{1}X_{i} + b_{2}X_{i} + b_{3}X_{i1}X_{i2} \\
+\widehat{Y} = `r b0` + `r b1`X_{i1} + `r b2`X_{i2} + `r b3`X_{i1}X_{i2}
+\]
+  </div></br>
+  
+  **b)** Test whether the interaction term can be dropped from the model; control the $\alpha$ risk at 0.10. State the alternatives, decision rule, and conclusion. What is the P-value of the test? If the interaction term cannot be dropped from the model, describe the nature of the interaction effect. 
+  
+  __Solution:__
+  <div id="rcorners2">
+```{r}
+summary(copier.interaction.lm)
+```
+
+  </div></br>
+  
+### Problem 8.20 <span id=points>{3}</span><span id=report>{ / }</span> 
+
+```{r}
+# Use dataset p16 for this problem.
+```
+
+Refer to Grade Point Average problems 1.19 and 8.16
+
+  **a)** Fit regression model (8.49) and state the estimated regression function. 
+  
+  __Solution:__
+  <div id="rcorners3">
+```{r}
+gpa.interaction.lm <- lm(Y ~ X1*X2, p16)
+b0 <- round(coef(gpa.interaction.lm)[1], 3)
+b1 <- round(coef(gpa.interaction.lm)[2], 3)
+b2 <- round(coef(gpa.interaction.lm)[3], 3)
+b3 <- round(coef(gpa.interaction.lm)[4], 3)
+```
+\[
+\widehat{Y} = b_{0} + b_{1}X_{i} + b_{2}X_{i} + b_{3}X_{i1}X_{i2} \\
+\widehat{Y} = `r b0` + `r b1`X_{i1} + `r b2`X_{i2} + `r b3`X_{i1}X_{i2}
+\]
+  </div></br>
+  
+  **b)** Test whether the interaction term can be dropped from the model; use $\alpha = 0.05$. State the alternatives, decision rule, and conclusion. If the interaction term cannot be dropped from the model, describe the nature of the interaction effect. 
+  
+  __Solution:__
+  <div id="rcorners3">
+```{r}
+summary(gpa.interaction.lm)
+```
+
+  </div></br>
+  
+### Problem 8.24 <span id=recpoints>{4}</span><span id=report>{ / }</span> 
+
+```{r}
+# Code to read in the data
+p24 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%208%20Data%20Sets/CH08PR24.txt", header=FALSE)
+
+# Give it nice column names for conevience:
+colnames(p24) <- c("Y","X1","X2")
+```
+
+__Assesed Valuations__. A tax consultant studied the current relation between selling price and assessed valuation of one-family residential dwellings in a large tax district by obtaining data for a random sample of 16 recent "arm's-length" sales transactions of one-family dwellings located on corner lots and for a random sample of 48 recent sales of one-family dwellings not located on corner lots. In the data that follow, both selling price (Y) and assessed valuation ($X_{1}$) are expressed in thousand dollars, whereas lot location ($X_{2}$) is coded 1 for corner lots and 0 for non-corner lots. Assume that the error variances in the two populations are equal and that regression model (8.49) is appropriate. 
+
+  **a)** Plot the sample data for the two populations as a symbolic scatter plot. Does the regression relation appear to be the same for the two populations?
+  
+  __Solution:__
+  <div id="rcorners2">
+```{r, fig.align='center'}
+p24 %>% 
+  ggplot(aes(x = X1*1000, y = Y*1000, color = factor(X2))) +
+  geom_point() + 
+  scale_y_continuous(labels = scales::dollar_format("$")) +
+  scale_x_continuous(labels = scales::dollar_format("$")) +
+  scale_color_manual(labels = c("Non-Corner Lot", "Corner Lot"), 
+                     values = c("coral", "cyan")) + 
+  labs(title = "Symbolic Scatter Plot", 
+       x = "Assessed Valuation", 
+       y = "Selling Price",
+       color = "Lot Type") +
+  theme_bw()
+```
+  
+  </div></br>
+  
+  **b)** Test for identity of the regression functions for dwellings on corner lots and dwellings in other locations; control the risk of Type I error at 0.05. State the alternatives, decision rule, and conclusion. 
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+  
+  **c)** Plot the estimated regression functions for the two populations and describe the nature of the differences between them. 
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+
+### Problem 8.25 <span id=recpoints>{3}</span><span id=report>{ / }</span> 
+
+```{r}
+# Code to read in the data
+p25 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%206%20Data%20Sets/CH06PR09.txt", header=FALSE)
+
+# Give it nice column names for conevience:
+colnames(p25) <- c("Y","X1","X2","X3")
+```
+
+Refer to Grocery Retailer Problem 6.9 and 7.4
+
+  **a)** Fit regression model (8.58) using the number of cases shipped ($X_{1}$) and the binary variable ($X_{3}$) as predictors. 
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+  
+  
+  **b)** Test whether or not the interaction terms and the quadratic term can be dropped from the model; use $\alpha = 0.05$. State the alternatives, decision rule, and conclusion. What is the P-value of the test?
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+  
+
+
+### Project 8.42 <span id=points>{6}</span><span id=report>{ / }</span> 
+
+**Note**: You can swap 8.36 out for any of 8.37-8.42 as well if a different project interests you more.
+
+```{r}
+# Code to read in the data
+
+# Select your Project file. Change the APPENC01.txt to be any of:
+project <- "APPENC03.txt"
+# APPENC02.txt, APPENC03.txt, APPENC04.txt, ... 
+# depending on which Project problem you select. 
+
+projdata <- read.table(paste0("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Appendix%20C%20Data%20Sets/",project), header=FALSE)
+
+# Give it nice column names for conevience:
+#colnames(projdata) <- c(you'll have to fill this in yourself)
+```
+
+Refer to **Market Share** data set in Appendix C.3 Company executives want to be able to predict market share of their product ($Y$) based on merchandise price ($X_{1}$), the gross Nielsen rating points ($X_{2}$), an index of the amount of advertising exposure that the product received), the presence or absence of a wholesale pricing discount ($X_{3} - 1$ if discount present; otherwise $X_{3} = 0$), the presence or absence of a package promotion during the period ($X_{4} = 1$ if promotion present; otherwise $X_{4} = 0$), and year ($X_{5}$). Code year as a nominal level variable and use 2000 as the referent year. 
+
+  **a)** Fit a first-order regression model. Plot the residuals against the fitted values. How well does the first-order model appear to fit the data?
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+  
+  **b)** Re-fit the model in part (a). After adding all second-order terms involving only the quantitative predictors. Test whether or not all quadratic and interaction terms can be dropped from the regression model: use $\alpha = 0.05$. State the alternatives, decision rule and conclusion. 
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+  
+  **c)** In part (a), test whether advertising index ($X_{2}$) and year ($X_{5}$) can be dropped from the model; use $\alpha = 0.05$. State the alternatives, decision rule, and conclusion. 
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+  
+
+
+
+<style>
+#points {
+  font-size:.8em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#317eac;
+}
+
+#recpoints {
+  font-size:.8em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#7eac31;
+}
+
+
+#rrecpoints {
+  font-size:1em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#7eac31;
+}
+
+#datalink {
+  font-size:.5em;
+  color:#317eac;
+  padding-left:5px;
+}
+
+#headnote {
+  font-size:.6em;
+  color:#787878;
+}
+
+#note {
+  font-size:.8em;
+  color:#787878;
+}
+
+#headpoints {
+ font-size:12pt;
+ color: #585858; 
+ padding-left: 15px;
+}
+
+#report {
+  font-size:.7em;
+  padding-left:15px;
+  font-weight:normal; 
+  color:#5a5a5a;
+}
+  
+#rcorners2 {
+    border-radius: 25px;
+    border: 2px solid #73AD21;
+    padding: 20px; 
+    width: auto;
+    height: auto;    
+}
+
+#rcorners3 {
+    border-radius: 25px;
+    border: 2px solid #317eac;
+    padding: 20px; 
+    width: auto;
+    height: auto;    
+}
+
+</style>
+
+
+<footer>
+</footer>
+
+
+
+ 
+
+ 
+
+ 
+
+ 
