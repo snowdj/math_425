@@ -1,0 +1,1 @@
+This a Repo for Math 425, a Linear Regression and Modeling Course. Please feel free to check it out. 
