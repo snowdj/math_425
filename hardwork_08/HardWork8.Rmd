@@ -57,7 +57,7 @@ Refer to regression models (8.33) and (8.49). Would the conclusion that $\beta_{
 
 __Solution:__
 <div id="rcorners2">
-
+No, because $\beta_{2}$ in model 8.33 measures the differential effect of the treatments, in general, it shows how much high the mean line is for the class coded 1 than the line for the class coded 0, for any given level of $X_{1}$. While in model 8.49 $\beta_{2}$ indicates how much greater is the Y intercept of the response function for the class coded 1 than that for the class coded 0. 
 </div></br>
 
 
@@ -78,7 +78,10 @@ The response function to be used in the study is $E[Y] = \beta_{0} + \beta_{1}X_
   
   __Solution:__
   <div id="rcorners2">
-  
+  \begin{align*}
+  X_{2} &= \begin{cases} 1 & \text{if Protection Hard Hat} \\ 0 & \text{otherwise} \end{cases} \\
+  X_{3} &= \begin{cases} 1 & \text{if Protection Bump Cap} \\ 0 & \text{otherwise} \end{cases}
+  \end{align*}
   </div></br>
   
   **b)** For each of the following questions, specify the alternatives $H_{o}$ and $H_{a}$ for the appropriate test: __(1)__ With $X_{1}$ fixed, does wearing a bump cap reduce the expected severity of injury as compared with wearing no protection? __(2)__ With $X_{1}$ fixed, is the expected severity of injury the same when wearing a hard hat as when wearing a bump cap?
@@ -277,7 +280,15 @@ b3 <- round(coef(copier.interaction.lm)[4], 3)
 ```{r}
 summary(copier.interaction.lm)
 ```
-
+  $$
+  \alpha = 0.10 \\
+  H_{0}: \beta_{3} = 0 \\
+  H_{a}: \beta_{3} \neq 0 \\
+  s\{b_{2}\} = `r tidy(copier.interaction.lm)[4,3]` \\
+  t^{*} = `r tidy(copier.interaction.lm)[4,2]`/`r tidy(copier.interaction.lm)[4,3]` = `r tidy(copier.interaction.lm)[4,2]/tidy(copier.interaction.lm)[4,3]` \\
+  t(.95,41) = `r qt(.95,41)` \\
+  \text{If } |t^{*}| \leq `r qt(.95,41)` \text{ conclude } H_{0}, \text{ otherwise conclude } H_{a}
+  $$
   </div></br>
   
 ### Problem 8.20 <span id=points>{3}</span><span id=report>{ / }</span> 
@@ -312,7 +323,15 @@ b3 <- round(coef(gpa.interaction.lm)[4], 3)
 ```{r}
 summary(gpa.interaction.lm)
 ```
-
+  $$
+  \alpha = 0.05 \\
+  H_{0}: \beta_{3} = 0 \\
+  H_{a}: \beta_{3} \neq 0 \\
+  s\{b_{2}\} = `r tidy(gpa.interaction.lm)[4,3]` \\
+  t^{*} = `r tidy(gpa.interaction.lm)[4,2]`/`r tidy(gpa.interaction.lm)[4,3]` = `r tidy(gpa.interaction.lm)[4,2]/tidy(gpa.interaction.lm)[4,3]` \\
+  t(.975,116) = `r qt(.975,116)` \\
+  \text{If } |t^{*}| \leq `r qt(.975,116)` \text{ conclude } H_{0}, \text{ otherwise conclude } H_{a}
+  $$
   </div></br>
   
 ### Problem 8.24 <span id=recpoints>{4}</span><span id=report>{ / }</span> 

@@ -1594,7 +1594,7 @@ div.tocify {
 <p>Refer to regression models (8.33) and (8.49). Would the conclusion that <span class="math inline">\(\beta_{2} = 0\)</span> have the same implication for each of these modles? Explain.</p>
 <strong>Solution:</strong>
 <div id="rcorners2">
-
+<p>No, because <span class="math inline">\(\beta_{2}\)</span> in model 8.33 measures the differential effect of the treatments, in general, it shows how much high the mean line is for the class coded 1 than the line for the class coded 0, for any given level of <span class="math inline">\(X_{1}\)</span>. While in model 8.49 <span class="math inline">\(\beta_{2}\)</span> indicates how much greater is the Y intercept of the response function for the class coded 1 than that for the class coded 0.</p>
 </div>
 <p></br></p>
 </section>
@@ -1638,7 +1638,10 @@ div.tocify {
 <p><strong>a)</strong> Develop the response function for each type of protection category.</p>
 <strong>Solution:</strong>
 <div id="rcorners2">
-
+<span class="math display">\[\begin{align*}
+  X_{2} &amp;= \begin{cases} 1 &amp; \text{if Protection Hard Hat} \\ 0 &amp; \text{otherwise} \end{cases} \\
+  X_{3} &amp;= \begin{cases} 1 &amp; \text{if Protection Bump Cap} \\ 0 &amp; \text{otherwise} \end{cases}
+  \end{align*}\]</span>
 </div>
 <p></br></p>
 <p><strong>b)</strong> For each of the following questions, specify the alternatives <span class="math inline">\(H_{o}\)</span> and <span class="math inline">\(H_{a}\)</span> for the appropriate test: <strong>(1)</strong> With <span class="math inline">\(X_{1}\)</span> fixed, does wearing a bump cap reduce the expected severity of injury as compared with wearing no protection? <strong>(2)</strong> With <span class="math inline">\(X_{1}\)</span> fixed, is the expected severity of injury the same when wearing a hard hat as when wearing a bump cap?</p>
@@ -1832,6 +1835,15 @@ b3 &lt;- round(coef(copier.interaction.lm)[4], 3)</code></pre>
 ## Residual standard error: 8.771 on 41 degrees of freedom
 ## Multiple R-squared:  0.9608, Adjusted R-squared:  0.9579 
 ## F-statistic: 334.6 on 3 and 41 DF,  p-value: &lt; 2.2e-16</code></pre>
+<span class="math display">\[
+  \alpha = 0.10 \\
+  H_{0}: \beta_{3} = 0 \\
+  H_{a}: \beta_{3} \neq 0 \\
+  s\{b_{2}\} = 0.9745891 \\
+  t^{*} = 1.777387/0.9745891 = 1.8237295 \\
+  t(.95,41) = 1.682878 \\
+  \text{If } |t^{*}| \leq 1.682878 \text{ conclude } H_{0}, \text{ otherwise conclude } H_{a}
+  \]</span>
 </div>
 <p></br></p>
 </section>
@@ -1877,6 +1889,15 @@ b3 &lt;- round(coef(gpa.interaction.lm)[4], 3)</code></pre>
 ## Residual standard error: 0.6124 on 116 degrees of freedom
 ## Multiple R-squared:  0.1194, Adjusted R-squared:  0.09664 
 ## F-statistic: 5.244 on 3 and 116 DF,  p-value: 0.001982</code></pre>
+<span class="math display">\[
+  \alpha = 0.05 \\
+  H_{0}: \beta_{3} = 0 \\
+  H_{a}: \beta_{3} \neq 0 \\
+  s\{b_{2}\} = 0.0264868 \\
+  t^{*} = 0.0622447/0.0264868 = 2.3500288 \\
+  t(.975,116) = 1.980626 \\
+  \text{If } |t^{*}| \leq 1.980626 \text{ conclude } H_{0}, \text{ otherwise conclude } H_{a}
+  \]</span>
 </div>
 <p></br></p>
 </section>
