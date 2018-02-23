@@ -95,7 +95,7 @@ The response function to be used in the study is $E[Y] = \beta_{0} + \beta_{1}X_
 ### Problem 8.22 <span id=points>{1}</span><span id=report>{ / }</span> 
 
 Refer to tool wear regression model (8.36). Suppose the indicator variables had been defined as follows: $X_{2} = 1$ if tool model M2 and 0 otherwise, $X_{3} = 1$ if tool model M3 and 0 otherwise, $X_{4} = 1$
-if tool model M4 and 0 otherwise. Indicate the meaning of each of the following: __(1)__ $\beta_{3}$ __(2)__ $\beta_{4} - \beta{3}$. __(3)__ $\beta_{1}$.
+if tool model M4 and 0 otherwise. Indicate the meaning of each of the following: __(1)__ $\beta_{3}$ __(2)__ $\beta_{4} - \beta_{3}$. __(3)__ $\beta_{1}$.
 
 __Solution:__
 <div id="rcorners3">
@@ -433,21 +433,22 @@ Refer to **Market Share** data set in Appendix C.3 Company executives want to be
   **a)** Fit a first-order regression model. Plot the residuals against the fitted values. How well does the first-order model appear to fit the data?
   
   __Solution:__
-  <div id="rcorners2">
+  <div id="rcorners3">
   
   </div></br>
   
   **b)** Re-fit the model in part (a). After adding all second-order terms involving only the quantitative predictors. Test whether or not all quadratic and interaction terms can be dropped from the regression model: use $\alpha = 0.05$. State the alternatives, decision rule and conclusion. 
   
   __Solution:__
-  <div id="rcorners2">
+  <div id="rcorners3">
   
   </div></br>
+  
   
   **c)** In part (a), test whether advertising index ($X_{2}$) and year ($X_{5}$) can be dropped from the model; use $\alpha = 0.05$. State the alternatives, decision rule, and conclusion. 
   
   __Solution:__
-  <div id="rcorners2">
+  <div id="rcorners3">
   
   </div></br>
   
