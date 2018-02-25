@@ -10,7 +10,10 @@ output:
 ```{r, include=FALSE}
 library(tidyverse)
 library(broom)
+library(patchwork)
 library(latex2exp)
+library(alr3)
+library(qqplotr)
 ```
 
 <style>
@@ -27,31 +30,31 @@ library(latex2exp)
 
 ## Reading Points <span id=headpoints>{25} Possible</span>
 
-### Section 8.2 <span id=recpoints>{7}</span><span id=report>{ / }</span>
+### Section 8.2 <span id=recpoints>{7}</span><span id=report>{ 7 / 7 }</span>
 
-### Section 8.3 <span id=recpoints>{7}</span><span id=report>{ / }</span>
+### Section 8.3 <span id=recpoints>{7}</span><span id=report>{ 7 / 7 }</span>
 
-### Section 8.4 <span id=recpoints>{3}</span><span id=report>{ / }</span>
+### Section 8.4 <span id=recpoints>{3}</span><span id=report>{ 3 / 3 }</span>
 
-### Section 8.5 <span id=recpoints>{5}</span><span id=report>{ / }</span>
+### Section 8.5 <span id=recpoints>{5}</span><span id=report>{ 5 / 5 }</span>
 
-### Section 8.6 <span id=recpoints>{3}</span><span id=report>{ / }</span>
+### Section 8.6 <span id=recpoints>{3}</span><span id=report>{ 3 / 3 }</span>
 
 
 
 ## Theory Points <span id=headpoints>{7} Possible</span>
 
 
-### Problem 8.14 <span id=points>{2}</span><span id=report>{ / }</span>
+### Problem 8.14 <span id=points>{2}</span><span id=report>{ 2 / 2 }</span>
 
 In a regression study of factors affecting learning time for a certain task (measured in minutes), gender of learner was included as a predictor variable ($X_{2}$) that was coded $X_{2} = 1$ if male and 0 if female. It was found that $b_{2} = 22.3$ and $s\{b_{2}\} = 3.8$. An observer questioned whether the coding scheme for gender is fair because it results in a positive coefficient, leading to longer learning times for males than females. Comment. 
 
 __Solution:__
 <div id="rcorners3">
-
+It's fair because $b_{2}$ is simply making a comparison against females. Meaning, that on average if you are a boy you take ~22.3 minutes longer to learn a task. It's not really leading to longer learning times at all. 
 </div></br>
 
-### Problem 8.17 <span id=recpoints>{2}</span><span id=report>{ / }</span> 
+### Problem 8.17 <span id=recpoints>{2}</span><span id=report>{ 2 / 2 }</span> 
 
 Refer to regression models (8.33) and (8.49). Would the conclusion that $\beta_{2} = 0$ have the same implication for each of these modles? Explain.
 
@@ -61,7 +64,7 @@ No, because $\beta_{2}$ in model 8.33 measures the differential effect of the tr
 </div></br>
 
 
-### Problem 8.21 <span id=recpoints>{2}</span><span id=report>{ / }</span> 
+### Problem 8.21 <span id=recpoints>{2}</span><span id=report>{ 2 / 2 }</span> 
 
 In a regression analysis of on-the-job head injuries of warehouse laborers caused by falling objects, Y is a measure of severity of the injury, $X_{1}$ is an index reflecting both the weight of the object and the distance it fell, and $X_{2}$ and $X_{3}$ are indicator variables for nature of head protection worn at the time of the accident, coded as follows:
 
@@ -78,35 +81,42 @@ The response function to be used in the study is $E[Y] = \beta_{0} + \beta_{1}X_
   
   __Solution:__
   <div id="rcorners2">
-  \begin{align*}
-  X_{2} &= \begin{cases} 1 & \text{if Protection Hard Hat} \\ 0 & \text{otherwise} \end{cases} \\
-  X_{3} &= \begin{cases} 1 & \text{if Protection Bump Cap} \\ 0 & \text{otherwise} \end{cases}
-  \end{align*}
+  Hard hat: $\widehat{Y} = (\beta_{0} + \beta_{2}) + \beta_{1}X_{1}$
+  
+  Bump cap: $\widehat{Y} = (\beta_{0} + \beta_{3}) + \beta_{1}X_{1}$
+  
+  None: $\widehat{Y} = \beta_{0} + \beta_{1}X_{1}$
   </div></br>
   
   **b)** For each of the following questions, specify the alternatives $H_{o}$ and $H_{a}$ for the appropriate test: __(1)__ With $X_{1}$ fixed, does wearing a bump cap reduce the expected severity of injury as compared with wearing no protection? __(2)__ With $X_{1}$ fixed, is the expected severity of injury the same when wearing a hard hat as when wearing a bump cap?
   
   __Solution:__
   <div id="rcorners2">
+  1) $H_{0}: \beta_{3} \geq 0, H_{a}: \beta_{3} < 0$
   
+  2) $H_{0}: \beta_{2} = \beta_{3}, \beta_{2} \neq \beta_{3}$
   </div></br>
   
 
-### Problem 8.22 <span id=points>{1}</span><span id=report>{ / }</span> 
+### Problem 8.22 <span id=points>{1}</span><span id=report>{ 2 / 2 }</span> 
 
 Refer to tool wear regression model (8.36). Suppose the indicator variables had been defined as follows: $X_{2} = 1$ if tool model M2 and 0 otherwise, $X_{3} = 1$ if tool model M3 and 0 otherwise, $X_{4} = 1$
 if tool model M4 and 0 otherwise. Indicate the meaning of each of the following: __(1)__ $\beta_{3}$ __(2)__ $\beta_{4} - \beta_{3}$. __(3)__ $\beta_{1}$.
 
 __Solution:__
 <div id="rcorners3">
+$\beta_{3}$: Measure the differential effects of the qualitative variable on the height of the response function for any given level of X_{1} always compared to Tool Model M1. 
 
+$\beta_{4} - \beta_{3}$: How much higher the response function is for Tool Model 4 than Tool Model 1. 
+
+$\beta_{1}$: The comparative level. 
 </div></br>
 
 ## Application Points <span id=headpoints>{29} Possible</span>
 
 <a id=datalink style="font-size:.9em;" target="_blank" href=http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/index.html>Data Files</a>
 
-### Problem 8.15 <span id=recpoints>{5}</span><span id=report>{ / }</span> 
+### Problem 8.15 <span id=recpoints>{5}</span><span id=report>{ 2 / 2 }</span> 
 
 ```{r}
 # Code to read in the data
@@ -125,7 +135,9 @@ Refer to Copier Maintenance Problem 1.20. The users of the copiers are either tr
   
   __Solution:__
   <div id="rcorners2">
+  $\beta_{1}$: For each 1 unit increase in number of copiers will result in $\beta_{1}$ increase/decrease on average. 
   
+  $\beta_{2}$: If copier model is 1 this is how many more/less minutes it will take compared to large model on average. 
   </div></br>
   
   
@@ -145,7 +157,6 @@ copier.lm <- lm(Y ~ X1 + X2, p15)
   
   
   **c)** Estimate the effect of copier model on mean service time with a 95 percent confidence interval. Interpret your interval estimate. 
-  
   __Solution:__
   <div id="rcorners2">
   <center>
@@ -160,7 +171,7 @@ confint(copier.lm)[3,1:2]
   
   __Solution:__
   <div id="rcorners2">
-  
+  Because then it would just be an ANOVA and not a linear regression. 
   </div></br>
   
   
@@ -179,7 +190,7 @@ augment(copier.lm) %>%
   </div></br>
   
 
-### Problem 8.16 <span id=points>{5}</span><span id=report>{ / }</span> 
+### Problem 8.16 <span id=points>{5}</span><span id=report>{ 5 / 5 }</span> 
 
 ```{r}
 # Code to read in the data
@@ -198,7 +209,9 @@ Refer to Grade Point Average Problem 1.19. An assistant to the director of admis
   
   __Solution:__
   <div id="rcorners3">
+  $\beta_{1}$: For each 1 unit increase in test score results in an increase/decrease of $\beta_{1}$ of GPA on average.
   
+  $\beta_{2}$: For each student who has declared a major that's how much more/less their GPA is effected on average. 
   </div></br>
   
   **b)** Fit the regression model and state the estimated regression function. 
@@ -224,13 +237,13 @@ summary(gpa.lm)
 ```
   $$
   H_{0}: \beta_{2} = 0 \\
-  H_{a}: \beta_{2} \neq 0 \
+  H_{a}: \beta_{2} \neq 0 \\
   s\{b_{2}\} = 0.11997 \\
   t^{*} = -0.094030/.11997 = -.786 \\
   t(.995,117) = 2.6185 \\
   \text{If } |t^{*}| \leq 2.6185 \text{ conclude } H_{0}, \text{ otherwise conclude } H_{a}
   $$
-Given our test statistic we fail to reject the null hypothesis anc conclude that $\beta_{2}$ is equal to zero. We can therefore drop that variable from the model as it provides no signicant effects. 
+Given our test statistic we fail to reject the null hypothesis and conclude that $\beta_{2}$ is equal to zero. We can therefore drop that variable from the model as it provides no signicant effects. 
   </div></br>
   
   **d)** Obtain the residuals for regression model (8.33) and plot them against $X_{1}X_{2}$. Is there any evidence in your plot that it would be helpful to include an interaction term in the model?
@@ -248,7 +261,7 @@ augment(gpa.lm) %>%
 
   </div></br>
   
-### Problem 8.19 <span id=recpoints>{3}</span><span id=report>{ / }</span> 
+### Problem 8.19 <span id=recpoints>{3}</span><span id=report>{ 3 / 3 }</span> 
 
 ```{r}
 # Use dataset p15 for this problem.
@@ -291,7 +304,7 @@ summary(copier.interaction.lm)
   $$
   </div></br>
   
-### Problem 8.20 <span id=points>{3}</span><span id=report>{ / }</span> 
+### Problem 8.20 <span id=points>{3}</span><span id=report>{ 3 / 3 }</span> 
 
 ```{r}
 # Use dataset p16 for this problem.
@@ -334,7 +347,7 @@ summary(gpa.interaction.lm)
   $$
   </div></br>
   
-### Problem 8.24 <span id=recpoints>{4}</span><span id=report>{ / }</span> 
+### Problem 8.24 <span id=recpoints>{4}</span><span id=report>{ 4 / 4 }</span> 
 
 ```{r}
 # Code to read in the data
@@ -371,17 +384,45 @@ p24 %>%
   
   __Solution:__
   <div id="rcorners2">
-  
+```{r}
+house.lm <- lm(Y ~ X1*X2, p24)
+ssr <- tidy(aov(Y ~ X1*X2, p24)) %>% slice(2:3) %>% {sum(.$sumsq)}
+sse <- tidy(aov(Y ~ X1*X2, p24))[4,3]
+fstar <- (ssr/2)/(sse/60)
+f <- qf(.95, 2, 60)
+aov(Y ~ X1*X2, p24)
+```
+  $$\widehat{Y} = -126.905+2.7759X_{1} + 76.0215X_{2} - 1.10748X_{1}X_{2}$$
+  $$
+  \alpha = 0.05 \\
+  H_{0}: \beta_{2} = \beta{3} = 0 \\
+  H_{a}: \text{ at least one } \beta \neq 0 \\
+  SSR(X_{2}, X_{1}X_{2} | X_{1}) = `r ssr`\\
+  SSE(X_{1}, X_{2}, X_{1}X_{2}) = `r sse`\\
+  F^{*} = (369.85/2)/(909.105/60) = `r fstar` \\
+  F(.95, 2, 60) = `r f`\\
+  \text{If } F^{*} \leq 3.15041 \text{ conclude } H_{0}, \text{ otherwise } H_{a}.
+  $$
   </div></br>
   
   **c)** Plot the estimated regression functions for the two populations and describe the nature of the differences between them. 
   
   __Solution:__
   <div id="rcorners2">
-  
+```{r}
+ggplot(p24, aes(x = X1, y = Y, color = factor(X2))) + 
+  geom_point(shape = 1) + 
+  geom_smooth(method = "lm", se = FALSE) + 
+  scale_color_manual("Lot Locaiton", 
+                     labels = c("Non-Corner Lots", "Corner Lots"), 
+                     values = c("coral","lightblue")) + 
+  labs(title = "Estimated Regression Function") +
+  theme_bw()
+```
+
   </div></br>
 
-### Problem 8.25 <span id=recpoints>{3}</span><span id=report>{ / }</span> 
+### Problem 8.25 <span id=recpoints>{3}</span><span id=report>{ 3 / 3 }</span> 
 
 ```{r}
 # Code to read in the data
@@ -389,6 +430,9 @@ p25 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/te
 
 # Give it nice column names for conevience:
 colnames(p25) <- c("Y","X1","X2","X3")
+
+x1 <- (p25$X1 - mean(p25$X1))
+cases.lm <- lm(Y ~ x1 + I(x1^2) + x1*X3 + I(x1^2)*X3 , p25)
 ```
 
 Refer to Grocery Retailer Problem 6.9 and 7.4
@@ -397,7 +441,12 @@ Refer to Grocery Retailer Problem 6.9 and 7.4
   
   __Solution:__
   <div id="rcorners2">
-  
+```{r}
+summary(cases.lm)
+```
+  $$
+  \widehat{Y} = 4295.72 + .000903x_{1} -1.577e-09x^{2}_{1} + 614.393X_{3} - .000188x_{1}X_{3} + (1.808e-09)x_{1}^{2}X_{3}
+  $$
   </div></br>
   
   
@@ -405,12 +454,27 @@ Refer to Grocery Retailer Problem 6.9 and 7.4
   
   __Solution:__
   <div id="rcorners2">
-  
+```{r}
+ssr <- tidy(aov(Y ~ x1 + X3 + I(x1^2) + x1*X3 + I(x1^2)*X3 , p25)) %>% slice(3:5) %>%  {sum(.$sumsq)}
+sse <- tidy(aov(Y ~ x1 + X3 + I(x1^2) + x1*X3 + I(x1^2)*X3 , p25))[6,3]
+fstar <- (ssr/3)/(sse/46)
+f <- qf(.95, 3, 46)
+aov(Y ~ x1 + X3 + I(x1^2) + x1*X3 + I(x1^2)*X3 , p25)
+```
+
+  $$
+  \alpha = 0.05 \\
+  H_{0}: \beta_{2} = \beta_{4} = \beta_{5} = 0 \\
+  H_{a}: \text{ not all } \beta_{2} = 0, \beta_{4} = 0, \beta_{5} = 0 \\
+  SSR(x_{1}^{2}, x_{1}X_3, x_{1}^{2}X_{3} | x_{1}, X_{3}) = 1442\\
+  SSE(x_{1}, x_{1}^{2},  X_{3}, x_{1}X_3, x_{1}^{2}X_{3}) = 990762 \\
+  F^{*} = (1442/3)/(990762/46) = .02232 \\
+  F(.95; 3, 46) = 2.8068 \\
+  \text{If } F^{*} \leq 2.80681 \text{ conclude } H_{0}, \text{ otherwise } H_{a}
+  $$
   </div></br>
   
-
-
-### Project 8.42 <span id=points>{6}</span><span id=report>{ / }</span> 
+### Project 8.42 <span id=points>{6}</span><span id=report>{ 6 / 6 }</span> 
 
 **Note**: You can swap 8.36 out for any of 8.37-8.42 as well if a different project interests you more.
 
@@ -422,18 +486,43 @@ project <- "APPENC03.txt"
 # APPENC02.txt, APPENC03.txt, APPENC04.txt, ... 
 # depending on which Project problem you select. 
 
-projdata <- read.table(paste0("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Appendix%20C%20Data%20Sets/",project), header=FALSE)
+projdata <- read.table(paste0("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Appendix%20C%20Data%20Sets/",project), header=FALSE) %>% 
+  select(-V1, -V7) %>% 
+  rename(Y = V2, X1 = V3, X2 = V4, X3 = V5, X4 = V6, X5 = V8) %>% 
+  mutate(X5 = fct_relevel(factor(X5), c("2000", "1999", "2001", "2002")))
 
-# Give it nice column names for conevience:
-#colnames(projdata) <- c(you'll have to fill this in yourself)
 ```
 
-Refer to **Market Share** data set in Appendix C.3 Company executives want to be able to predict market share of their product ($Y$) based on merchandise price ($X_{1}$), the gross Nielsen rating points ($X_{2}$), an index of the amount of advertising exposure that the product received), the presence or absence of a wholesale pricing discount ($X_{3} - 1$ if discount present; otherwise $X_{3} = 0$), the presence or absence of a package promotion during the period ($X_{4} = 1$ if promotion present; otherwise $X_{4} = 0$), and year ($X_{5}$). Code year as a nominal level variable and use 2000 as the referent year. 
+Refer to **Market Share** data set in Appendix C.3 Company executives want to be able to predict market share of their product ($Y$) based on merchandise price ($X_{1}$), the gross Nielsen rating points ($X_{2}$), an index of the amount of advertising exposure that the product received), the presence or absence of a wholesale pricing discount ($X_{3} = 1$ if discount present; otherwise $X_{3} = 0$), the presence or absence of a package promotion during the period ($X_{4} = 1$ if promotion present; otherwise $X_{4} = 0$), and year ($X_{5}$). Code year as a nominal level variable and use 2000 as the referent year. 
 
   **a)** Fit a first-order regression model. Plot the residuals against the fitted values. How well does the first-order model appear to fit the data?
   
   __Solution:__
   <div id="rcorners3">
+```{r, fig.align='center'}
+first.order <- lm(Y ~ X1 + X2 + X3 + X4 + X5, projdata)
+summary(first.order)
+
+fitted.resid <- augment(first.order) %>% 
+  ggplot(aes(x = .fitted, y = .resid)) + 
+  geom_point(shape = 1) + 
+  geom_smooth(method = "loess", se = FALSE, color = "red", size = .5) + 
+  labs(title = "Fitted vs. Residuals Scatter Plot", 
+       x = "Fitted Values \n lm(Y ~ X1 + X2 + X3 + X4 + X5)", y = "Residuals") + 
+  theme_bw()
+
+qq.norm <- augment(first.order) %>% 
+  ggplot(aes(sample = .resid)) + 
+  stat_qq_band(color = "black", fill = NA, linetype = 2) +
+  stat_qq_line(color = "red", size = .5) +
+  stat_qq_point(shape = 1) +
+  labs(title = "Normal Q-Q",
+       x = "Theoretical Quantiles \n lm(Y ~ X1 + X2 + X3 + X4 + X5)", 
+       y = "Standardized residuals") +
+  theme_bw()
+
+fitted.resid + qq.norm
+```
   
   </div></br>
   
@@ -441,7 +530,21 @@ Refer to **Market Share** data set in Appendix C.3 Company executives want to be
   
   __Solution:__
   <div id="rcorners3">
-  
+```{r}
+x1 <- (projdata$X1 - mean(projdata$X1))
+x2 <- (projdata$X2 - mean(projdata$X2))
+second.order <- lm(Y ~ x1*x2 + I(x1^2) + I(x2^2) + X3 + X4 + X5, projdata)
+summary(second.order)
+anova(first.order, second.order)
+```
+  $$
+  \alpha = 0.05 \\
+  H_{0}: \beta_{3} = \beta_{4} = \beta_{5} = 0 \\
+  H_{a}: \text{ at least one } \beta_{k} \neq 0; (k = 3, 4, 5) \\
+  F^{*} = .37932 \\
+  F(.95; 3, 30) = 2.9223 \\
+  \text{If } F^{*} \leq 2.9223 \text{ conclude } H_{0}, \text{ otherwise } H_{a}
+  $$
   </div></br>
   
   
@@ -449,10 +552,20 @@ Refer to **Market Share** data set in Appendix C.3 Company executives want to be
   
   __Solution:__
   <div id="rcorners3">
-  
+```{r}
+reduced.lm <- lm(Y ~ X1 + X3 + X4, projdata)
+full.lm <- lm(Y ~ X1 + X2 + X3 + X4 + X5, projdata)
+anova(reduced.lm, full.lm)
+```
+  $$
+  \alpha = 0.05 \\
+  H_{0}: \beta_{2} = \beta_{5} = \beta_{6} = 0 \\
+  H_{a}: \text{ at least one } \beta_{k} \neq 0; (k = 2, 5, 6) \\
+  F^{*} = .68154 \\
+  F(.95; 3, 30) = 2.71408 \\
+  \text{If } F^{*} \leq 2.71408 \text{ conclude } H_{0}, \text{ otherwise } H_{a}
+  $$
   </div></br>
-  
-
 
 
 <style>
