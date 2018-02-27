@@ -1,0 +1,407 @@
+---
+title: "Hard Work 9"
+output: 
+  html_document:
+    theme: cerulean
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+```{r, include = F}
+library(tidyverse)
+library(broom)
+library(qpcR)
+library(leaps)
+library(patchwork)
+library(GGally)
+library(olsrr)
+```
+
+```{r}
+# This function will be useful later on.
+makeTable9.3 <- function(thedata, nbest=1){
+  
+  if (nbest < 1 | nbest > dim(thedata)[2]-1){
+    warning("nbest recoded to 1")
+    nbest <- 1
+  }
+  
+  cnames <- colnames(thedata)
+
+  Yat <- grep("Y",cnames)
+  
+  if (length(Yat)>1)
+    stop("Currently you have: ", paste(cnames[Yat], ", ", sep=""), 
+               " in your data set.\n There can be only one response variable.\n",
+               sep="")
+
+  colnames(thedata)[Yat] <- "Y"
+  Xat <- grep("X",cnames)
+  
+  require("leaps")
+  require("qpcR")
+
+  reg <- regsubsets(thedata[,Xat],thedata[,Yat], nbest=nbest, nvmax=length(cnames)-1)
+
+  regs <- summary(reg)
+  
+  models <- sapply(1:length(row.names(regs$which)), function(i){
+    colnames(regs$which)[which(regs$which[i,])][-1]
+  })
+  
+  pressdata <<- thedata
+  
+  PRESS <- sapply(models, function(model){
+    tmpf <- formula(paste("Y~",
+                          paste(model,
+                                c(rep("+",length(model)-1), ""), 
+                                sep="", 
+                                collapse=""), 
+                          sep=""))
+    tmp <- lm(tmpf, data=pressdata)
+    tmp$call$formula <- eval(tmpf)
+    PRESS(tmp, verbose=FALSE)$stat
+  })
+  
+  n <- nrow(thedata)
+  p <- as.numeric(row.names(regs$which))+1
+ 
+  
+  AIC <- regs$bic-log(n)*p-2*p
+
+  
+  AIC2 <- sapply(models, function(model){
+    tmpf <- formula(paste("Y~",
+                          paste(model,
+                                c(rep("+",length(model)-1), ""), 
+                                sep="", 
+                                collapse=""), 
+                          sep=""))
+    tmp <- lm(tmpf, data=pressdata)
+    tmp$call$formula <- eval(tmpf)
+    AIC(tmp)
+  })
+  
+  tmp <- data.frame(p=p, 
+             model= sapply(1:length(models), function(i) {
+                      paste(models[[i]], collapse=",")
+                    }),
+             SSEp=regs$rss,
+             R2p=regs$rsq,
+             R2ap=regs$adjr2,
+             Cp=regs$cp,
+             AICp=AIC2,
+             SBCp=regs$bic,
+             PRESSp=PRESS)
+  
+  rbind(data.frame(p=1,
+                   model="(intercept)",
+                   SSEp=regs$rss[1]/(1-regs$rsq[1]),
+                   R2p=0,
+                   R2ap=0,
+                   Cp=NA,
+                   AICp=NA,
+                   SBCp=NA,
+                   PRESSp=NA),tmp)
+}
+```
+
+## Instructions
+
+1. Study Sections 10.1 and 9.1-9.4 -- "Added Variable Plots" and "Criteria for Model Selection."
+
+2. Attempt and submit at least <span id=points style="padding-left:0px;">{36}</span> Hard Work Points by Saturday at 11:59 PM.    
+<span id=note>Over <span id=points style="padding-left:0px;">{50}</span> gets you {+1} Final Exam Point.</span>    
+
+
+## Reading Points <span id=headpoints>{21} Possible</span>
+
+### Section 10.1 <span id=rrecpoints>{4}</span><span id=report>{ / }</span>
+
+### Section 9.1 <span id=rrecpoints>{3}</span><span id=report>{ / }</span>
+
+### Section 9.2 <span id=rrecpoints>{4}</span><span id=report>{ / }</span>
+
+### Section 9.3 <span id=rrecpoints>{6}</span><span id=report>{ / }</span>
+
+### Section 9.4 <span id=rrecpoints>{4}</span><span id=report>{ / }</span>
+
+
+## Theory Points <span id=headpoints>{3} Possible</span>
+
+<div style="padding-left:20px;">
+
+### Problem 9.6 <span id=points>{3}</span><span id=report>{ / }</span>
+ 
+Prepare a flowchart of each of the following selection methods: __(1)__ forward step-wise regression, __(2)__ forward selection, __(3)__ backward elimination. 
+
+__Solution:__
+<div id="rcorners3">
+
+</div></br>
+
+
+## Application Points <span id=headpoints>{28} Possible</span>
+
+<div style="padding-left:20px;">
+
+<a id=datalink style="font-size:.9em;" target="_blank" href=http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/index.html>Data Files</a>
+
+### Problem 9.9 <span id=points>{3}</span><span id=report>{ / }</span> 
+
+```{r}
+# Code to read in the data
+# It has to be merged from the 1.20 and 8.15 data files.
+p9.9 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%206%20Data%20Sets/CH06PR15.txt", header=FALSE)
+
+# Give it nice column names for conevience:
+colnames(p9.9) <- c("Y","X1","X2","X3")
+
+# Show the first part of the data:
+#head(p9.9)
+```
+
+Refer to Patient satisfaction Problem 6.16. The hospital administrator wishes to determine the best subset of predictor variables for predicting patient satisfaction. 
+
+  __a)__ Indicate which subset of predictor variables you would you would recommend as best for predicting patient satisfaction according to each of the following criteria: __(1)__ $R^{2}_{a,p}$ __(2)__ $AIC_{p}$, __(3)__ $C_{p}$, __(4)__ $PRESS_{p}$. Support your recommendations with appropriate graphs. 
+  
+  __Solution:__
+  <div id="rcorners3">
+```{r}
+pander::pander(makeTable9.3(p9.9))
+```
+  
+  </div></br>
+  
+  __b)__ Do the four criteria in part (a) identify the same best subset? Does this always happen?
+  
+  __Solution:__
+  <div id="rcorners3">
+  
+  </div></br>
+  
+  __c)__ Would forward step-wise regression have any advantages here as a screening procedure over the all-possible-regressions procedure?
+  
+  __Solution:__
+  <div id="rcorners3">
+  
+  </div></br>
+
+### Problem 9.10 <span id=recpoints>{3}</span><span id=report>{ / }</span> 
+
+```{r}
+# Code to read in the data
+# It has to be merged from the 1.20 and 8.15 data files.
+p9.10 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%209%20Data%20Sets/CH09PR10.txt", header=FALSE)
+
+# Give it nice column names for conevience:
+colnames(p9.10) <- c("Y","X1","X2","X3","X4")
+
+# Show the first part of the data:
+#head(p9.10)
+```
+__Job Profciency.__ A personnel officer in a governmental agency administered four newly developed aptitude tests to each of 25 applicants for entry-level clerical positions in the agency. For purpose of the study, all 25 applicants were accepted for positions irrespective of their test scores. After a probationary period, each applicant was rated for proficiency on the job. The scores on the four tests ($X_{1}, X_{2}, X_{3}, X_{4}$) and the job proficiency score (Y) for the 25 employees were as follows in the data. 
+
+<center>
+```{r}
+pander::pander(head(p9.10))
+```
+</center>
+
+  __a)__ Prepare separate stem-and-leaf plots of the test scores for each of the four newly developed aptitude tests. Are there any noteworthy features in these plots? Comment.
+  
+  __Solution:__
+  <div id="rcorners2">
+```{r, message=FALSE}
+test <- p9.10 %>% 
+  dplyr::select(-Y) %>% 
+  list(names(.)) %>% 
+  pmap(~ggplot(tibble(.x), aes(x = .x)) + 
+        geom_dotplot(dotsize = .35) +
+        labs(title = glue::glue("Dotplot of Aptitude Test | {.y}"), x = .y) +
+        ylim(c(-.25,.25)) +
+        theme_bw() +
+        theme(axis.title.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.text.y = element_blank(),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank()))
+
+test[[1]] + test[[2]] + test[[3]] + test[[4]] + plot_layout(ncol = 2)
+```
+  </div></br>
+  
+  __b)__ Obtain the scatter plot matrix. Also obtain the correlation matrix of the X variables. What do the scatter plots suggest about the nature of the functional relationship between the response variable Y and each of the predictor variables? Are any serious multicollinearity problems evident? Explain.
+  
+  __Solution:__
+  <div id="rcorners2">
+```{r, fig.align='center'}
+ggpairs(p9.10) +
+  labs("Scatter Plot Matrix") +
+  theme_bw()
+```
+
+  </div></br>
+  
+  __c)__ Fit the multiple regression function containing all four predictor variables as first-order terms. Does it appear that all predictor variables should be retained?
+  
+  __Solution:__
+  <div id="rcorners2">
+```{r}
+work.lm <- lm(Y ~ X1 + X2 + X3 + X4, p9.10)
+summary(work.lm)
+```
+
+  </div></br>
+
+### Problem 9.11 <span id=recpoints>{2}</span><span id=report>{ / }</span> 
+
+```{r}
+# Use the data p9.10 for this one.
+```
+
+Refer to __Job Proficiency__ Problem 9.10.
+
+  __a)__ Using only first-order terms for the predictor variables in the pool of potential X variables, find the four best subset regression models according to the $R^{2}_{a,p}$ criterion. 
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+  
+  
+  __b)__ Since there is relatively litter difference in $R^{2}_{a,p}$ for the four best subset models, what other criteria would you use to help in the selection of the best model? Discuss.
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+
+### Case Study 9.29 <span id=recpoints>{10}</span><span id=report>{ / }</span> 
+
+```{r}
+# Code to read in the data
+# It has to be merged from the 1.20 and 8.15 data files.
+p9.29 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Appendix%20C%20Data%20Sets/APPENC06.txt", header=FALSE)
+
+# Give it nice column names for conevience:
+colnames(p9.29) <- c("ID","Y",paste("X",1:6, sep=""))
+
+# Show the first part of the data:
+#head(p9.29)
+```
+
+Refer to the website developer data set in Appendix C6. Management is interested in determining what variables have the greatest impact on production output in the release of new customer websites. Data on 13 three-person website development teams consisting of a project manager, a signer, and a developer are provided in the data set. Production data from January 2001 through August 2002 include four potential predictors: __(1)__ the change in the website development process. __(2)__ The size of the backlog of orders, __(3)__ the team effect, and __(4)__ the number of months experience of each team. Develop a best subset model for predicting production output. Justify your choice of model. Assess your model's ability to predict and discuss its use as a tool for management decisions. 
+
+__Solution:__
+<div id="rcorners2">
+
+</div></br>
+
+### Case Study 9.30 <span id=points>{10}</span><span id=report>{ / }</span> 
+
+```{r}
+# Code to read in the data
+# It has to be merged from the 1.20 and 8.15 data files.
+p9.30 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Appendix%20C%20Data%20Sets/APPENC05.txt", header=FALSE)
+
+# Give it nice column names for conevience:
+colnames(p9.30) <- c("ID","Y",paste("X",1:7, sep=""))
+
+# Show the first part of the data:
+#head(p9.30)
+```
+
+Refer to the Prostate Cancer data set in Appendix C.5. Serum prostate-specific antigen (PSA) was determined in 97 men with advanced prostate cancer. PSA is a well-established screening test for prostate cancer and the oncologists wanted to examine the correlation between level of PSA and number of clinical measures for mean who were about to undergo radical prostatectonmy. The measures are cancer volume, prostate weight, patient age, the among of benign prostatic hyperlasia, seminal vesicle invasion, capsular penetration, and Gleason score. Select a random sample of 65 observations to use the model-building data set. Develop a best subset model for predicting PSA. Justify your choice of model. Asses your model's ability to predict and discuss its usefulness to the oncologists. 
+
+__Solution:__
+<div id="rcorners3">
+
+</div></br>
+</div>
+
+
+
+
+<style>
+#points {
+  font-size:.8em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#317eac;
+}
+
+#recpoints {
+  font-size:.8em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#7eac31;
+}
+
+#rrecpoints {
+  font-size:1em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#7eac31;
+}
+
+#report {
+  font-size:.7em;
+  padding-left:15px;
+  font-weight:normal; 
+  color:#5a5a5a;
+}
+
+#datalink {
+  font-size:.5em;
+  color:#317eac;
+  padding-left:5px;
+}
+
+#headnote {
+  font-size:.6em;
+  color:#787878;
+}
+
+#note {
+  font-size:.8em;
+  color:#787878;
+}
+
+#headpoints {
+ font-size:12pt;
+ color: #585858; 
+ padding-left: 15px;
+}
+
+#rcorners2 {
+    border-radius: 25px;
+    border: 2px solid #73AD21;
+    padding: 20px; 
+    width: auto;
+    height: auto;    
+}
+
+#rcorners3 {
+    border-radius: 25px;
+    border: 2px solid #317eac;
+    padding: 20px; 
+    width: auto;
+    height: auto;    
+}
+</style>
+
+
+
+<footer>
+</footer>
+
+
+
+ 
+
+ 
+
+ 
+
+ 

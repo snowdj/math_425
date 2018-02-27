@@ -10,6 +10,7 @@ library(tidyverse)
 library(broom)
 library(pander)
 library(magrittr)
+library(alr3)
 ```
 
 
@@ -407,7 +408,7 @@ Given that $t^{*}$ is greater than $t(99.5,118)$ and the corresponding decision 
   __P-Value:__ `r p.value`, This supports the conclusion above we can therefore believe that X is not zero within the model.</p></br>
   
 
-### Problem 2.5 <span id=recpoints>{4}</span><span id=report>{ 3 / 4 }</span> 
+### Problem 2.5 <span id=recpoints>{4}</span><span id=report>{ 4 / 4 }</span> 
 
 ```{r p5}
 # Load the Data:
@@ -454,10 +455,25 @@ With a $|Z|$ greater than 1.645 and considering a p-value of $`r p5.test['p.valu
   __d)__ The manufacturer has suggested that the mean required time should not increase by more than 14 minutes for each additional copier that is serviced on a service call. Conduct a test to decide whether this standard is being satisfied by Tri-City. Control the risk of a Type I error at 0.05. State the alternatives, decision rule, and conclusion. What is the P-value of the test?
   
   __Solution:__
+  <div id="rcorners2">
+  $$
+  \alpha = 0.05 \\
+  H_{0}: t \leq 14 \\
+  H_{a}: t > 14 \\
+  t^{*} = \dfrac{(15.035 - 14)}{.4831} = 2.1428 \\
+  t(.975; 43) = 2.016 \\
+  \text{If } t^{*} < 2.016 \text{ conclude } H_{0}, \text{ otherwise } H_{a}
+  $$
+  </div></br>
+  
   
   __e)__ Does $b_{0}$ give any relevant information here about the "start-up" time on calls -- i.e., about the time required before service work is begun on the copiers at a customer location?
   
   __Solution:__
+  <div id="rcorners2">
+  No, since 0 copiers serviced is not in the scope of the model the coefficient makes no sense and provides no value. You can't spend negative time on servicing a copier. 
+  </div></br>
+  
   
 ### Problem 2.7 <span id=points>{3}</span><span id=report>{ / }</span> 
 
@@ -470,21 +486,33 @@ colnames(p1.22) <- c("Y","X")
 ```
 
 
-### Problem 2.10 <span id=recpoints>{2}</span><span id=report>{ / }</span> 
+### Problem 2.10 <span id=recpoints>{2}</span><span id=report>{ 2 / 2 }</span> 
 
 For each of the following questions, explain whether a confidence interval for a mean response or a prediction interval for a new observation is appropriate.
 
   __a)__ What will be the humidity level in this greenhouse tomorrow when we set the temperature level at 31 C?
   
   __Solution:__
+  <div id="rcorners2">
+  Prediction Interval
+  </div></br>
+  
   
   __b)__ How much do families whose disposable income is $23,500 spend, on the average, for meals away from home?
   
   __Solution:__
+  <div id="rcorners2">
+  Confidence Interval
+  </div></br>
+  
   
   __c)__ How many kilowatt-hours of electricity will be consumed next month by commercial and industrial users in the Twin Cities service area, given that the index of business activity for the area remains at its present level?
   
   __Solution:__
+  <div id="rcorners2">
+  Prediction Interval
+  </div></br>
+  
 
 
 ### Problem 2.13 <span id=recpoints>{4}</span><span id=report>{ 4 / 4 }</span> 
@@ -694,6 +722,8 @@ p1.22 <- read.table("https://netfiles.umn.edu/users/nacht001/www/nachtsheim/Kutn
 
 # Rewrite the column names to be "Y" and "X" to match the textbook:
 colnames(p1.22) <- c("Y","X")
+
+anova.table <- aov(Y ~ X, p1.22)
 ```
 
 **Refer to Plastic Hardness Problem 1.22**
@@ -701,14 +731,31 @@ colnames(p1.22) <- c("Y","X")
   __a)__ Set up the ANOVA table.
   
   __Solution:__
+  <div id="rcorners2">
+  `r pander::pander(anova.table)`
+  </div></br>
+  
   
   __b)__ test by means of an F test whether or not there is a linear association between the hardness of the plastic and the elapsed time. Use $\alpha = 0.01$. State the alternatives, decision rule, and conclusion. 
   
   __Solution:__
+  <div id="rcorners2">
+```{r}
+pureErrorAnova(lm(Y~X,p1.22))
+```
+  </div></br>
+  
   
   __c)__ Plot the deviations $Y_{i} - \hat Y_{i}$ against $X_{i}$ on a graph. Plot the deviation of $\hat Y_{i} - \bar Y$ against $X_{i}$ on another graph, using the same scales as for the first graph. From your two graphs, does SSE or SSR appear to be the larger component of SSTO? What does this imply bout the magnitude of $R^{2}$?
   
   __Solution:__
+  <div id="rcorners2">
+```{r}
+augment(lm(Y ~ X, p1.22)) %>% 
+  ggplot(aes(x = X, y = (Y - .fitted)))
+```
+  </div></br>
+  
   
   __d)__ Calculate $R^{2}$ and $r$. 
   
