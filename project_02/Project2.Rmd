@@ -1,0 +1,322 @@
+---
+title: "Project 2 -- Regression Battleship"
+author: "Dylan McDowell"
+output: 
+  html_document:
+    theme: cerulean
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+```{r, include=FALSE}
+library(tidyverse)
+library(MASS)
+library(sn)
+library(corrplot)
+```
+
+
+## Step 1. Creating your Data
+
+There are only three general rules that you must follow in the creation of your dataset.
+
+1. Your dataset must have one "Y" variable and 20 "X" variables labeled as "Y", "X1", ..., "X20". 
+
+2. Your response variable $Y$ must come from a linear regression model that satisfies:    
+$$
+  Y_i^\prime = \beta_0 + \beta_1 X_{i1}^\prime + \ldots + \beta_{p-1}X_{i,p-1}^\prime + \epsilon_i  
+$$
+where $\epsilon_i \sim N(0,\sigma^2)$ and $p \leq 21$.
+
+3. All $X$-variables that were used to create $Y$ are contained in your dataset. 
+
+```{r}
+set.seed(121) #This ensures your randomness is the "same" everytime.
+
+ n <- 40
+ 
+ X1 <- rcauchy(n, 0.0040763, 0.0418)   #mkt
+ X2 <- rcauchy(n, .001, 0.001346125)   #rf
+ X3 <- rnorm(n, 0.002359116, 0.023924) #smb
+ X4 <- rnorm(n, 0.0013, 0.0249044)     #hml
+
+ beta0 <- -0.0094963
+ beta1 <- 1.050858675
+ beta2 <- 0.546378
+ beta3 <- 0.0513
+ sigma <- .00927
+   
+ ################################
+ # You CANNOT change this part:
+ errors <- rnorm(n, 0, sigma)
+ ################################ 
+ 
+ mkt.rf <- (X1 - X2)
+ Y <- beta0 + beta1*mkt.rf + beta2*X3 + beta3*X4 + errors
+ 
+ mu <- mean(Y)
+ SIG <- matrix(sd(Y), nrow=1, ncol=1) + diag(1)*.3
+ rawvars <- mvrnorm(n=40, mu=mu, Sigma=SIG)
+ pvars <- pnorm(rawvars)
+ poisvars <- qpois(pvars, 5)
+ expvars <- qexp(pvars)
+ sknorm <- qsn(pvars, 5, 2, 5)
+ 
+ mu2 <- mean(X1)
+ SIG2 <- sd(X1)
+ rawvars2 <- rnorm(n=40, mu2, SIG2)
+ cauchyvars <- qcauchy(pnorm(rawvars2))
+ binovars <- qbinom(pnorm(rawvars2), 1000, .78)
+ gammavars <- qgamma(pnorm(rawvars2), 50, 3)
+ 
+ # You may have to create "useless" variables
+ # to fill this dataset in, but you must have 20 X-variables
+ # when you are done, and the X variables used to create
+ # the regression above must be included in this 20. 
+ # However, you do not have to include Y' or any of the X'.
+ yourData <- data.frame(Y = Y, 
+                        X1 = pvars,
+                        X2 = binovars,
+                        X3 = poisvars,
+                        X4 = runif(n, 0, 1),
+                        X5 = cauchyvars, 
+                        X6 = rcauchy(n, 0.0079,0.05133),
+                        X7 = sknorm,
+                        X8 = rawvars2,
+                        X9 = expvars,
+                        X10 = sin(Y), 
+                        X11 = cauchyvars - expvars,
+                        X12 = X2, 
+                        # MODEL VARIABLE
+                        X13 = X3 * 300,
+                        X14 = rnorm(n, 0, .009),
+                        X15 = X4, 
+                        # MODEL VARIABLE
+                        X16 = gammavars,
+                        X17 = rawvars,
+                        X18 = X1,
+                        # MODEL VARIABLE
+                        X19 = rbeta(n, 50, 5),
+                        X20 = X3)# MODEL VARIABLE
+#write.csv(yourData, "yDat.csv", row.names=FALSE)
+# The above code writes the dataset to your "current directory"
+# To see where that is, use: getwd() in your Console.
+```
+
+
+
+## Step 2. Analyzing Brother Saunders's Data
+
+Brother Saunders followed the same 3 rules that were outlined above in the creation of his data. You need to analyze his data to try to make a guess at his true regression model. Document your approach as best you can and state your final predictions here. 
+
+```{r}
+sdata <- read.csv("sDat.csv", header=TRUE)
+
+pairs(sdata)
+
+lm1 <- lm(Y ~ X6, sdata)
+par(mfrow=c(1,2))
+plot(lm1, which=1:2)
+summary(lm1)
+
+pairs(cbind(R=lm1$res, sdata))
+cor(cbind(R=lm1$res, sdata))
+
+lm2 <- lm(Y ~ as.factor(X6) + X8, sdata)
+par(mfrow=c(1,2))
+plot(lm2, which=1:2)
+summary(lm2)
+
+pairs(cbind(R=lm2$res, sdata))
+cor(cbind(R=lm2$res, sdata))
+
+lm3 <- lm(Y ~ X6 + X8 + as.factor(X18), sdata)
+par(mfrow=c(1,2))
+plot(lm3, which=1:2)
+summary(lm3)
+
+lm4 <- lm(Y ~ as.factor(X6)*X8, sdata)
+par(mfrow=c(1,2))
+plot(lm4, which=1:2)
+summary(lm4)
+
+lm5 <- lm(sqrt(Y) ~ as.factor(X6)*X8, sdata)
+par(mfrow=c(1,2))
+plot(lm5, which=1:2)
+summary(lm5)
+
+lm6 <- lm(1/(Y) ~ as.factor(X6)*X8, sdata)
+par(mfrow=c(1,2))
+plot(lm6, which=1:2)
+summary(lm6)
+
+lm7 <- lm(Y ~ as.factor(X6)*X8, sdata)
+par(mfrow=c(1,2))
+plot(lm7, which=1:2)
+summary(lm7)
+
+lm8 <- lm(Y ~ I(X6*X8) + X1 + as.factor(X15)*X8, sdata)
+par(mfrow=c(1,2))
+plot(lm8, which=1:2)
+summary(lm8)
+
+
+
+corrplot(cor(sdata), method="square",
+               order = "hclust", addrect = 2)
+
+```
+
+
+## Step 3. Final Synthesis
+
+This will be completed after Brother Saunders returns to you his guess at your true model. Document the approach Brother Saunders used to uncover your true regression model. State what things worked well and what things did not. How well did he recover your true regression model? Did he recover a mathematically equivalent version of your regression model?
+
+Use the ideas from Section 9.6 to compare how well Brother Saunders's model compares to your true model for the given dataset.
+
+## Answer
+
+I wasn't really sure if I did the model generation completely right or if I kind of shot myself in the foot when trying to create a challenging data set. If we were to judge Brother Saunder's model based purely off the $R^{2}$ then it would seem he has developed a very strong model to explain the variation in my y-values. My idea was that, in pursuit of a high $R^{2}$, Brother Saunders would overshoot the model when the true underlying model beneath was quite simple. I tried to include so many highly correlated variables (with the y-values and between themselves) in my data set that it would throw off the `makeTable9.3()` function and suggest variables that essentially were just transformed y-values. 
+
+Now, like I said, I'm unsure if this was actually clever or just aided in Brother Saunder's producing a model with a higher $R^{2}$ than my true model. I think it might seem that an $R^{2}$ of .9996 would seem peculiar, and incorrect. In this case, for $X10$, it was just a $\sin$ transformation of the Y-values. There is not much to predict when the variable is just a transformation. Same as was the case for several other variables, I simulated them from the transformed cdf of the Y-values. I think this led to some false indicators as to what variables might be important in the model and also led to high multicolinearity which can have a widening effect on confidence intervals. 
+
+Ultimatley, my model actually follows the form of a somewhat famous and classic linear regression model. [The Famma French 3-Factor Model](https://en.wikipedia.org/wiki/Fama%E2%80%93French_three-factor_model) is a model put together to describe stock returns. The traditional [Capital Asset Pricing Model (CAPM)](https://en.wikipedia.org/wiki/Capital_asset_pricing_model) only uses a single variables to describe stock returns. This model has been used as evidence that some form of the [Efficient Market Hypothesis](https://en.wikipedia.org/wiki/Efficient-market_hypothesis) does exists as alpha (the y-intercept) rarely is returns a number significantly larger than zero. Meaning, there is no significant return above the market for any given stock. So my true model was as follows:
+
+$$
+Y = \beta_{1}(X_{18}-X_{12}) + \beta_{2}X_{20} + \beta_{3}X_{15} + \varepsilon_{i}
+$$
+
+## Validation
+
+```{r}
+set.seed(123) #This ensures your randomness is the "same" everytime.
+
+ n <- 40
+ 
+ X1 <- rcauchy(n, 0.0040763, 0.0418)   #mkt
+ X2 <- rcauchy(n, .001, 0.001346125)   #rf
+ X3 <- rnorm(n, 0.002359116, 0.023924) #smb
+ X4 <- rnorm(n, 0.0013, 0.0249044)     #hml
+
+ beta0 <- -0.0094963
+ beta1 <- 1.050858675
+ beta2 <- 0.546378
+ beta3 <- 0.0513
+ sigma <- .00927
+   
+ ################################
+ # You CANNOT change this part:
+ errors <- rnorm(n, 0, sigma)
+ ################################ 
+ 
+ mkt.rf <- (X1 - X2)
+ Y <- beta0 + beta1*mkt.rf + beta2*X3 + beta3*X4 + errors
+ 
+ mu <- mean(Y)
+ SIG <- matrix(sd(Y), nrow=1, ncol=1) + diag(1)*.3
+ rawvars <- mvrnorm(n=40, mu=mu, Sigma=SIG)
+ pvars <- pnorm(rawvars)
+ poisvars <- qpois(pvars, 5)
+ expvars <- qexp(pvars)
+ sknorm <- qsn(pvars, 5, 2, 5)
+ 
+ mu2 <- mean(X1)
+ SIG2 <- sd(X1)
+ rawvars2 <- rnorm(n=40, mu2, SIG2)
+ cauchyvars <- qcauchy(pnorm(rawvars2))
+ binovars <- qbinom(pnorm(rawvars2), 1000, .78)
+ gammavars <- qgamma(pnorm(rawvars2), 50, 3)
+ 
+ # You may have to create "useless" variables
+ # to fill this dataset in, but you must have 20 X-variables
+ # when you are done, and the X variables used to create
+ # the regression above must be included in this 20. 
+ # However, you do not have to include Y' or any of the X'.
+ yourData2 <- data.frame(Y = Y, 
+                        X1 = pvars,
+                        X2 = binovars,
+                        X3 = poisvars,
+                        X4 = runif(n, 0, 1),
+                        X5 = cauchyvars, 
+                        X6 = rcauchy(n, 0.0079,0.05133),
+                        X7 = sknorm,
+                        X8 = rawvars2,
+                        X9 = expvars,
+                        X10 = sin(Y), 
+                        X11 = cauchyvars - expvars,
+                        X12 = X2, 
+                        # MODEL VARIABLE
+                        X13 = X3 * 300,
+                        X14 = rnorm(n, 0, .009),
+                        X15 = X4, 
+                        # MODEL VARIABLE
+                        X16 = gammavars,
+                        X17 = rawvars,
+                        X18 = X1,
+                        # MODEL VARIABLE
+                        X19 = rbeta(n, 50, 5),
+                        X20 = X3)# MODEL VARIABLE
+#write.csv(yourData, "yDat.csv", row.names=FALSE)
+# The above code writes the dataset to your "current directory"
+# To see where that is, use: getwd() in your Console.
+ 
+final.lm <- lm(Y ~ X10 + I(X10^2) + I(X10^3) + I(X10^4) + I(X10^5) + I(X10^6) + I(X10^7) + I(X10^8) + I(X10^9) + I(X10^10) + I(X10^11) + I(X10^12), data=yourData)
+
+sum((yourData2$Y - predict(final.lm, yourData2))^2)
+
+anova(final.lm)
+```
+
+As we can see that it's a very small SSPR, which could be contstrued as a predictive model. I'm unsure about these results though, it just doesn't seem reliable to validate a model that has essentially no error. It is kind of cool that it predicted all the Y values correctly though. 
+
+<style>
+#points {
+  font-size:.8em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#317eac;
+}
+
+#recpoints {
+  font-size:.8em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#7eac31;
+}
+
+#datalink {
+  font-size:.5em;
+  color:#317eac;
+  padding-left:5px;
+}
+
+#headnote {
+  font-size:.6em;
+  color:#787878;
+}
+
+#note {
+  font-size:.8em;
+  color:#787878;
+}
+
+#headpoints {
+ font-size:12pt;
+ color: #585858; 
+ padding-left: 15px;
+}
+</style>
+
+
+<footer>
+</footer>
+
+
+
+ 
+
+ 
+
+ 
+
+ 

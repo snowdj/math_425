@@ -1,0 +1,90 @@
+---
+title: "Project 2 -- Regression Battleship"
+author: "Dylan McDowell & Andrew Benson"
+output: 
+  html_document:
+    theme: cerulean
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+
+## Your Final Guess at My Model
+
+Your final guess at my model.
+
+<!-- Enter your model in math notation below. -->
+
+$$
+  Y_i = -3.01555 + 2.41785X_{i6}X_{i8} + 0.03479X_{i1} + 8.41741X_{i15} + 2.27382X_{i8} - 4.62890X_{i15}X_{i8} + \varepsilon_{i} 
+$$
+
+with your 95% confidence interval estimates of the coefficients as follows.
+
+```{r}
+sdat <- read.csv("sDat.csv", header=TRUE)
+
+## EDIT THIS PART #################################################
+## Input your lm(Y ~ ... ,data=sdat)
+final.lm <- lm(Y ~ I(X6*X8) + X1 + as.factor(X15)*X8, sdat) #replace the "1" with your model
+###################################################################
+
+## This will create nice output for you.
+mytable <- round(confint(final.lm, level=0.95), 2)
+betas <- paste0("$\\beta_", 0:(length(final.lm$coefficients)-1), "$")
+rownames(mytable) <- betas
+colnames(mytable) <- c("Lower", "Upper")
+pander::pander(mytable)
+```
+
+<style>
+#points {
+  font-size:.8em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#317eac;
+}
+
+#recpoints {
+  font-size:.8em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#7eac31;
+}
+
+#datalink {
+  font-size:.5em;
+  color:#317eac;
+  padding-left:5px;
+}
+
+#headnote {
+  font-size:.6em;
+  color:#787878;
+}
+
+#note {
+  font-size:.8em;
+  color:#787878;
+}
+
+#headpoints {
+ font-size:12pt;
+ color: #585858; 
+ padding-left: 15px;
+}
+</style>
+
+
+<footer>
+</footer>
+
+
+
+ 
+
+ 
+
+ 
+
+ 

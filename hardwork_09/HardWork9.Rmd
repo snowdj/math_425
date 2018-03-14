@@ -2,7 +2,7 @@
 title: "Hard Work 9"
 output: 
   html_document:
-    theme: cerulean
+    theme: flatly
     toc: true
     toc_float: true
     code_folding: hide
@@ -14,7 +14,7 @@ library(qpcR)
 library(leaps)
 library(patchwork)
 library(GGally)
-library(olsrr)
+library(qqplotr)
 ```
 
 ```{r}
@@ -116,15 +116,15 @@ makeTable9.3 <- function(thedata, nbest=1){
 
 ## Reading Points <span id=headpoints>{21} Possible</span>
 
-### Section 10.1 <span id=rrecpoints>{4}</span><span id=report>{ / }</span>
+### Section 10.1 <span id=rrecpoints>{4}</span><span id=report>{ 4 / 4 }</span>
 
-### Section 9.1 <span id=rrecpoints>{3}</span><span id=report>{ / }</span>
+### Section 9.1 <span id=rrecpoints>{3}</span><span id=report>{ 3 / 3 }</span>
 
-### Section 9.2 <span id=rrecpoints>{4}</span><span id=report>{ / }</span>
+### Section 9.2 <span id=rrecpoints>{4}</span><span id=report>{ 4 / 4 }</span>
 
-### Section 9.3 <span id=rrecpoints>{6}</span><span id=report>{ / }</span>
+### Section 9.3 <span id=rrecpoints>{6}</span><span id=report>{ 6 / 6 }</span>
 
-### Section 9.4 <span id=rrecpoints>{4}</span><span id=report>{ / }</span>
+### Section 9.4 <span id=rrecpoints>{4}</span><span id=report>{ 4 / 4 }</span>
 
 
 ## Theory Points <span id=headpoints>{3} Possible</span>
@@ -187,7 +187,7 @@ pander::pander(makeTable9.3(p9.9))
   
   </div></br>
 
-### Problem 9.10 <span id=recpoints>{3}</span><span id=report>{ / }</span> 
+### Problem 9.10 <span id=recpoints>{3}</span><span id=report>{ 3 / 3 }</span> 
 
 ```{r}
 # Code to read in the data
@@ -247,14 +247,36 @@ ggpairs(p9.10) +
   
   __Solution:__
   <div id="rcorners2">
-```{r}
+```{r, fig.align='center', fig.height=4, fig.width=8}
 work.lm <- lm(Y ~ X1 + X2 + X3 + X4, p9.10)
-summary(work.lm)
+pander::pander(summary(work.lm))
+
+resid.plot <- augment(work.lm) %>% 
+  ggplot(aes(x = .fitted, y = .resid)) + 
+  geom_point(shape = 1) + 
+  geom_smooth(method = "loess", se = FALSE, size = .5, color = "red") + 
+  labs(title = "Residuals vs. Fitted Values Plot", 
+       x = "Fitted Values \n lm(Y ~ X1 + X2 + X3 + X4)", 
+       y = "Residuals") + 
+  theme_classic()
+
+qq.norm <- augment(work.lm) %>% 
+  ggplot(aes(sample = .resid)) + 
+  stat_qq_band(color = "black", fill = NA, linetype = 2) +
+  stat_qq_line(color = "red", size = .5) +
+  stat_qq_point(shape = 1) +
+  labs(title = "Normal Q-Q",
+       x = "Theoretical Quantiles \n lm(Y ~ X1 + X2 + X3 + X4)", 
+       y = "Standardized residuals") +
+  theme_classic()
+
+resid.plot + qq.norm
 ```
 
+There is normality within these residuals but some pretty bad linearity issues. 
   </div></br>
 
-### Problem 9.11 <span id=recpoints>{2}</span><span id=report>{ / }</span> 
+### Problem 9.11 <span id=recpoints>{2}</span><span id=report>{ 2 / 2 }</span> 
 
 ```{r}
 # Use the data p9.10 for this one.
@@ -266,18 +288,27 @@ Refer to __Job Proficiency__ Problem 9.10.
   
   __Solution:__
   <div id="rcorners2">
-  
+  <center>
+```{r}
+makeTable9.3(p9.10, 4) %>% 
+  group_by(p) %>% 
+  top_n(1, R2ap) %>% 
+  ungroup() %>% 
+  slice(2:n()) %>% 
+  dplyr::select(model, R2ap) %>% 
+  pander::pander()
+```
+  </center>
   </div></br>
-  
-  
-  __b)__ Since there is relatively litter difference in $R^{2}_{a,p}$ for the four best subset models, what other criteria would you use to help in the selection of the best model? Discuss.
+
+  __b)__ Since there is relatively little difference in $R^{2}_{a,p}$ for the four best subset models, what other criteria would you use to help in the selection of the best model? Discuss.
   
   __Solution:__
   <div id="rcorners2">
-  
+  You can use domain knoweldge and validation, this is something we haven't learned about yet, but obviously if some variables really have no business being in the model (for ethicial or non-related reasons) then we could choose to drop those variables. Honestly, when looking at a model it might be usefull to think about what kind of data will be easy to collect later in order to use the model. 
   </div></br>
 
-### Case Study 9.29 <span id=recpoints>{10}</span><span id=report>{ / }</span> 
+### Case Study 9.29 <span id=recpoints>{10}</span><span id=report>{ 10 / 10 }</span> 
 
 ```{r}
 # Code to read in the data
@@ -295,6 +326,43 @@ Refer to the website developer data set in Appendix C6. Management is interested
 
 __Solution:__
 <div id="rcorners2">
+```{r, warning=FALSE, message=FALSE, fig.align='center'}
+p9.29 %>% 
+  dplyr::select(-ID) %>% 
+ggpairs() + 
+  labs(title = "Scatter Plot Matrix") + 
+  theme_light()
+
+makeTable9.3(p9.29) %>% 
+  dplyr::select(model, AICp, SBCp) %>% 
+  slice(2:n())
+
+webdev.lm <- lm(Y ~ X4, p9.29)
+summary(webdev.lm)
+```
+
+```{r, warning=FALSE, message=FALSE, fig.align='center', fig.height=4, fig.width=8}
+resid.plot <- augment(webdev.lm) %>% 
+  ggplot(aes(x = .fitted, y = .resid)) + 
+  geom_point(shape = 1) + 
+  geom_smooth(method = "loess", se = FALSE, size = .5, color = "red") + 
+  labs(title = "Residuals vs. Fitted Values Plot", 
+       x = "Fitted Values \n lm(Y ~ X4)", 
+       y = "Residuals") + 
+  theme_classic()
+
+qq.norm <- augment(webdev.lm) %>% 
+  ggplot(aes(sample = .resid)) + 
+  stat_qq_band(color = "black", fill = NA, linetype = 2) +
+  stat_qq_line(color = "red", size = .5) +
+  stat_qq_point(shape = 1) +
+  labs(title = "Normal Q-Q",
+       x = "Theoretical Quantiles \n lm(Y ~ X4)", 
+       y = "Standardized residuals") +
+  theme_classic()
+
+resid.plot + qq.norm
+```
 
 </div></br>
 

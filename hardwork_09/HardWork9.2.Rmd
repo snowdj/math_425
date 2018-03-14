@@ -1,0 +1,218 @@
+---
+title: "Hard Work 9.2"
+output: 
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+```{r,include=F}
+library(tidyverse)
+library(leaps)
+library(qpcR)
+library(pander)
+```
+
+## Instructions
+
+1. Study Section 9.6 -- "Model Validation"
+
+2. Attempt and submit <span id=points style="padding-left:0px;">{15}</span> Hard Work Points by Saturday at 11:59 PM.    
+
+
+## Reading Points <span id=headpoints>{7} Possible</span>
+
+### Section 9.6 <span id=rrecpoints>{7}</span><span id=report>{ 7 / 7 }</span>
+
+
+## Application Points <span id=headpoints>{8} Possible</span>
+
+
+<a id=datalink style="font-size:.9em;" target="_blank" href=http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/index.html>Data Files</a>
+
+### Problem 9.21 <span id=recpoints>{2}</span><span id=report>{ 2 / 2 }</span> 
+
+```{r}
+# Code to read in the data
+# It has to be merged from the 1.20 and 8.15 data files.
+p9.10 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%209%20Data%20Sets/CH09PR10.txt", header=FALSE)
+# Give it nice column names for conevience:
+colnames(p9.10) <- c("Y","X1","X2","X3","X4")
+
+# Show the first part of the data:
+#head(p9.10)
+```
+
+Refer to Job Proficiency Problems 9.10 and 9.18. To assess internally the predictive ability of the regression model identified in Problem 9.18, compute the PRESS statistics and compare it to SSE. What does this comparison suggest about the validity of MSE as an indicator of the predictive ability of the fitted model?
+
+__Solution:__
+<div id="rcorners2">
+```{r}
+lm.21 <- lm( Y ~ X1 + X3 + X4, data = p9.10 )
+
+press <- PRESS(lm.21)$stat
+sse <- sum(lm.21$residuals^2)
+
+press - sse
+```
+</div></br>
+
+### Problem 9.22 <span id=recpoints>{6}</span><span id=report>{ 6 / 6 }</span> 
+
+In part (b), swap each occurrence of the statement "Problem 9.18a" for "the significant model suggested by Problem 9.10c".
+
+```{r}
+# Code to read in the data
+# It has to be merged from the 1.20 and 8.15 data files.
+p9.22 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%209%20Data%20Sets/CH09PR22.txt", header=FALSE)
+# Give it nice column names for conevience:
+colnames(p9.22) <- c("Y","X1","X2","X3","X4")
+
+# Show the first part of the data:
+#head(p9.10)
+```
+
+Refer to Job Proficiency Problems 9.10 and 9.18. To asses externally the validity of the regression model identified in Problem 9.18, 25 additional applicants for entry-level clerical positions in the agency were similarly tested and hired irrespective of their test scores, the data follow:
+
+
+  __a)__ Obtain the correlation matrix of the X variables for the validation data set and compare it with that obtained in Problem 9.10b for the model-building data set. Are the two correlation matrices reasonably similar?
+  
+  __Solution:__
+  <div id="rcorners2">
+```{r}
+cor(p9.10)
+cor(p9.22)
+```
+  
+  </div></br>
+  
+  __b)__ Fit the regression model identified in the significant model suggested by Problem 9.10c to the validation data set. Compare the estimated regression coefficients and their estimated standard deviations to those obtained in the significant model suggested by Problem 9.10c. Also compare the error mean squares and coefficients of multiple determination. Do the estimates for the validation data set appear to be reasonably similar to those obtained for the model building data set?
+  
+  __Solution:__
+  <div id="rcorners2">
+```{r}
+lm.18 <- lm(Y ~ X1 + X3 + X4, data = p9.10)
+lm.22 <- lm(Y ~ X1 + X3 + X4, data = p9.22)
+
+summary( lm.22 )
+
+summary( lm.18 )
+
+sse.10 <- sum(lm.18$residuals^2)
+sse.22 <- sum(lm.22$residuals^2)
+
+n.10 <- length(p9.10$Y)
+n.22 <- length(p9.22$Y)
+
+mse.10 <- sse.10/(n.10 - 2)
+mse.22 <- sse.22/(n.22 - 2)
+```
+  
+  </div></br>
+  
+  __c)__ Calculate the mean squared prediction error in (9.20) and compare it to MSE obtained from the model-building data set. Is there evidence of a substantial bias problem in MSE here? Is this conclusion consistent with your finding in Problem 9.21? Discuss
+  
+  __Solution:__
+  <div id="rcorners2">
+```{r}
+sum( lm.22$residuals^2 ) / length( p9.22$Y )
+```
+  
+  </div></br>
+  
+  __d)__ Combine the model-building data set in Problem 9.10 with the validation data set and fit the selected regression model to the combined data. Are the estimated standard deviations of the estimated regression coefficients appreciably reduced now from those obtained for the model-building data set?
+  
+  __Solution:__
+  <div id="rcorners2">
+```{r}
+data <- rbind( p9.10, p9.22 )
+
+lm.22d <- lm( Y ~ X1 + X3 + X4, data = data )
+
+pander(summary( lm.22d ))
+```
+
+  </div></br>
+  
+<style>
+#points {
+  font-size:.8em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#317eac;
+}
+
+#recpoints {
+  font-size:.8em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#7eac31;
+}
+
+#rrecpoints {
+  font-size:1em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#7eac31;
+}
+
+#report {
+  font-size:.7em;
+  padding-left:15px;
+  font-weight:normal; 
+  color:#5a5a5a;
+}
+
+#datalink {
+  font-size:.5em;
+  color:#317eac;
+  padding-left:5px;
+}
+
+#headnote {
+  font-size:.6em;
+  color:#787878;
+}
+
+#note {
+  font-size:.8em;
+  color:#787878;
+}
+
+#headpoints {
+ font-size:12pt;
+ color: #585858; 
+ padding-left: 15px;
+}
+#rcorners2 {
+    border-radius: 25px;
+    border: 2px solid #73AD21;
+    padding: 20px; 
+    width: auto;
+    height: auto;    
+}
+
+#rcorners3 {
+    border-radius: 25px;
+    border: 2px solid #317eac;
+    padding: 20px; 
+    width: auto;
+    height: auto;    
+}
+</style>
+
+
+
+<footer>
+</footer>
+
+
+
+ 
+
+ 
+
+ 
+
+ 
