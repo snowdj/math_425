@@ -1,0 +1,209 @@
+---
+title: "Project 3 -- Car Buying"
+author: "Dylan McDowell"
+output: 
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+```{r, include=FALSE}
+library(tidyverse)
+library(stringr)
+library(here)
+```
+
+## Overview
+
+The goal of this project is to come up with a vehicle "buying and selling" strategy.
+
+To be more explicit, vehicles depreciate over time. So the longer you own a vehicle and the more miles you drive with it, the less it is worth. At some point, repair costs start to outway the cost of buying something newer. So, should you buy at 20,000 miles, then sell at 80,000? Should you purchase a 2018 model, then sell it during the year 2030? What is the best "bang for your buck" when it comes to the particular vehicle you currently own (or are interested in) compared to the next vehicle you wish to own after selling (or scrapping) that one?
+
+## Step 1. Find your Data
+
+Use a dataset that is provided (in I-Learn) for this project, or collect your own data from the internet.
+```{r, eval = FALSE}
+library(RSelenium)
+library(rvest)
+
+# Headless Browser Scraping
+pJS <- phantom()
+remDr <- remoteDriver(browserName = "phantomjs")
+remDr$open(silent = FALSE)
+
+remDr$navigate("https://www.ksl.com/auto/search/index?p=&keyword=Minivan&make[]=Honda&model[]=Odyssey&miles=10000&page=0&perPage=96")
+page0.html <- read_html(remDr$getPageSource()[[1]])
+# Get number of pages there are of results so we can know how many times to loop
+# Subtract 1 because pages are zero indexed
+page.num <- page0.html %>% 
+  html_node(css = ".link:nth-child(7)") %>% 
+  html_text() %>% 
+  as.numeric() - 1
+
+# Create empty vector to collect all the links to all the results
+links.vector <- vector("character", 0)
+
+# Loop through all the pages and collect the links to all the returned results
+for (i in 0:page.num) {
+  site <- glue::glue("https://www.ksl.com/auto/search/index?p=&keyword=Minivan&make[]=Honda&model[]=Odyssey&miles=10000&page={i}&perPage=96")
+  print(site)
+  remDr$navigate(site)
+  page.html <- read_html(remDr$getPageSource()[[1]])
+  links.vector <- page.html %>%
+    html_nodes(css = '.title .link , .featured-listing-title .link')%>% # //*[@id="specificationsTable"]
+    html_attr("href") %>% 
+    append(links.vector, .)
+}
+
+# Create empty vector to store individual car data
+cars.vector <- vector("character", 0)
+
+# Loop through all the links and collect the data that's in the
+# the table for all pages
+for(i in seq(1, length(links.vector))) {
+  site <- glue::glue("https://www.ksl.com{links.vector[i]}")
+  remDr$navigate(site)
+  print(site)
+  car.html <-  read_html(remDr$getPageSource()[[1]])
+  
+  # We need car name
+  car.name <- car.html %>% 
+    html_nodes(".title .cXenseParse") %>% 
+    html_text() %>% 
+    str_replace_all("\n| ","") %>% 
+    paste0("Name:",.)
+  
+  # We also need car price
+  car.price <- car.html %>% 
+    html_nodes(xpath = '//*[(@id = "titleMain")]//*[contains(concat( " ", @class, " " ), concat( " ", "price", " " ))]') %>% 
+    html_text() %>% 
+    parse_number() %>% 
+    paste0("Price:",.)
+  
+  # Here is where we collect the table data
+  cars.vector <- car.html %>%
+    html_nodes(xpath = '//*[@id="specificationsTable"]')%>%
+    html_text() %>% 
+    str_replace_all("\n| ","") %>% 
+    str_split("\\s") %>% 
+    unlist() %>% 
+    append(., c(car.name, car.price)) %>% 
+    append(cars.vector, .)
+}
+
+# Shut down the headless browser
+remDr$close()
+pJS$stop()
+
+# We now need to clean up our data
+dat <- cars.vector %>% 
+  tibble(vec = .) %>% 
+  separate(vec, into = c("var", "value"), sep = ":") %>% 
+  na.omit() %>%
+  group_by(var) %>% 
+  do(tibble::rowid_to_column(.)) %>% 
+  spread(var, value) %>% 
+  filter(!Mileage %in% "notspecified",
+         !ExteriorColor %in% c("NotSpecified", NA),
+         !TitleType %in% "NotSpecified") %>% 
+  mutate_at(c("Mileage", "Price", "Year"), parse_number) %>% 
+  mutate_at(c("ExteriorColor","InteriorColor","TitleType","Trim"), factor) %>% 
+  mutate(Trim = str_replace(Trim, "TOURING", "Touring")) %>% 
+  select(Price, Mileage, everything(), 
+         -c(DealerLicense, rowid, VIN, StockNumber, 
+            Body, Cylinders, DriveType, FuelType, Liters,
+            Make, Model, NumberofDoors, Transmission))
+
+saveRDS(cars.vector, here::here("project_03/cars_vector.rds"))
+saveRDS(dat, here::here("project_03/scrape_data.rds"))
+```
+
+
+## Step 2. Model the Data
+
+Whether you perform a simple, multiple, or transformation type of regression is up to you. You just need to do something useful with the data in order to reach a good "buying and selling" strategy.
+```{r}
+dat <- readRDS(here("project_03","scrape_data.rds"))
+cars.lm <- lm(Price ~ Mileage, dat)
+par(mfrow = c(1,2))
+plot(cars.lm)
+summary(cars.lm)
+```
+
+
+## Step 3. Describe your Strategy
+
+Interpret your regression model and use it to develop your strategy for when to buy and sell vehicles in order to get the most "bang for your buck."
+
+I spent most of my time getting the web-scraping to work and ended up with data that wasn't super helpful. I wanted to develop a cost-analysis for my wife. She's been wanting to get a mini-van for a long time. Since we already have two kids she's pushing hard to move out of the honda accord and into a Honda Oddessy. I'm assuming this is a right of passage for all Dads in life. To finally buy a minivan. Well I built a webscraper to scrape all of the Honda Oddessy Sales off of KSL, but it seems after cleaning up the data that none of the variables are significant.  While the diagnostics look okay, there is no significance in `mileage` as a variable. All other variables I tried as well were not significant. 
+
+At this point I'm questioning if pursuing a grad degree is something I really want... haha. This is a terrible feeling, to work hard to gather all this data and nothing is even remotely significant. It's pretty soul crushing. 
+
+
+## Grading
+
+You will be graded on two things.
+
+1. How well you apply the regression principles we have learned thus far this semester. (Think Projects 1 and 2.) 
+
+2. How well you interpret your results and describe your "buying and selling" strategy.
+
+
+
+
+
+
+
+
+<style>
+#points {
+  font-size:.8em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#317eac;
+}
+
+#recpoints {
+  font-size:.8em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#7eac31;
+}
+
+#datalink {
+  font-size:.5em;
+  color:#317eac;
+  padding-left:5px;
+}
+
+#headnote {
+  font-size:.6em;
+  color:#787878;
+}
+
+#note {
+  font-size:.8em;
+  color:#787878;
+}
+
+#headpoints {
+ font-size:12pt;
+ color: #585858; 
+ padding-left: 15px;
+}
+</style>
+
+
+<footer>
+</footer>
+
+
+
+ 
+
+ 
+
+ 
+
+ 

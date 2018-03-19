@@ -1,0 +1,165 @@
+---
+title: "Hard Work 11"
+output: 
+  html_document:
+    theme: cerulean
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+
+<style>
+
+</style>
+
+## Instructions
+
+1. Study Sections 11.4 (first) and then 11.3 -- "Regression Trees and Robust Regression."
+
+2. Attempt and submit at least <span id=points style="padding-left:0px;">{44}</span> Hard Work Points by Saturday at 11:59 PM.    
+<span id=note>Over <span id=points style="padding-left:0px;">{47}</span> gets you {+1} Final Exam Point.</span>    
+
+
+## Reading Points <span id=headpoints>{19} Possible</span>
+
+### Section 11.4 <span id=rrecpoints>{7}</span><span id=report>{ / }</span>
+
+
+### Section 11.3 <span id=rrecpoints>{12}</span><span id=report>{ / }</span>
+
+
+
+
+## Theory Points <span id=headpoints>{4} Possible</span>
+
+### Problem 11.2 <span id=points>{2}</span><span id=report>{ / }</span>
+ 
+### Problem 11.4 <span id=points>{2}</span><span id=report>{ / }</span>
+
+## Application Points <span id=headpoints>{25} Possible</span>
+
+
+<a id=datalink style="font-size:.9em;" target="_blank" href=http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/index.html>Data Files</a>
+
+### Problem CO2 <span id=recpoints>{10}</span><span id=report>{ / }</span>
+
+Create a graphic similar to Figure 11.9 of the textbook for the CO2 data. 
+Interpret your graphic.
+
+```{r, message=FALSE, warning=FALSE}
+# Install the party library
+# Run once: install.packages("party")
+library(party)
+```
+
+```{r, eval=FALSE}
+# Set eval=TRUE to run this code.
+ctree <- ctree(uptake ~ conc + Treatment + Type, data=CO2)
+plot(ctree, type="simple")
+
+# Hint
+palette(c("#FBB4AE", "#B3CDE3", "#CCEBC5", "#DECBE4"))
+plot(uptake ~ conc, data=CO2, col=interaction(Type,Treatment), pch=16)
+lines(c(400, 600), c(15,15), lwd=3, col="#DECBE4")
+```
+
+
+### Problem 11.11 <span id=recpoints>{7}</span><span id=report>{ / }</span> 
+
+```{r}
+# Code to read in the data
+# It has to be merged from the 1.20 and 8.15 data files.
+p11.11 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%2011%20Data%20Sets/CH11PR11.txt", header=FALSE)
+
+p1.20 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20%201%20Data%20Sets/CH01PR20.txt", header=FALSE)
+
+p11.11 <- rbind(p1.20, p11.11)
+
+# Give it nice column names for conevience:
+colnames(p11.11) <- c("Y","X1")
+
+# Show the data:
+# p11.11
+```
+
+### Problem 11.12 <span id=recpoints>{8}</span><span id=report>{ / }</span> 
+
+```{r}
+# Code to read in the data
+# It has to be merged from the 1.20 and 8.15 data files.
+p11.12 <- read.table("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%2011%20Data%20Sets/CH11PR12.txt", header=FALSE)
+
+# Give it nice column names for conevience:
+colnames(p11.12) <- c("Y","X1")
+
+# Show the data:
+# p11.12
+```
+
+
+
+
+
+<footer>
+</footer>
+
+
+
+ 
+ <style>
+ #points {
+  font-size:.8em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#317eac;
+}
+
+#recpoints {
+  font-size:.8em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#7eac31;
+}
+
+#rrecpoints {
+  font-size:1em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#7eac31;
+}
+
+#report {
+  font-size:.7em;
+  padding-left:15px;
+  font-weight:normal; 
+  color:#5a5a5a;
+}
+
+#datalink {
+  font-size:.5em;
+  color:#317eac;
+  padding-left:5px;
+}
+
+#headnote {
+  font-size:.6em;
+  color:#787878;
+}
+
+#note {
+  font-size:.8em;
+  color:#787878;
+}
+
+#headpoints {
+ font-size:12pt;
+ color: #585858; 
+ padding-left: 15px;
+}
+ </style>
+
+ 
+
+ 
+
+ 
