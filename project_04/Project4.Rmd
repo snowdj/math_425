@@ -1,0 +1,105 @@
+---
+title: "Personal Regression Application"
+output: 
+  html_document:
+    theme: cerulean
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+
+<style>
+
+</style>
+
+## Instructions
+
+1. Use regression to help you find meaningful insights about your own life.
+
+    * You could study your spending and earning habits.
+    * You could consider your health habits as recorded by your phone or other electronic gadget.
+    * You could consider the impacts of social media usage measured by number of posts, time spent, or words written, compared to your success in school each semester.
+    * You could weigh your future job opportunities, graduate school, or other options against each other to find a "best choice" for you.
+    * You could even take a second attempt at the Project 3 analysis, and follow up with more detail that better reflects your actual vehicle scenario. This would have to differ rather significantly from Project 3 though.
+
+<br />
+
+2. Your work should show breadth and depth of knowledge in the things we have learned this semester. 
+
+## Grading
+
+1. Breadth of Knowledge <span id=points style="padding-left:0px;">{10} Points</span>
+
+    * What percentage of regression concepts from this semester does your analysis demonstrate?
+
+<br />
+
+2. Depth of Knowledge <span id=points style="padding-left:0px;">{10} Points</span>
+
+    * Does your analysis show great expertise in at least a few of the regression topics we have covered this semester? Specifically, you need to demonstrate good ability with: the mathematical model statement, hypothesis testing, confidence or prediction intervals, and transformations.
+    
+    
+
+<footer>
+</footer>
+
+
+
+ 
+ <style>
+ #points {
+  font-size:.8em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#317eac;
+}
+
+#recpoints {
+  font-size:.8em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#7eac31;
+}
+
+#rrecpoints {
+  font-size:1em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#7eac31;
+}
+
+#report {
+  font-size:.7em;
+  padding-left:15px;
+  font-weight:normal; 
+  color:#5a5a5a;
+}
+
+#datalink {
+  font-size:.5em;
+  color:#317eac;
+  padding-left:5px;
+}
+
+#headnote {
+  font-size:.6em;
+  color:#787878;
+}
+
+#note {
+  font-size:.8em;
+  color:#787878;
+}
+
+#headpoints {
+ font-size:12pt;
+ color: #585858; 
+ padding-left: 15px;
+}
+ </style>
+
+ 
+
+ 
+
+ 

@@ -1,0 +1,106 @@
+---
+title: "Consulting Regression Application"
+output: 
+  html_document:
+    theme: cerulean
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+
+<style>
+
+</style>
+
+## Instructions
+
+1. Use regression to help you answer someone else's question.
+
+    * You could reach out to a friend and help them decide if they are paying a fair price for their upcoming purchase (car, computer, house, ...).
+    * You could reach out to someone you know that owns a small business and would be interested in your help analyzing their data.
+    * You could reach out to a teacher to see if they have questions and data they are willing to share.
+    * You could reach out to the Data Science Society to become a consulting statistician for one of their project teams.
+    * Brother Saunders has some projects he would happy to have you work on if none of these other options pan out.
+
+
+<br />
+
+2. Your work should show the ability to perform detailed and correct statistical analysis, while summarizing the conclusions appropriately for your client "in plain English." The main goal here is to see that you can properly interpret regression results within context in such a way that the general public can understand.
+
+## Grading
+
+1. Correctness of Analysis <span id=points style="padding-left:0px;">{10} Points</span>
+
+    * Did you use appropraite regression tools to support your final conclusions and interpretations?
+
+<br />
+
+2. Ability to Interpret <span id=points style="padding-left:0px;">{10} Points</span>
+
+    * Are your final conclusions presented in such a way that the general public can understand and apply them?
+    
+    
+
+<footer>
+</footer>
+
+
+
+ 
+ <style>
+ #points {
+  font-size:.8em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#317eac;
+}
+
+#recpoints {
+  font-size:.8em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#7eac31;
+}
+
+#rrecpoints {
+  font-size:1em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#7eac31;
+}
+
+#report {
+  font-size:.7em;
+  padding-left:15px;
+  font-weight:normal; 
+  color:#5a5a5a;
+}
+
+#datalink {
+  font-size:.5em;
+  color:#317eac;
+  padding-left:5px;
+}
+
+#headnote {
+  font-size:.6em;
+  color:#787878;
+}
+
+#note {
+  font-size:.8em;
+  color:#787878;
+}
+
+#headpoints {
+ font-size:12pt;
+ color: #585858; 
+ padding-left: 15px;
+}
+ </style>
+
+ 
+
+ 
+
+ 

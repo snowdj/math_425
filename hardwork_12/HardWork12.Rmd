@@ -1,0 +1,133 @@
+---
+title: "Hard Work 12"
+output: 
+  html_document:
+    theme: cerulean
+    toc: true
+    toc_float: true
+    code_folding: hide
+---
+
+<style>
+
+</style>
+
+## Instructions
+
+1. Study Sections **{FILL IN THE SECTIONS YOU PLAN TO STUDY HERE}** -- "**{SUMMARIZE IN WORDS WHAT THESE SECTIONS ARE GENERALLY ABOUT HERE}**."
+
+2. Attempt and submit at least <span id=points style="padding-left:0px;">{50}</span> Hard Work Points by Saturday at 11:59 PM.    
+<span id=note>Over <span id=points style="padding-left:0px;">{65}</span> gets you {+1} Final Exam Point.</span>    
+<span id=note>Over <span id=points style="padding-left:0px;">{80}</span> gets you {+2} Final Exam Points.</span>    
+
+
+## Reading Points <span id=headpoints>{**{TOTAL POINTS POSSIBLE}**} Possible</span>
+
+### Section **{SECTION NUMBER GOES HERE}** <span id=rrecpoints>{**{TOTAL POINTS POSSIBLE}**}</span><span id=report>{ / }</span>
+
+
+### Section **{SECTION NUMBER GOES HERE}** <span id=rrecpoints>{**{TOTAL POINTS POSSIBLE}**}</span><span id=report>{ / }</span>
+
+### Copy and Paste the above code as needed
+
+
+
+## Theory Points <span id=headpoints>{**{TOTAL POINTS POSSIBLE}**} Possible</span>
+
+### Problem **{PROBLEM NUMBER}** <span id=points>{**{TOTAL POINTS POSSIBLE}**}</span><span id=report>{ / }</span>
+ 
+### Copy and Paste the above code as needed
+
+### Okay to totally delete this section if you wish
+
+
+## Application Points <span id=headpoints>{**{TOTAL POINTS POSSIBLE}**} Possible</span>
+
+
+<a id=datalink style="font-size:.9em;" target="_blank" href=http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/index.html>Data Files</a>
+
+### Problem **{PROBLEM NUMBER}** <span id=recpoints>{**{TOTAL POINTS POSSIBLE}**}</span><span id=report>{ / }</span>
+
+```{r}
+# Here is generic code that would read in any "Problem" from any "Chapter":
+
+Chapter <- 11 #change this to the chapter you want
+Problem <- 11 #change this to the problem you want
+
+#Change pWhatever.Whatever to be p11.11 or whatever you want.
+pWhatever.Whatever <- read.table(paste0("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20", Chapter, "%20Data%20Sets/CH", Chapter, "PR", Problem, ".txt"), header=FALSE)
+
+# Give it nice column names for conevience:
+# Be sure to change pWhatever.Whatever to p11.11 or whatever you used above.
+colnames(pWhatever.Whatever) <- c("Y","X1")
+
+```
+
+### Copy the above as needed
+
+
+
+
+<footer>
+</footer>
+
+
+
+ 
+ <style>
+ #points {
+  font-size:.8em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#317eac;
+}
+
+#recpoints {
+  font-size:.8em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#7eac31;
+}
+
+#rrecpoints {
+  font-size:1em;
+  padding-left:5px;
+  font-weight:bold; 
+  color:#7eac31;
+}
+
+#report {
+  font-size:.7em;
+  padding-left:15px;
+  font-weight:normal; 
+  color:#5a5a5a;
+}
+
+#datalink {
+  font-size:.5em;
+  color:#317eac;
+  padding-left:5px;
+}
+
+#headnote {
+  font-size:.6em;
+  color:#787878;
+}
+
+#note {
+  font-size:.8em;
+  color:#787878;
+}
+
+#headpoints {
+ font-size:12pt;
+ color: #585858; 
+ padding-left: 15px;
+}
+ </style>
+
+ 
+
+ 
+
+ 
