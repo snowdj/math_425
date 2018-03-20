@@ -71,6 +71,7 @@ for(i in seq(1, length(links.vector))) {
 remDr$close()
 pJS$stop()
 
+cars.vector <- readRDS("project_03/cars_vector.rds")
 # We now need to clean up our data
 dat <- cars.vector %>% 
   tibble(vec = .) %>% 
@@ -96,3 +97,6 @@ saveRDS(dat, here::here("project_03/scrape_data.rds"))
 cars.lm <- lm(Price ~ Mileage + TitleType, dat)
 plot(cars.lm)
 summary(cars.lm)
+
+ggplot(dat, aes(x = Mileage, y = Price)) +
+  geom_point()
