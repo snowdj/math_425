@@ -151,11 +151,6 @@ You will be graded on two things.
 
 
 
-
-
-
-
-
 <style>
 #points {
   font-size:.8em;

@@ -11,6 +11,7 @@ output:
 library(tidyverse)
 library(broom)
 library(patchwork)
+library(pipeR)
 ```
 
 <style>
@@ -31,9 +32,6 @@ library(patchwork)
 
 
 ### Section 11.3 <span id=rrecpoints>{12}</span><span id=report>{ 12 / 12 }</span>
-
-
-
 
 ## Theory Points <span id=headpoints>{4} Possible</span>
 
@@ -61,7 +59,7 @@ The one good thing about regression trees is that they are the closest thing to 
 
 <a id=datalink style="font-size:.9em;" target="_blank" href=http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/index.html>Data Files</a>
 
-### Problem CO2 <span id=recpoints>{10}</span><span id=report>{ / }</span>
+### Problem CO2 <span id=recpoints>{10}</span><span id=report>{ 10 / 10 }</span>
 
 Create a graphic similar to Figure 11.9 of the textbook for the CO2 data. 
 Interpret your graphic.
@@ -72,11 +70,13 @@ Interpret your graphic.
 library(party)
 ```
 
-```{r, eval=TRUE, fig.align='center', fig.width=6, fig.height=4}
+```{r}
 # Set eval=TRUE to run this code.
 ctree <- ctree(uptake ~ conc + Treatment + Type, data=CO2)
 plot(ctree, type="simple")
+```
 
+```{r, eval=TRUE, fig.align='center', fig.width=6, fig.height=4}
 pal <- c("#FBB4AE", "#B3CDE3", "#CCEBC5", "#DECBE4")
 
 ggplot(CO2, aes(conc, uptake, color = interaction(Type, Treatment))) + 
@@ -91,9 +91,13 @@ ggplot(CO2, aes(conc, uptake, color = interaction(Type, Treatment))) +
   labs(title = "Regression Tree Plot", x = "Concentration", y = "C02 Uptake") +
   scale_color_manual("Type*Treatment", 
                      values = c("#FBB4AE", "#B3CDE3", "#CCEBC5", "#DECBE4")) +
-  theme_classic() 
+  theme_classic()
 ```
 
+__Solution:__
+<div id="rcorners2">
+As we can see there are several usefull regions that these data can be split up into so we can estimate uptake based on several predictor variables. 
+</div></br>
 
 ### Problem 11.11 <span id=recpoints>{7}</span><span id=report>{ 7 / 7 }</span> 
 
@@ -127,15 +131,18 @@ tibble(i = c(46,47), X = c(6,5), Y = c(132,166)) %>%
   __Solution:__
   <div id="rcorners2">
 ```{r}
-copy.lm <- lm(Y ~ X1, p11.11)
-
 ggplot(p11.11, aes(X1, Y)) + 
   geom_point(shape = 1) + 
   geom_smooth(method = "lm", se = FALSE, size = .5, color = "skyblue2") + 
   labs(title = "Simple OLS Regression") + 
   theme_bw()
+
+lm(Y ~ X1, p11.11) %>>%
+  (~copy.lm) %>% 
+  summary()
 ```
   
+  The effect of adding 46, 47 to the regression pulls up the estimated regression line away from what would look like a proper fit. 
   </div></br>
   
   __b)__ Obtain the scaled residuals in (11.47) and use the Huber weight function (11.44) to obtain the case weights for a first iteration of IRLS robust regression. Which case receive the smallest Huber weights? Why?
@@ -154,6 +161,7 @@ huber(u) %>%
   pander::pander()
 ```
   
+  The observations that get the smallest weightings are the outliers 46, and 47 which makes sense. 
   </div></br>
   
   __c)__ Using the weights calculated in part (b), obtain the weighted least squares estimates of the regression coefficients. How do the estimates compare to those found in part (a) using ordinary least squares?
@@ -161,10 +169,12 @@ huber(u) %>%
   __Solution:__
   <div id="rcorners2">
 ```{r}
-copy.rlm <- lm(Y ~ X1, p11.11, weights = huber(u))
-summary(copy.rlm)
+lm(Y ~ X1, p11.11, weights = huber(u)) %>>%
+  (~copy.rlm) %>>%
+  summary()
 ```
   
+  There is smaller std. error and a larger t value for the coefficients. 
   </div></br>
   
   __d)__ Continue the IRLS procedure for two more iterations. Which cases receive the smallest weights in the final iteration? How do the final IRLS robust regression estimates compare to the ordinary least squares estimates obtained in part (a)?
@@ -189,6 +199,7 @@ tidy(copy.rlm3) %>%
   pander::pander(caption = "2 More Iterations of Huber Regression Output")
 ```
   
+  The outliers again recieve the smallest weight and the output of the regression once again has a smaller std. error and larger t-statistic. 
   </div></br>
   
   __e)__ Plot the final IRLS estimated regression function, obtained in part (d), on the graph constructed in part (a). Does the robust fit differ substantially from the ordinary least squares fit? If so, which fit is preferred here?
@@ -209,7 +220,8 @@ ggplot() +
   scale_color_manual("Model", values = c("ols" = "skyblue2", "robust" = "firebrick2")) +
   theme_bw()
 ```
-
+  
+  It appears the robust regression line is an overall better fit here. 
   </div></br>
   
 ### Problem 11.12 <span id=recpoints>{8}</span><span id=report>{ 8 / 8 }</span> 
@@ -240,7 +252,10 @@ head(p11.12, 2) %>%
   __Solution:__
   <div id="rcorners2">
 ```{r, fig.align='center', fig.width=6, fig.height=4}
-weight.lm <- lm(Y ~ X1, p11.12)
+lm(Y ~ X1, p11.12) %>>%
+  (~weight.lm) %>% 
+  tidy() %>% 
+  pander::pander(caption = "Non-Robust Regression Output")
 
 ols <- ggplot(p11.12, aes(X1, Y)) + 
   geom_point(shape = 1) + 
@@ -264,6 +279,7 @@ cooks.dist <- ggplot(df, aes(Index, Cook, color=group, group=group)) +
 ols + cooks.dist
 ```
   
+  They suggest that there are some massive outliers within these data. 
   </div></br>
   
   __b)__ Obtain the scaled residuals in (11.47) and use the Huber weight function (11.44) to obtain case weights for a first iteration of IRLS robust regression. Which cases receive the smallest Huber weights? Why?
@@ -281,6 +297,8 @@ huber <- function(u){
 huber(u) %>% 
   pander::pander()
 ```
+
+  The two outliers recieve the smallest weights.
   </div></br>
   
   __c)__ Using the weights calculated in part (b) obtain the weighted least squares estimates of the regression coefficients. How do these estimates compare to those found in part (a) using ordinary least squares?
@@ -320,6 +338,7 @@ tidy(weight.rlm3) %>%
   pander::pander(caption = "2 More Iterations of Huber Regression Output")
 ```
   
+  Once again the outliers are weighted the least and the coefficients have a smaller error and larger t-stat. 
   </div></br>
   
 

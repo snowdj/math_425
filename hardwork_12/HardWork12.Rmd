@@ -1,5 +1,6 @@
 ---
 title: "Hard Work 12"
+author: "Dylan McDowell"
 output: 
   html_document:
     theme: cerulean
@@ -14,39 +15,40 @@ output:
 
 ## Instructions
 
-1. Study Sections **{FILL IN THE SECTIONS YOU PLAN TO STUDY HERE}** -- "**{SUMMARIZE IN WORDS WHAT THESE SECTIONS ARE GENERALLY ABOUT HERE}**."
+1. Study Sections **12.1, 12.2, 12.3, 12.4, 12.5** -- "**The sections are about time series analysis and the problems that often arise due to things like autocorrelation.**."
 
 2. Attempt and submit at least <span id=points style="padding-left:0px;">{50}</span> Hard Work Points by Saturday at 11:59 PM.    
 <span id=note>Over <span id=points style="padding-left:0px;">{65}</span> gets you {+1} Final Exam Point.</span>    
 <span id=note>Over <span id=points style="padding-left:0px;">{80}</span> gets you {+2} Final Exam Points.</span>    
 
 
-## Reading Points <span id=headpoints>{**{TOTAL POINTS POSSIBLE}**} Possible</span>
+## Reading Points <span id=headpoints>{24} Possible</span>
 
-### Section **{SECTION NUMBER GOES HERE}** <span id=rrecpoints>{**{TOTAL POINTS POSSIBLE}**}</span><span id=report>{ / }</span>
+### Section 12.1 <span id=rrecpoints>{2}</span><span id=report>{  /  }</span>
 
+### Section 12.2 <span id=rrecpoints>{6}</span><span id=report>{  /  }</span>
 
-### Section **{SECTION NUMBER GOES HERE}** <span id=rrecpoints>{**{TOTAL POINTS POSSIBLE}**}</span><span id=report>{ / }</span>
+### Section 12.3 <span id=rrecpoints>{2}</span><span id=report>{  /  }</span>
 
-### Copy and Paste the above code as needed
+### Section 12.4 <span id=rrecpoints>{12}</span><span id=report>{  /  }</span>
 
+### Section 12.5 <span id=rrecpoints>{4}</span><span id=report>{  /  }</span>
 
+## Theory Points <span id=headpoints>{10} Possible</span>
 
-## Theory Points <span id=headpoints>{**{TOTAL POINTS POSSIBLE}**} Possible</span>
+### Problem 12.1 <span id=points>{2}</span><span id=report>{ / }</span>
 
-### Problem **{PROBLEM NUMBER}** <span id=points>{**{TOTAL POINTS POSSIBLE}**}</span><span id=report>{ / }</span>
- 
-### Copy and Paste the above code as needed
+### Problem 12.2 <span id=points>{2}</span><span id=report>{ / }</span>
 
-### Okay to totally delete this section if you wish
+### Problem 12.3 <span id=recpoints>{2}</span><span id=report>{ / }</span>
 
+### Problem 12.4 <span id=recpoints>{4}</span><span id=report>{ / }</span>
 
-## Application Points <span id=headpoints>{**{TOTAL POINTS POSSIBLE}**} Possible</span>
-
+## Application Points <span id=headpoints>{31} Possible</span>
 
 <a id=datalink style="font-size:.9em;" target="_blank" href=http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/index.html>Data Files</a>
 
-### Problem **{PROBLEM NUMBER}** <span id=recpoints>{**{TOTAL POINTS POSSIBLE}**}</span><span id=report>{ / }</span>
+### Problem 12.10 <span id=recpoints>{9}</span><span id=report>{ / }</span>
 
 ```{r}
 # Here is generic code that would read in any "Problem" from any "Chapter":
@@ -63,10 +65,21 @@ colnames(pWhatever.Whatever) <- c("Y","X1")
 
 ```
 
-### Copy the above as needed
+### Problem 12.13 <span id=recpoints>{6}</span><span id=report>{ / }</span>
 
+### Problem 12.10 <span id=recpoints>{9}</span><span id=report>{ / }</span>
 
+### Problem 12.17 <span id=recpoints>{7}</span><span id=report>{ / }</span>
 
+### Problem 12.18 <span id=points>{9}</span><span id=report>{ / }</span>
+
+## Projects <span id=headpoints>{8} Possible</span>
+
+### Project 12.27 <span id=points>{8}</span><span id=report>{ / }</span>
+
+## Case Studies <span id=headpoints>{12} Possible</span>
+
+### Project 12.29 <span id=points>{12}</span><span id=report>{ / }</span>
 
 <footer>
 </footer>
@@ -74,7 +87,7 @@ colnames(pWhatever.Whatever) <- c("Y","X1")
 
 
  
- <style>
+<style>
  #points {
   font-size:.8em;
   padding-left:5px;
@@ -123,6 +136,21 @@ colnames(pWhatever.Whatever) <- c("Y","X1")
  font-size:12pt;
  color: #585858; 
  padding-left: 15px;
+}
+#rcorners2 {
+    border-radius: 25px;
+    border: 2px solid #73AD21;
+    padding: 20px; 
+    width: auto;
+    height: auto;    
+}
+
+#rcorners3 {
+    border-radius: 25px;
+    border: 2px solid #317eac;
+    padding: 20px; 
+    width: auto;
+    height: auto;    
 }
  </style>
 
