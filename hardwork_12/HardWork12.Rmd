@@ -8,6 +8,10 @@ output:
     toc_float: true
     code_folding: hide
 ---
+```{r, include=FALSE}
+library(tidyverse)
+library(broom)
+```
 
 <style>
 
@@ -38,16 +42,109 @@ output:
 
 ### Problem 12.1 <span id=points>{2}</span><span id=report>{ / }</span>
 
+Refer to Table 12.1
+
+  __a)__ Plot $\varepsilon_{i}$ for $t = 1\ldots{10}$ on a graph. How is the positive first order auto-correlation in the error terms shown by the plot?
+  
+  __Solution:__
+  <div id="rcorners3">
+  
+  </div></br>
+  
+  __b)__ Refer to Plastic Harness Problem 1.22 if the same test item were measure at 12 different points in time, would the error terms in the regression model likely be auto-correlated? Discuss.
+  
+  __Solution:__
+  <div id="rcorners3">
+  
+  </div></br>
+
 ### Problem 12.2 <span id=points>{2}</span><span id=report>{ / }</span>
+
+Refer to Plastic Harness Problem 1.22 If the same test item were measured at 12 different points in time, would the error terms in the regression model likely be autocorrelated? Discuss. 
+
+__Solution:__
+<div id="rcorners3">
+
+</div></br>
 
 ### Problem 12.3 <span id=recpoints>{2}</span><span id=report>{ / }</span>
 
+A student stated that the first-order auto-regressive error models (12.1) and (12.2) are too simple for business time series data because the error term in period t in such data is also influenced by random effects that occurred more than one period in the past. Comment. 
+
+__Solution:__
+<div id="rcorners2">
+
+</div></br>
+
+
 ### Problem 12.4 <span id=recpoints>{4}</span><span id=report>{ / }</span>
+
+A student writing a term paper used ordinary least squares in fitting a simple linear regression model to some time series data containing positively auto-correlated errors, and found that 90 percent confidence interval for $\beta_{1}$ was too wide to be useful. The student then decided to employ regression model (12.1) to improve the precision of the estimate. Comment. 
+
+__Solution:__
+<div id="rcorners2">
+
+</div></br>
+
 
 ## Application Points <span id=headpoints>{31} Possible</span>
 
 <a id=datalink style="font-size:.9em;" target="_blank" href=http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/index.html>Data Files</a>
 
+### Problem 12.9 <span id=recpoints>{6}</span><span id=report>{ / }</span>
+
+```{r}
+# Here is generic code that would read in any "Problem" from any "Chapter":
+
+Chapter <- 12 #change this to the chapter you want
+Problem <- "09" #change this to the problem you want
+
+#Change pWhatever.Whatever to be p11.11 or whatever you want.
+p12.9 <- read.table(paste0("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20", Chapter, "%20Data%20Sets/CH", Chapter, "PR", Problem, ".txt"), header=FALSE)
+
+# Give it nice column names for conevience:
+# Be sure to change pWhatever.Whatever to p11.11 or whatever you used above.
+colnames(p12.9) <- c("Y","X1")
+```
+
+__Microcomputer components__ A staff analyst for a manufacturer of microcomputer components has compiled monthly data for the past 16 months on the value of industry production of processing  units that use these components (X, in million dollars) and the value of the firm's components used (Y, in thousand dollars). The analyst believes that a simple linear regression relation is appropriate but anticipates positive auto-correlation. 
+
+  __a)__ Fit a simple linear regression model by ordinary least squares and obtain the residuals Also obtain $s\{b_{0}\}$ and $s\{b_{1}\}$.
+  
+  __Solution:__
+  <div id="rcorners2">
+```{r, fig.align='center', fig.width=6, fig.height=4}
+ggplot(p12.9, aes(X1, Y)) + 
+  geom_point(shape = 1) + 
+  geom_smooth(method = "lm", se = F, size = .5, color = "firebrick2") + 
+  labs(title = "Simple OLS Model") + 
+  theme_bw()
+```
+  </div></br>
+  
+  
+  __b)__ Plot the residuals against time and explain whether you find any evidence of positive autocorrelation. 
+  
+  __Solution:__
+  <div id="rcorners2">
+```{r}
+augment(lm(Y ~ X1, p12.9)) %>% 
+  ggplot(aes(x = seq_along(X1), y = .resid)) + 
+  geom_point(shape = 1) + 
+  labs(title = "Residuals plotted against time", x = "Month", y = "Residuals") + 
+  scale_x_continuous(breaks = seq(2,16,2)) + 
+  theme_bw()
+```
+
+  </div></br>
+  
+  __c)__ Conduct a formal test for positive autocorrelation using $\alpha = 0.5$. State the alternatives, decision rule, and conclusion. Is the residual analysis in part (b) in accord with the test result?
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+  
 ### Problem 12.10 <span id=recpoints>{9}</span><span id=report>{ / }</span>
 
 ```{r}
@@ -65,28 +162,255 @@ colnames(pWhatever.Whatever) <- c("Y","X1")
 
 ```
 
+Refer to Microcomputer components Problem 12.9. The analyst has decided to employ regression model (12.1) and use the Cochrane-Orcutt procedure to fit the model. 
+
+  __a)__ Obtain a point estimate of the auto-correlation parameter. How well does the approximate relationship (12.25) hold here between this point estimate and the Durbin-Watson test statistic?
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+  
+  __b)__ Use on iteration to obtain the estimates b0 and b1 of the regression coefficients $\beta$ and $\beta$ in transformed model (12.17) and state the estimated regression function. Also obtain $s\{b_{0}\}$ and $s\{b_{1}\}$
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+  
+  __c)__ Test whether any positive autocorrelation remains after first iteration using $\alpha = 0.05$. State the alternatives, decision rule, and conclusion. 
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+  
+  __d)__ Restate the estimated regression function obtained in part (b) in terms of the original variables. Also obtain and . Compare the estimated regression coefficients obtained with the Cochraine-Orcurtt procedure and their estimated standard deviation with those obtained with ordinary least squares in Problem 12.9a.
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+  
+  __e)__ On the basis of the results in parts (c) and (d), does the Cochrane-Orcutt procedure appear to have been effective here?
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+  
+  __f)__ The value of industry production in month 17 will be $2.210 million. Predict the value of the firm's components used in month 17; employ a 95 percent prediction interval. Interpret your interval. 
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+  
+  __g)__ Estimate $\beta$ with a 95 percent confidence interval. Interpret your interval. 
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+  
 ### Problem 12.13 <span id=recpoints>{6}</span><span id=report>{ / }</span>
 
-### Problem 12.10 <span id=recpoints>{9}</span><span id=report>{ / }</span>
+```{r}
+# Here is generic code that would read in any "Problem" from any "Chapter":
+
+Chapter <- 12 #change this to the chapter you want
+Problem <- 13 #change this to the problem you want
+
+#Change pWhatever.Whatever to be p11.11 or whatever you want.
+p12.13 <- read.table(paste0("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20", Chapter, "%20Data%20Sets/CH", Chapter, "PR", Problem, ".txt"), header=FALSE)
+
+# Give it nice column names for conevience:
+# Be sure to change pWhatever.Whatever to p11.11 or whatever you used above.
+colnames(p12.13) <- c("Y","X1")
+```
+
+Advertising agency. The managing partner of an adverting agency is interested in the possibility of making accurate predictions of monthly billings. Monthly data on amount of billings (Y in thousands of constant dollars) and on number of hours of staff time (X, in thousand hours) for the 20 most recent months follow. A simple linear regression models is believed to be appropriate, but positively auto-correlated error terms may be present.
+
+  __a)__ Fit a simple linear regression model by ordinary least squares and obtain the residuals. Also obtain $s\{b0\}$ and $s\{b1\}$.
+  
+  __Solution:__
+  <div id="rcorners2">
+```{r}
+ggplot(p12.13, aes(X1, Y)) + 
+  geom_point(shape = 1) + 
+  geom_smooth(method = "lm", se = F, size = .5, color = "firebrick2") + 
+  labs(title = "Simple OLS Model") + 
+  theme_bw()
+```
+  
+  </div></br>
+  
+  __b)__ Plot the residuals against time and explain whether you find any evidence of positive auto-correlation. 
+  
+  __Solution:__
+  <div id="rcorners2">
+```{r}
+augment(lm(Y ~ X1, p12.13)) %>% 
+  ggplot(aes(x = seq_along(X1), y = .resid)) + 
+  geom_point(shape = 1) + 
+  labs(title = "Residuals plotted against time", x = "Month", y = "Residuals") + 
+  scale_x_continuous(breaks = seq(2,20,2)) + 
+  theme_bw()
+```
+  </div></br>
+  
+  __c)__ Conduct a formal test for positive auto-correlation using $\alpha =.01$ State the alternatives decision rule, and conclusion. Is the residual analysis in part (b) in accord with the test result?
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+  
 
 ### Problem 12.17 <span id=recpoints>{7}</span><span id=report>{ / }</span>
 
+```{r}
+# Here is generic code that would read in any "Problem" from any "Chapter":
+
+Chapter <- 12 #change this to the chapter you want
+Problem <- 17 #change this to the problem you want
+
+#Change pWhatever.Whatever to be p11.11 or whatever you want.
+p12.17 <- read.table(paste0("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20", Chapter, "%20Data%20Sets/CH", Chapter, "PR", Problem, ".txt"), header=FALSE)
+
+# Give it nice column names for conevience:
+# Be sure to change pWhatever.Whatever to p11.11 or whatever you used above.
+colnames(p12.17) <- c("Y","X1")
+```
+
+McGill Company sales. The data below show seasonally adjusted quarterly sales for the McGill Company (Y, in million dollars) and for the entire industry (X, in million dollars) for the most recent 20 quarters. 
+
+  __a)__ Would you expect the auto-correlation parameter p to be positive, negative, or zero here?
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+  
+  __b)__ Fit a simple linear regression model by ordinary least squares and obtain the residuals Also obtain $s\{b0\}$ and $s\{b1\}$.
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+  
+  __c)__ Plot the residual against time and explain whether you find any evidence of positive auto-correlation>
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+  
+  __d)__ Conduct a formal test for positive auto-correlation using $\alpha = .01$. State the alternatives decision rule, and conclusion. Is the residual analysis in part (c) in accord with the test result?>
+  
+  __Solution:__
+  <div id="rcorners2">
+  
+  </div></br>
+
 ### Problem 12.18 <span id=points>{9}</span><span id=report>{ / }</span>
+
+Refer to McGill Company Sales Problem 12.17. Assume that regression model is applicable and that the Cochrain-Orcutt procedure is to be employed. 
+
+  __a)__ Obtain a point estimate of the auto-correlation parameter. How well does the approximate relationship hold here between the point estimate and the Durbin-Watson test statistic?
+  
+  __Solution:__
+  <div id="rcorners3">
+  
+  </div></br>
+  
+  __b)__ Use one iteration to obtain the estimate $b_0$ and $b_1$ of the regression coefficients $\beta_0$ and $\beta_1$ in transformed model and stat the estimated regression function. Also obtain $s\{b0\}$ and $s\{b1\}$. 
+  
+  __Solution:__
+  <div id="rcorners3">
+  
+  </div></br>
+  
+  __c)__ Test whether any positive auto-correlation remains after the first iteration; use $\alpha = .01$ state the alternatives, decision rule and convulsion. 
+  
+  __Solution:__
+  <div id="rcorners3">
+  
+  </div></br>
+  
+  __d)__ Restate the estimated regression function obtained in part (b) in terms of the original variables. Also obtain $s\{b0\}$ and $s\{b1\}$. Compare the estimated regression coefficients obtained with the Cochrane-Orcutt procedure and their estimated standard deviations with those obtained with ordinary least squares in Problem 12.17b.
+  
+  __Solution:__
+  <div id="rcorners3">
+  
+  </div></br>
+  
+  __e)__ On the basis of the results in parts (c) and (d) does the Cochraine-Orcutt procedure appear to have been effective here?
+  
+  __Solution:__
+  <div id="rcorners3">
+  
+  </div></br>
+  
+  __f)__ Industry sales for quarter 2 are expected to be $181 million. Predict the McGill Company sales for quarter 21 using a 90 percent prediction interval. Interpret your interval. 
+  
+  __Solution:__
+  <div id="rcorners3">
+  
+  </div></br>
+  
+  __g)__ Estimate $\beta_1$ with a 90 percent confidence interval. Interpret your interval. 
+  
+  __Solution:__
+  <div id="rcorners3">
+  
+  </div></br>
 
 ## Projects <span id=headpoints>{8} Possible</span>
 
 ### Project 12.27 <span id=points>{8}</span><span id=report>{ / }</span>
 
+The true regression model is $Y_{i} = 10 + 24X_{i} + \varepsilon_{i}$ where $\varepsilon_{i} = 8\varepsilon_{i-1}+u_{i} and u_{i}$ are independent $N(0, 25)$. 
+
+  __a)__ Generate 11 independent random numbers from $N(0,25)$ Use the first random number \varepsilon_n, obtain the 10 error terms and then calculate the 10 observations Y values corresponding to the X values. Fit a linear regression function by orindary least squares and calculate MSE.
+  
+  __Solution:__
+  <div id="rcorners3">
+  
+  </div></br>
+  
+  __b)__ Repeart part (a) 100 times, using new random numbers each time.
+  
+  __c)__ Calculate the mean of the 100 estimates of b1. Does it appear that b1 is an unbiased estimator of \beta_1 despite the presence of positive autocorrelation?
+  
+  __Solution:__
+  <div id="rcorners3">
+  
+  </div></br>
+  
+  __d)__ Calculate the man of the 100 estimates of MSE. Does it appear that MSE is a biased estimator of \sigma^{2}? If so, does the magnitude of the bias appear to be small or large?
+  
+  __Solution:__
+  <div id="rcorners3">
+  
+  </div></br>
+
 ## Case Studies <span id=headpoints>{12} Possible</span>
 
 ### Project 12.29 <span id=points>{12}</span><span id=report>{ / }</span>
+
+Refer to the Heating equipment data set in Appendix C8. The conversations are listed in time order> develop a reasonable predictor model for the monthly heating equipment order. Potential predictors include new homes for sale, current monthly deviation of temperature from historical average temperature, the prime lending rate, current distributor inventory levels, the amount of distributor sell through, and the level confusing being offered. Your analysis should determine whether or not auto-correlation is present using $\alpha = .05$. If auto-correlation is present, revise he model and analysis as needed. 
+
+__Solution:__
+<div id="rcorners3">
+
+</div></br>
 
 <footer>
 </footer>
 
 
 
- 
 <style>
  #points {
   font-size:.8em;
