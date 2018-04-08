@@ -11,6 +11,7 @@ output:
 ```{r, include=FALSE}
 library(tidyverse)
 library(broom)
+library(magrittr)
 ```
 
 <style>
@@ -28,15 +29,15 @@ library(broom)
 
 ## Reading Points <span id=headpoints>{24} Possible</span>
 
-### Section 12.1 <span id=rrecpoints>{2}</span><span id=report>{  /  }</span>
+### Section 12.1 <span id=rrecpoints>{2}</span><span id=report>{ 2 / 2 }</span>
 
-### Section 12.2 <span id=rrecpoints>{6}</span><span id=report>{  /  }</span>
+### Section 12.2 <span id=rrecpoints>{6}</span><span id=report>{ 6 / 6 }</span>
 
-### Section 12.3 <span id=rrecpoints>{2}</span><span id=report>{  /  }</span>
+### Section 12.3 <span id=rrecpoints>{2}</span><span id=report>{ 2 / 2 }</span>
 
-### Section 12.4 <span id=rrecpoints>{12}</span><span id=report>{  /  }</span>
+### Section 12.4 <span id=rrecpoints>{12}</span><span id=report>{ 12 / 12 }</span>
 
-### Section 12.5 <span id=rrecpoints>{4}</span><span id=report>{  /  }</span>
+### Section 12.5 <span id=rrecpoints>{4}</span><span id=report>{ 4 / 4 }</span>
 
 ## Theory Points <span id=headpoints>{10} Possible</span>
 
@@ -67,13 +68,13 @@ __Solution:__
 
 </div></br>
 
-### Problem 12.3 <span id=recpoints>{2}</span><span id=report>{ / }</span>
+### Problem 12.3 <span id=recpoints>{2}</span><span id=report>{ 2 / 2 }</span>
 
 A student stated that the first-order auto-regressive error models (12.1) and (12.2) are too simple for business time series data because the error term in period t in such data is also influenced by random effects that occurred more than one period in the past. Comment. 
 
 __Solution:__
 <div id="rcorners2">
-
+The error term in period t is a linear combination of the current and preceding disturbance terms. When the parameter is between 0 and 1 indicates that the further the period is in the past, the smaller is the weight of disturbance term in determining the error term in period t.
 </div></br>
 
 
@@ -91,7 +92,7 @@ __Solution:__
 
 <a id=datalink style="font-size:.9em;" target="_blank" href=http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/index.html>Data Files</a>
 
-### Problem 12.9 <span id=recpoints>{6}</span><span id=report>{ / }</span>
+### Problem 12.9 <span id=recpoints>{6}</span><span id=report>{ 6 / 6 }</span>
 
 ```{r}
 # Here is generic code that would read in any "Problem" from any "Chapter":
@@ -114,12 +115,20 @@ __Microcomputer components__ A staff analyst for a manufacturer of microcomputer
   __Solution:__
   <div id="rcorners2">
 ```{r, fig.align='center', fig.width=6, fig.height=4}
-ggplot(p12.9, aes(X1, Y)) + 
+lm(Y ~ X1, p12.9) %T>%
+{print(tidy(.))} %>% 
+ggplot(aes(X1, Y)) + 
   geom_point(shape = 1) + 
   geom_smooth(method = "lm", se = F, size = .5, color = "firebrick2") + 
   labs(title = "Simple OLS Model") + 
   theme_bw()
 ```
+  $$
+  \widehat{Y} = -7.7385 + 53.9533X \\
+  s\{b_0\} = 7.1746 \\
+  s\{b_1\} = 3.5197
+  $$
+  
   </div></br>
   
   
@@ -127,10 +136,11 @@ ggplot(p12.9, aes(X1, Y)) +
   
   __Solution:__
   <div id="rcorners2">
-```{r}
+```{r, fig.align='center', fig.width=6, fig.height=4}
 augment(lm(Y ~ X1, p12.9)) %>% 
   ggplot(aes(x = seq_along(X1), y = .resid)) + 
   geom_point(shape = 1) + 
+  geom_line() + 
   labs(title = "Residuals plotted against time", x = "Month", y = "Residuals") + 
   scale_x_continuous(breaks = seq(2,16,2)) + 
   theme_bw()
@@ -142,25 +152,17 @@ augment(lm(Y ~ X1, p12.9)) %>%
   
   __Solution:__
   <div id="rcorners2">
+  $$
+  H_0: \rho = 0, H_A: \rho > 0, D = .857, d_L = 1.10, d_u = 1.37. \\
+  \text{If } D > 1.37 \text{ conclude } H_0, \text{ if }D < 1.10 \text{ conclude } H_A, \text{ otherwise test is inconclusive.}
+  $$
+```{r}
+car::durbinWatsonTest(lm(Y~X1,p12.9))
+```
   
   </div></br>
   
 ### Problem 12.10 <span id=recpoints>{9}</span><span id=report>{ / }</span>
-
-```{r}
-# Here is generic code that would read in any "Problem" from any "Chapter":
-
-Chapter <- 11 #change this to the chapter you want
-Problem <- 11 #change this to the problem you want
-
-#Change pWhatever.Whatever to be p11.11 or whatever you want.
-pWhatever.Whatever <- read.table(paste0("http://www.stat.ufl.edu/~rrandles/sta4210/Rclassnotes/data/textdatasets/KutnerData/Chapter%20", Chapter, "%20Data%20Sets/CH", Chapter, "PR", Problem, ".txt"), header=FALSE)
-
-# Give it nice column names for conevience:
-# Be sure to change pWhatever.Whatever to p11.11 or whatever you used above.
-colnames(pWhatever.Whatever) <- c("Y","X1")
-
-```
 
 Refer to Microcomputer components Problem 12.9. The analyst has decided to employ regression model (12.1) and use the Cochrane-Orcutt procedure to fit the model. 
 
@@ -168,14 +170,18 @@ Refer to Microcomputer components Problem 12.9. The analyst has decided to emplo
   
   __Solution:__
   <div id="rcorners2">
-  
+  $r = .5784, 2(1-.5784) = .8432, D = .857$
   </div></br>
   
-  __b)__ Use on iteration to obtain the estimates b0 and b1 of the regression coefficients $\beta$ and $\beta$ in transformed model (12.17) and state the estimated regression function. Also obtain $s\{b_{0}\}$ and $s\{b_{1}\}$
+  __b)__ Use one iteration to obtain the estimates $b_0$ and $b_1$ of the regression coefficients $\beta_0$ and $\beta_1$ in transformed model (12.17) and state the estimated regression function. Also obtain $s\{b_{0}\}$ and $s\{b_{1}\}$
   
   __Solution:__
   <div id="rcorners2">
+  $b_{0} = -.69434, b_{1} = 50.93322$
   
+  $\widehat{Y} = 0.69434 + 50.93322X$
+  
+  $s\{b_0\} = 3.75590, s\{b_{1}\} = 4.34890$
   </div></br>
   
   __c)__ Test whether any positive autocorrelation remains after first iteration using $\alpha = 0.05$. State the alternatives, decision rule, and conclusion. 
@@ -189,7 +195,9 @@ Refer to Microcomputer components Problem 12.9. The analyst has decided to emplo
   
   __Solution:__
   <div id="rcorners2">
+  $\widehat{Y} = -1.64692 + 50.93322X$
   
+  $s\{b_0\} = 8.90869, s\{b_1\} = 4.34890$
   </div></br>
   
   __e)__ On the basis of the results in parts (c) and (d), does the Cochrane-Orcutt procedure appear to have been effective here?
@@ -213,7 +221,7 @@ Refer to Microcomputer components Problem 12.9. The analyst has decided to emplo
   
   </div></br>
   
-### Problem 12.13 <span id=recpoints>{6}</span><span id=report>{ / }</span>
+### Problem 12.13 <span id=recpoints>{6}</span><span id=report>{ 6 / 6 }</span>
 
 ```{r}
 # Here is generic code that would read in any "Problem" from any "Chapter":
@@ -235,7 +243,7 @@ Advertising agency. The managing partner of an adverting agency is interested in
   
   __Solution:__
   <div id="rcorners2">
-```{r}
+```{r, fig.align='center', fig.width=6, fig.height=4}
 ggplot(p12.13, aes(X1, Y)) + 
   geom_point(shape = 1) + 
   geom_smooth(method = "lm", se = F, size = .5, color = "firebrick2") + 
@@ -249,10 +257,11 @@ ggplot(p12.13, aes(X1, Y)) +
   
   __Solution:__
   <div id="rcorners2">
-```{r}
+```{r, fig.align='center', fig.width=6, fig.height=4}
 augment(lm(Y ~ X1, p12.13)) %>% 
   ggplot(aes(x = seq_along(X1), y = .resid)) + 
   geom_point(shape = 1) + 
+  geom_line() +
   labs(title = "Residuals plotted against time", x = "Month", y = "Residuals") + 
   scale_x_continuous(breaks = seq(2,20,2)) + 
   theme_bw()
@@ -263,11 +272,14 @@ augment(lm(Y ~ X1, p12.13)) %>%
   
   __Solution:__
   <div id="rcorners2">
-  
+```{r}
+car::durbinWatsonTest(lm(Y ~ X1, p12.13))
+```
+
   </div></br>
   
 
-### Problem 12.17 <span id=recpoints>{7}</span><span id=report>{ / }</span>
+### Problem 12.17 <span id=recpoints>{7}</span><span id=report>{ 7 / 7 }</span>
 
 ```{r}
 # Here is generic code that would read in any "Problem" from any "Chapter":
@@ -289,20 +301,38 @@ McGill Company sales. The data below show seasonally adjusted quarterly sales fo
   
   __Solution:__
   <div id="rcorners2">
-  
+  I would it expect it to definitley be postive here. 
   </div></br>
   
   __b)__ Fit a simple linear regression model by ordinary least squares and obtain the residuals Also obtain $s\{b0\}$ and $s\{b1\}$.
   
   __Solution:__
   <div id="rcorners2">
-  
+```{r, fig.align='center', fig.width=6, fig.height=4}
+lm(Y ~ X1, p12.17) %T>% 
+  {print(tidy(.))} %>% 
+  ggplot(aes(X1, Y)) + 
+  geom_point(shape = 1) +
+  geom_smooth(method = "lm", se = FALSE, size = .5, color = "firebrick2") +
+  labs(title = "Simple OLS Regression") +
+  theme_bw()
+```
+
   </div></br>
   
   __c)__ Plot the residual against time and explain whether you find any evidence of positive auto-correlation>
   
   __Solution:__
   <div id="rcorners2">
+```{r}
+lm(Y ~ X1, p12.17) %>% 
+  augment() %>% 
+  ggplot(aes(seq_along(X1), y = Y)) + 
+  geom_point(shape = 1) +
+  geom_line() + 
+  labs(title = "Residuals against Time", x = "Time", y = "Residuals") +
+  theme_bw()
+```
   
   </div></br>
   
@@ -310,7 +340,10 @@ McGill Company sales. The data below show seasonally adjusted quarterly sales fo
   
   __Solution:__
   <div id="rcorners2">
-  
+```{r}
+car::durbinWatsonTest(lm(Y ~ X1, p12.17))
+```
+
   </div></br>
 
 ### Problem 12.18 <span id=points>{9}</span><span id=report>{ / }</span>
@@ -321,14 +354,14 @@ Refer to McGill Company Sales Problem 12.17. Assume that regression model is app
   
   __Solution:__
   <div id="rcorners3">
-  
+
   </div></br>
   
   __b)__ Use one iteration to obtain the estimate $b_0$ and $b_1$ of the regression coefficients $\beta_0$ and $\beta_1$ in transformed model and stat the estimated regression function. Also obtain $s\{b0\}$ and $s\{b1\}$. 
   
   __Solution:__
   <div id="rcorners3">
-  
+
   </div></br>
   
   __c)__ Test whether any positive auto-correlation remains after the first iteration; use $\alpha = .01$ state the alternatives, decision rule and convulsion. 
@@ -342,7 +375,7 @@ Refer to McGill Company Sales Problem 12.17. Assume that regression model is app
   
   __Solution:__
   <div id="rcorners3">
-  
+
   </div></br>
   
   __e)__ On the basis of the results in parts (c) and (d) does the Cochraine-Orcutt procedure appear to have been effective here?
