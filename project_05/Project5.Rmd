@@ -7,6 +7,12 @@ output:
     toc_float: true
     code_folding: hide
 ---
+```{r, include=FALSE}
+library(tidyverse)
+library(tidyquant)
+library(MASS)
+library(patchwork)
+```
 
 <style>
 
@@ -40,6 +46,154 @@ output:
     * Are your final conclusions presented in such a way that the general public can understand and apply them?
     
     
+## Background
+
+My father is looking to retire within the next few years and his mind has recently been on how to go about structuring his retirement investments. Given that I am a Financial Economics major I offered to do some preliminary research for his stock portfolio. Although the assumptions held in regression often fall apart when looking at financial data, regression is a large part of the finance world. This analysis will take a different approach to regression because while we will try to maintain normality as much as possible, the independent variables of interest are __not fixed__. Meaning that developing a causual understanding of the regressions will be extremely difficult. In this analysis I will build a model that looks at the relationship between several different stocks and Apple. This information will help my dad in building his portfolio. The stocks I will be looking in this analysis are: __AAPL__, __JBLU__, __BBY__, __GM__, and __AMZN__. I also will take a look at the __S&P 500__ which tracks the performance of the overal market. 
+
+## Data
+
+In this section I will gather my data. Thankfully, financial data is usually pretty clean. I will gather the adjusted stock data going back to 2008 and then compute its log daily returns. We eventually be regressing on AAPL Log Daily Returns (Y) against (Insert Stock Ticker Here) Log Daily Returns. 
+
+```{r}
+stocks <- c("^GSPC", "AAPL", "JBLU", "BBY", "GM", "AMZN") %>% 
+  tq_get() %>% 
+  dplyr::select(date, symbol, adjusted) %>% 
+  group_by(symbol) %>% 
+  tq_transmute(select     = adjusted, 
+               mutate_fun = periodReturn, 
+               period     = "daily", 
+               type       = "log",
+               col_rename = "daily.returns")
+```
+
+A quick visualization of the data shows that the returns look relatively normal. We will see how the regressions fair. 
+
+```{r}
+stocks %>% 
+  ggplot(aes(x = daily.returns)) + 
+  geom_histogram(aes(y=..density..),color = "white", fill = "#00203b", bins = 50) + 
+  geom_density(aes(y=..density..), color = "firebrick2", size = .5) +
+  facet_wrap(~ symbol, scales = "free") +
+  theme_classic()
+```
+
+In order to correctly run the regressions we need to move our data into wide format. __Note:__ GM was struggling financialy during the 2008 crisis and went private for a while, hence the missing data. 
+
+```{r}
+stocks.wide <- stocks %>% 
+  spread(key = symbol, value = daily.returns) %>% 
+  rename(SPX = `^GSPC`)
+
+stocks.wide %>% 
+  head() %>%
+  pander::pander()
+```
+
+## Analysis
+
+Lets begin by visualizing and testing AAPL vs. S&P 500. Since AAPL is apart of the S&P we should expect to see some high correlation here. Let's take a look:
+
+```{r, fig.width=10, fig.height=8}
+aapl.spx <- lm(AAPL ~ SPX, data = stocks.wide)
+
+stocks.wide %>% 
+  ggplot(aes(x = SPX, y = AAPL)) + 
+  geom_point(alpha = .3, size = 1.5) + 
+  geom_smooth(method = "lm", se = FALSE, color = "firebrick2") + 
+  scale_x_continuous(labels = scales::percent) + 
+  scale_y_continuous(labels = scales::percent) + 
+  labs(title = "Visualizing Returns Relationship: AAPL vs SPX 500", 
+       x = "SPX 500") + 
+  theme_classic()
+
+aapl.spx %>% 
+  summary() %>% 
+  pander::pander()
+```
+
+This looks great but let's attempt to verify some assumptions:
+
+```{r, fig.align='center'}
+plot(aapl.spx, which = c(1:2,4))
+```
+
+Linearity and variance appear to be alright and I don't think we'll be able to fix the non-normality of the errors. Looking at the cook's distance there are some massive outliers which is to be expected in the stock market. Perhaps it would be best to run a robust regression to discount the weight of the outliers. 
+
+```{r}
+aapl.spx2 <- MASS::rlm(AAPL ~ SPX, data = stocks.wide, na.action = na.omit)
+
+summary(aapl.spx2)
+```
+
+Great that looks better. Let's take a look at the other stocks:
+
+```{r, warning=FALSE}
+jblu.plot <- stocks.wide %>% 
+  ggplot(aes(x = JBLU, y = AAPL)) + 
+  geom_point(alpha = .3, size = 1.5) + 
+  geom_smooth(method = "lm", se = FALSE, color = "firebrick2") + 
+  scale_x_continuous(labels = scales::percent) + 
+  scale_y_continuous(labels = scales::percent) + 
+  labs(title = "AAPL vs JBLU", 
+       x = "JBLU") + 
+  theme_classic()
+
+bby.plot <- stocks.wide %>% 
+  ggplot(aes(x = BBY, y = AAPL)) + 
+  geom_point(alpha = .3, size = 1.5) + 
+  geom_smooth(method = "lm", se = FALSE, color = "navyblue") + 
+  scale_x_continuous(labels = scales::percent) + 
+  scale_y_continuous(labels = scales::percent) + 
+  labs(title = "AAPL vs BBY", 
+       x = "BBY") + 
+  theme_classic()
+
+gm.plot <- stocks.wide %>% 
+  ggplot(aes(x = GM, y = AAPL)) + 
+  geom_point(alpha = .3, size = 1.5) + 
+  geom_smooth(method = "lm", se = FALSE, color = "gold") + 
+  scale_x_continuous(labels = scales::percent) + 
+  scale_y_continuous(labels = scales::percent) + 
+  labs(title = "AAPL vs GM", 
+       x = "GM") + 
+  theme_classic()
+
+amzn.plot <- stocks.wide %>% 
+  ggplot(aes(x = AMZN, y = AAPL)) + 
+  geom_point(alpha = .3, size = 1.5) + 
+  geom_smooth(method = "lm", se = FALSE, color = "limegreen") + 
+  scale_x_continuous(labels = scales::percent) + 
+  scale_y_continuous(labels = scales::percent) + 
+  labs(title = "AAPL vs AMZN", 
+       x = "AMZN") + 
+  theme_classic()
+
+jblu.plot + bby.plot + gm.plot + amzn.plot
+```
+
+Looking at these plots, some obviously look better than others. BBY has a ton of outliers is appears. AMZN looks interesting as well because it appears that it is right skewed in possible returns. This could be a good combo of stocks for my father's portfolio. Let's take a closer look at AAPL vs. AMZN, let's go straight for the robust model:
+
+```{r}
+stocks.wide %>% 
+  ggplot(aes(x = AMZN, y = AAPL)) + 
+  geom_point(alpha = .3, size = 1.5) + 
+  geom_smooth(method = "lm", se = FALSE, color = "limegreen") + 
+  scale_x_continuous(labels = scales::percent) + 
+  scale_y_continuous(labels = scales::percent) + 
+  labs(title = "AAPL vs AMZN", 
+       x = "AMZN") + 
+  theme_classic()
+
+aapl.amzn2 <- MASS::rlm(AAPL ~ AMZN, data = stocks.wide, na.action = na.omit)
+
+summary(aapl.amzn2)
+```
+
+It would make sense that AMZN would have some predicitve power over AAPL given that they are two large companies but they do different things and in a sense are opposities from on another. AAPL works in specific market making consumer technology and while AMZN has ventured into that in recent years their scope is much larger.
+
+## Summary
+
+It appears that two stocks or indices to keep in mind for my father when retiring is investing with the market into the SPX and also into AMZN. My dad is an apple fanboy and these other companies could aid in understanding how AAPL might react given current market conditions. 
 
 <footer>
 </footer>

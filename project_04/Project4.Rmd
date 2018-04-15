@@ -7,6 +7,9 @@ output:
     toc_float: true
     code_folding: hide
 ---
+```{r, include=FALSE}
+library(tidyverse)
+```
 
 <style>
 
@@ -38,6 +41,53 @@ output:
 
     * Does your analysis show great expertise in at least a few of the regression topics we have covered this semester? Specifically, you need to demonstrate good ability with: the mathematical model statement, hypothesis testing, confidence or prediction intervals, and transformations.
     
+## Background 
+
+I wanted to take a look at how much electricity I use and I how much I spend relative the the temperature outside. This will help my wife and I make decesions regarding our budget and perhaps we can forecast just how much money to set aside every month. I looked at my electricty usage over the past few years to develop a simple linear model. 
+
+## Data
+
+Let's read in my data from Rocky Mountain Power Company:
+
+```{r, message=FALSE}
+bill <- read_csv(here::here("project_04/bill.csv")) %>% 
+  rename(temp = `Average Temperature`, bill = `Bill Amount`)
+```
+
+The data came really clean so there will be little cleaning to do. Let's make a quick visualization of the temperature vs cost:
+
+```{r}
+bill %>% 
+  ggplot(aes(x = temp, y = bill)) + 
+  geom_point() + 
+  geom_smooth(method = "lm") +
+  theme_classic()
+```
+
+As we can see there are a few outliers in these data. Let's run a model and check our assumptions. 
+
+```{r}
+bill.lm <- lm(bill ~ temp, data = bill)
+
+summary(bill.lm) %>% 
+  pander::pander()
+
+plot(bill.lm, which = c(1:2,4))
+```
+
+As we can see the assumptions are broken but not terribly so. Let's try a robust regression to smooth things out a bit. 
+
+```{r}
+bill.rlm <- MASS::rlm(bill ~ temp, data = bill)
+
+summary(bill.rlm)
+```
+
+Okay, given a level of significance of 0.05 it appears that temperature is significant and that as temperature rises, my electricity bill also rises by about 25%. 
+
+I guess we need to lay off the air-conditioning in the summer. 
+
+*Sorry for the lackluster project, my original idea kind of fell apart last minute as the data I was gathering was uncleanable*
     
 
 <footer>
